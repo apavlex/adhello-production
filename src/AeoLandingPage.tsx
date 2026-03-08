@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Zap, 
-  ArrowRight, 
-  Activity, 
-  Bot, 
-  Timer, 
-  MapPinOff, 
-  CheckCircle2, 
-  ChevronDown, 
-  Plus, 
+import {
+  Zap,
+  ArrowRight,
+  Activity,
+  Bot,
+  Timer,
+  MapPinOff,
+  CheckCircle2,
+  ChevronDown,
+  Plus,
   Minus,
   Smartphone,
   RefreshCw,
   Search,
-  Smile
+  Smile,
+  Sparkles
 } from 'lucide-react';
 
 export default function AeoLandingPage() {
@@ -74,11 +75,11 @@ export default function AeoLandingPage() {
             <a href="#pricing" className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors">Pricing</a>
             <a href="#faq" className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors">FAQ</a>
             <a href="#reviews" className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors">Reviews</a>
-            <button 
+            <button
               onClick={openChat}
               className="bg-primary hover:bg-primary-hover text-brand-dark px-6 py-3 rounded-full text-sm font-bold transition-all duration-300 shadow-[4px_4px_0px_rgba(0,0,0,0.1)] hover:shadow-[0_0_15px_rgba(243,221,109,0.6)] hover:-translate-y-0.5 hover:scale-105"
             >
-              Get My AI-Ready Site
+              Build My Smart Site
             </button>
           </div>
         </div>
@@ -90,7 +91,7 @@ export default function AeoLandingPage() {
           <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-primary/20 blur-3xl opacity-50"></div>
           <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-primary/10 blur-3xl opacity-50"></div>
         </div>
-        
+
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-primary/20 text-brand-dark text-sm font-bold mb-8 shadow-sm">
             <span className="relative flex h-2 w-2">
@@ -99,25 +100,26 @@ export default function AeoLandingPage() {
             </span>
             New: AEO Optimization Included
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-brand-dark mb-6 leading-[1.1]">
             Your Google Ads are losing leads to <span className="hand-underline">AI Search.</span>
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-brand-dark/70 mb-10 max-w-2xl mx-auto leading-relaxed">
             High-speed, AI-optimized websites built specifically for local contractors. Only $97/month.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-            <button 
+            <button
               onClick={openChat}
-              className="w-full sm:w-auto px-10 py-5 bg-primary hover:bg-primary-hover text-brand-dark text-xl font-bold rounded-full transition-all shadow-[6px_6px_0px_rgba(45,52,54,0.1)] hover:shadow-none hover:translate-y-[4px] flex items-center justify-center gap-2 border-2 border-transparent"
+              className="w-full sm:w-auto px-10 py-5 bg-primary hover:bg-primary-hover text-brand-dark text-xl font-bold rounded-full transition-all shadow-[6px_6px_0px_rgba(45,52,54,0.1)] hover:shadow-none hover:translate-y-[4px] flex items-center justify-center gap-2 border-2 border-transparent group"
             >
-              Get My AI-Ready Site
+              <Sparkles className="w-6 h-6 text-brand-dark group-hover:animate-pulse" />
+              Build My Smart Site
               <ArrowRight className="w-6 h-6" />
             </button>
           </div>
-          
+
           <div className="flex items-center justify-center gap-2 text-brand-dark/50 font-bold">
             <div className="flex -space-x-2">
               {[1, 2, 3, 4].map((i) => (
@@ -225,9 +227,9 @@ export default function AeoLandingPage() {
             </div>
             <div className="relative">
               <div className="absolute inset-0 bg-primary/20 rounded-3xl transform rotate-3"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="Contractor using mobile phone" 
+              <img
+                src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Contractor using mobile phone"
                 className="relative rounded-3xl shadow-2xl object-cover h-[500px] w-full border-[8px] border-white"
               />
             </div>
@@ -271,12 +273,12 @@ export default function AeoLandingPage() {
                 </p>
               </div>
             </div>
-            
+
             <div className="bg-white text-brand-dark rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-primary text-brand-dark text-xs font-black px-4 py-1 rounded-bl-xl uppercase tracking-wider">Best Value</div>
               <h3 className="text-2xl font-extrabold mb-2 text-center">The "One Call" Math</h3>
               <p className="text-brand-dark/50 text-center mb-8 font-bold">Average contractor service call = $350 - $1,200+</p>
-              
+
               <div className="flex justify-between items-end border-b border-gray-100 pb-6 mb-6">
                 <div>
                   <div className="text-sm font-bold text-brand-dark/40 uppercase tracking-wider mb-1">Yearly Cost</div>
@@ -287,16 +289,17 @@ export default function AeoLandingPage() {
                   <div className="text-2xl font-extrabold text-primary-dark">1 Lead</div>
                 </div>
               </div>
-              
+
               <p className="text-lg font-medium text-brand-dark/70 mb-8 text-center leading-relaxed">
                 If we send you just <strong className="text-brand-dark font-black">ONE</strong> more customer per <strong className="text-brand-dark font-black">YEAR</strong>, the site pays for itself. Everything else is pure profit.
               </p>
-              
-              <button 
+
+              <button
                 onClick={openChat}
-                className="w-full py-5 bg-primary hover:bg-primary-hover text-brand-dark text-xl font-bold rounded-full transition-all shadow-[6px_6px_0px_rgba(45,52,54,0.1)] hover:shadow-none hover:translate-y-[4px] border-2 border-transparent"
+                className="w-full py-5 bg-primary hover:bg-primary-hover text-brand-dark text-xl font-bold rounded-full transition-all shadow-[6px_6px_0px_rgba(45,52,54,0.1)] hover:shadow-none hover:translate-y-[4px] border-2 border-transparent flex items-center justify-center gap-3 group"
               >
-                Get Started for $97/mo
+                <Sparkles className="w-7 h-7 text-brand-dark group-hover:scale-110 transition-transform" />
+                Build My Smart Site for $97/mo
               </button>
             </div>
           </div>
@@ -309,11 +312,11 @@ export default function AeoLandingPage() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-extrabold text-brand-dark mb-4">Frequently Asked Questions</h2>
           </div>
-          
+
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="bg-warm-cream border border-gray-100 rounded-2xl overflow-hidden transition-all duration-300 hover:border-primary/30 hover:shadow-sm"
               >
                 <button

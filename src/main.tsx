@@ -1,13 +1,28 @@
-import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.tsx';
+import AboutPage from './AboutPage.tsx';
 import AeoLandingPage from './AeoLandingPage.tsx';
 import './index.css';
 
-const path = window.location.pathname;
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+  },
+  {
+    path: "/about",
+    element: <AboutPage />,
+  },
+  {
+    path: "/aeo",
+    element: <AeoLandingPage />,
+  },
+]);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {path === '/aeo' ? <AeoLandingPage /> : <App />}
+    <RouterProvider router={router} />
   </StrictMode>,
 );

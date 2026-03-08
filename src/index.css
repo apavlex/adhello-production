@@ -20,6 +20,7 @@
   body {
     @apply bg-warm-cream text-brand-dark font-sans antialiased overflow-x-hidden;
   }
+
   html {
     scroll-behavior: smooth;
   }
@@ -33,39 +34,80 @@
     padding: 4rem 1rem;
     position: relative;
   }
+
   .hero-gradient {
     background: linear-gradient(180deg, #fffcf5 0%, #fff8e1 100%);
   }
+
   .hand-underline {
     position: relative;
     display: inline-block;
   }
+
   .hand-underline::after {
     content: '';
     position: absolute;
     width: 100%;
-    height: 8px;
-    bottom: -2px;
+    height: 4px;
+    bottom: 2px;
     left: 0;
     background-color: #2563eb;
     z-index: -1;
     border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-    opacity: 0.6;
-    transform: rotate(-1deg);
-  }
-  .hand-divider {
-    width: 100%;
-    height: 4px;
-    background-color: #2563eb;
-    border-radius: 100% 0% 100% 0% / 100% 0% 100% 0%;
     opacity: 0.3;
-    margin: 4rem 0;
     transform: rotate(-0.5deg);
   }
+
+  .hand-underline-v2::after {
+    height: 12px;
+    bottom: -4px;
+    transform: rotate(1.5deg);
+    border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
+  }
+
+  .hand-divider {
+    width: 100%;
+    height: 2px;
+    background-color: #2563eb;
+    border-radius: 100% 0% 100% 0% / 100% 0% 100% 0%;
+    opacity: 0.15;
+    margin: 4rem 0;
+    transform: rotate(-0.3deg);
+  }
+
+  .hand-divider-v2 {
+    height: 3px;
+    background-color: #2563eb;
+    transform: rotate(0.4deg) scaleX(1.02);
+    border-radius: 95% 4% 92% 5% / 3% 95% 6% 91%;
+    opacity: 0.15;
+  }
+
+  .hand-divider-v3 {
+    height: 1.5px;
+    background-color: #2563eb;
+    transform: rotate(-0.5deg);
+    border-radius: 2% 98% 3% 97% / 96% 5% 94% 4%;
+    opacity: 0.15;
+  }
+
+  .hand-divider-v4 {
+    height: 4px;
+    background-color: #2563eb;
+    transform: rotate(0.2deg) scaleX(0.98);
+    border-radius: 40% 60% 30% 70% / 60% 40% 70% 30%;
+    opacity: 0.15;
+  }
+
   .organic-shape {
     border-radius: 64% 36% 47% 53% / 43% 40% 60% 57%;
   }
+
   .organic-shape-2 {
     border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  }
+
+  .petal-card-shape {
+    border-radius: 160px 40px 160px 40px;
   }
 }

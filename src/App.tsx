@@ -13,6 +13,7 @@ import {
   Mail,
   MapPin,
   Menu,
+  MessageCircle,
   MousePointerClick,
   Phone,
   Search,
@@ -31,11 +32,18 @@ import {
   ThermometerSnowflake,
   Home,
   Star,
-  Droplets
+  Droplets,
+  Sparkles
 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SiteAudit } from './components/SiteAudit';
+import { OpenAI, Gemini, Claude, Meta, Grok, Perplexity } from '@lobehub/icons';
+import logoImg from './assets/logo.png';
+import aiReceptionistImg from './assets/ai-receptionist.jpg';
+import dashboardImg from './assets/dashboard.jpg';
+import flooringImg from './assets/flooring-workers.jpg';
+import { Link } from 'react-router-dom';
 
 const HERO_VARIANTS = [
   {
@@ -66,7 +74,7 @@ const HERO_VARIANTS = [
     tagline: "Built for Flooring Companies",
     headline: "Step up your business with more flooring leads.",
     subheadline: "While you’re installing hardwood or laying tile, your smart website helps book your next job. Built to convert local traffic from Google, Maps, and AI search.",
-    image: "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?auto=format&fit=crop&q=80&w=800"
+    image: flooringImg
   }
 ];
 
@@ -145,9 +153,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <header className="flex items-center justify-between h-16 sm:h-20">
             <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-bold tracking-tight text-brand-dark">
-                AdHello<span className="text-yellow-500">.ai</span>
-              </h2>
+              <img src={logoImg} alt="AdHello.ai Logo" className="h-10 w-auto" />
             </div>
             <nav className="hidden md:flex gap-10">
               <a
@@ -174,16 +180,28 @@ export default function App() {
               >
                 Success Stories
               </a>
+              <Link
+                className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
+                to="/about"
+              >
+                About
+              </Link>
             </nav>
-            <div className="hidden md:flex items-center gap-4">
-              <button 
+            <div className="hidden md:flex items-center gap-8">
+              <a
+                href="https://app.adhello.ai/login"
+                className="text-sm font-extrabold text-brand-dark hover:text-primary transition-colors"
+              >
+                Sign In
+              </a>
+              <button
                 onClick={openChat}
                 className="bg-primary hover:bg-primary-hover text-brand-dark text-sm font-bold px-6 py-3 rounded-full transition-all duration-300 shadow-[4px_4px_0px_rgba(0,0,0,0.1)] hover:shadow-[0_0_15px_rgba(243,221,109,0.6)] hover:-translate-y-0.5 hover:scale-105 flex items-center gap-2"
               >
-                Get Your Free Website
+                Build My Smart Site
               </button>
             </div>
-            <button 
+            <button
               className="md:hidden p-2 text-brand-dark hover:bg-gray-100 rounded-lg transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
@@ -191,7 +209,7 @@ export default function App() {
             </button>
           </header>
         </div>
-        
+
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden bg-white border-b border-gray-100 px-4 py-4 shadow-lg absolute w-full">
@@ -224,22 +242,97 @@ export default function App() {
               >
                 Success Stories
               </a>
-              <button 
+              <Link
+                className="text-base font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
+                to="/about"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              <a
+                className="text-base font-bold text-center text-brand-dark hover:text-primary transition-colors mt-2"
+                href="https://app.adhello.ai/login"
+              >
+                Sign In
+              </a>
+              <button
                 onClick={() => {
                   setIsMobileMenuOpen(false);
                   openChat();
                 }}
                 className="flex bg-primary hover:bg-primary-hover text-brand-dark text-base font-bold px-6 py-3 rounded-full transition-all duration-300 hover:shadow-[0_0_15px_rgba(243,221,109,0.6)] hover:-translate-y-0.5 hover:scale-105 items-center justify-center gap-2 mt-2"
               >
-                Get Your Free Website
+                Build My Smart Site
               </button>
             </nav>
           </div>
         )}
       </div>
 
-      <section className="full-screen-section hero-gradient overflow-hidden pt-32 pb-16" id="hero">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <section className="hero-gradient overflow-hidden py-32 lg:py-48 min-h-screen flex items-center relative" id="hero">
+        {/* Animated Background Blobs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <motion.div
+            animate={{
+              x: [0, 250, 100, 0],
+              y: [0, 150, -50, 0],
+              scale: [1, 1.5, 0.8, 1],
+              rotate: [0, 45, -45, 0],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut",
+            }}
+            className="absolute top-[10%] left-[5%] w-80 h-80 bg-primary/40 rounded-full blur-[100px]"
+          />
+          <motion.div
+            animate={{
+              x: [0, -200, 150, 0],
+              y: [0, 200, 100, 0],
+              scale: [1, 1.3, 1.1, 1],
+              rotate: [0, -30, 30, 0],
+            }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut",
+            }}
+            className="absolute bottom-[10%] right-[10%] w-[600px] h-[600px] bg-yellow-300/40 rounded-full blur-[140px]"
+          />
+          <motion.div
+            animate={{
+              x: [0, 100, -150, 0],
+              y: [0, 250, 150, 0],
+              scale: [1, 1.6, 0.7, 1],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut",
+            }}
+            className="absolute top-[20%] right-[20%] w-64 h-64 bg-primary/30 rounded-full blur-[90px]"
+          />
+          <motion.div
+            animate={{
+              x: [0, -150, 50, 0],
+              y: [0, -100, 200, 0],
+              scale: [1, 1.2, 0.9, 1],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "linear",
+            }}
+            className="absolute bottom-[30%] left-[30%] w-96 h-96 bg-yellow-100/30 rounded-full blur-[110px]"
+          />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-10 md:mt-0 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-left order-2 lg:order-1 relative h-auto lg:h-[450px] flex flex-col justify-center">
               <div className="flex flex-col justify-center">
@@ -247,20 +340,21 @@ export default function App() {
                   The AI Growth Engine for Home Service Businesses
                 </div>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-brand-dark mb-8 leading-[1.05]">
-                  Your Competitors Are Getting the Calls. <span className="hand-underline">Let's Change That.</span>
+                  You’re Losing Leads in Search. <span className="hand-underline">Let’s Turn That Around.</span>
                 </h1>
                 <p className="text-xl md:text-2xl text-brand-dark/70 mb-10 leading-relaxed max-w-xl">
                   AdHello gives your home service business a smart website, AI Webchat, and a built-in growth engine - all in one. No agency. No tech headaches. Just more leads.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                  <button 
+                  <button
                     onClick={openChat}
-                    className="px-10 py-5 bg-primary hover:bg-primary-hover text-brand-dark font-bold rounded-full transition-all shadow-[6px_6px_0px_rgba(45,52,54,0.1)] hover:shadow-none hover:translate-y-[4px] flex items-center justify-center gap-2 text-xl w-full sm:w-auto border-2 border-transparent"
+                    className="px-10 py-5 bg-primary hover:bg-primary-hover text-brand-dark font-bold rounded-full transition-all shadow-[6px_6px_0px_rgba(45,52,54,0.1)] hover:shadow-none hover:translate-y-[4px] flex items-center justify-center gap-2 text-xl w-full sm:w-auto border-2 border-transparent group"
                   >
-                    Get My Free Website
+                    <Sparkles className="w-6 h-6 text-brand-dark group-hover:animate-pulse" />
+                    Build My Smart Site
                   </button>
-                  <a 
-                    href="#how-it-works"
+                  <a
+                    href="https://app.adhello.ai/welcome"
                     className="px-10 py-5 bg-white hover:bg-gray-50 text-brand-dark font-bold rounded-full transition-all shadow-[6px_6px_0px_rgba(45,52,54,0.1)] hover:shadow-none hover:translate-y-[4px] flex items-center justify-center gap-2 text-xl w-full sm:w-auto border-2 border-brand-dark/5"
                   >
                     See How It Works
@@ -269,48 +363,89 @@ export default function App() {
                 <p className="text-sm font-bold text-brand-dark/40 ml-4 mt-2">No long-term contracts. Setup in 7 days. Built for HVAC, Plumbing, Electrical, Roofing &amp; More.</p>
               </div>
             </div>
-            <div className="relative order-1 lg:order-2 flex flex-col items-center justify-center h-[400px] lg:h-[550px]">
-              <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-[8px] border-white max-w-md w-full aspect-[4/5] bg-primary/10">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={heroIndex}
-                    initial={{ opacity: 0, scale: 1.05 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
-                    className="absolute inset-0"
-                  >
-                    <img
-                      alt="Home Service Professional"
-                      className="w-full h-full object-cover"
-                      src={HERO_VARIANTS[heroIndex].image}
-                      referrerPolicy="no-referrer"
-                      loading="eager"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-brand-dark/20 to-transparent flex flex-col justify-end p-8">
-                      <div className="inline-block bg-primary text-brand-dark text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full mb-3 w-fit">
-                        {HERO_VARIANTS[heroIndex].tagline}
+            <div className="relative order-1 lg:order-2 flex flex-col items-center justify-center h-[500px] lg:h-[650px]">
+              <div className="relative z-10 petal-card-shape bg-white p-2 shadow-2xl max-w-lg w-full aspect-[4/5] overflow-hidden">
+                <div className="petal-card-shape w-full h-full overflow-hidden bg-primary/10 relative">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={heroIndex}
+                      initial={{ opacity: 0, scale: 1.05 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.8, ease: "easeInOut" }}
+                      className="absolute inset-0"
+                    >
+                      <img
+                        alt="Home Service Professional"
+                        className="w-full h-full object-cover"
+                        src={HERO_VARIANTS[heroIndex].image}
+                        referrerPolicy="no-referrer"
+                        loading="eager"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-brand-dark/20 to-transparent flex flex-col justify-end p-10 pb-14">
+                        <div className="inline-block bg-primary text-brand-dark text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full mb-3 w-fit">
+                          {HERO_VARIANTS[heroIndex].tagline}
+                        </div>
+                        <h3 className="text-white text-3xl font-bold mb-2 leading-tight">
+                          {HERO_VARIANTS[heroIndex].headline}
+                        </h3>
+                        <p className="text-white/80 text-lg font-medium">
+                          {HERO_VARIANTS[heroIndex].subheadline}
+                        </p>
                       </div>
-                      <h3 className="text-white text-2xl font-bold mb-2 leading-tight">
-                        {HERO_VARIANTS[heroIndex].headline}
-                      </h3>
-                      <p className="text-white/80 text-sm font-medium line-clamp-3">
-                        {HERO_VARIANTS[heroIndex].subheadline}
-                      </p>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
               </div>
 
               <div className="absolute top-10 -right-4 w-24 h-24 bg-primary rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-              <div className="absolute -bottom-8 -left-4 w-32 h-32 bg-accent-peach rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+              <div className="absolute -bottom-8 -left-4 w-32 h-32 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
             </div>
           </div>
         </div>
         <div className="scroll-down-indicator animate-bounce text-brand-dark/20">
           <ChevronDown className="w-10 h-10" />
         </div>
+      </section >
+
+      <section className="py-12 bg-white relative overflow-hidden border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 w-full">
+          <p className="text-center text-sm font-bold text-brand-dark/40 uppercase tracking-widest mb-8">Optimized for the world's most advanced AI search models</p>
+          <div className="flex flex-wrap lg:flex-nowrap justify-center items-center gap-x-6 gap-y-4 md:gap-x-10 transition-all duration-500 overflow-x-auto no-scrollbar py-2">
+            {/* OpenAI */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <OpenAI size={32} />
+              <span className="text-lg font-extrabold text-brand-dark">OpenAI</span>
+            </div>
+            {/* Gemini */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Gemini.Color size={32} />
+              <span className="text-lg font-extrabold text-brand-dark">Gemini</span>
+            </div>
+            {/* Claude (Anthropic) */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Claude.Color size={32} />
+              <span className="text-lg font-extrabold text-brand-dark">Claude</span>
+            </div>
+            {/* Meta */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Meta.Color size={32} />
+              <span className="text-lg font-extrabold text-brand-dark">Meta</span>
+            </div>
+            {/* Perplexity */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Perplexity.Color size={32} />
+              <span className="text-lg font-extrabold text-brand-dark">Perplexity</span>
+            </div>
+            {/* Grok */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Grok size={32} />
+              <span className="text-lg font-extrabold text-brand-dark">Grok</span>
+            </div>
+          </div>
+        </div>
       </section>
+
 
       <section
         className="py-12 bg-white relative overflow-hidden border-y border-gray-100"
@@ -346,10 +481,8 @@ export default function App() {
           </div>
         </div>
       </section>
-      
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="hand-divider opacity-20"></div>
-      </div>
+
+
 
       <section className="py-24 bg-white overflow-hidden" id="problem">
         <div className="max-w-7xl mx-auto px-4 w-full">
@@ -370,9 +503,7 @@ export default function App() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="hand-divider opacity-20"></div>
-      </div>
+
 
       <section className="py-24 bg-warm-cream relative overflow-hidden" id="what-you-get">
         <div className="max-w-7xl mx-auto px-4 relative z-10 w-full">
@@ -386,28 +517,36 @@ export default function App() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="bg-white p-10 rounded-[3rem] border border-gray-100 hover:border-primary transition-all duration-500 group flex flex-col h-full shadow-sm">
-              <div className="text-4xl font-black text-yellow-500 mb-6 opacity-50">01</div>
+              <div className="text-yellow-500 mb-6 bg-yellow-50 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Layout className="w-8 h-8" />
+              </div>
               <h3 className="text-2xl font-black text-brand-dark mb-4">Your Smart Website</h3>
               <p className="text-brand-dark/70 text-lg leading-relaxed">
                 A professionally built, mobile-first website designed specifically for home service businesses. Not a template you drag and drop yourself — a real, lead-focused site we build for you, live in 7 days. Optimized for Google, Google Maps, and AI search so customers find you first.
               </p>
             </div>
             <div className="bg-white p-10 rounded-[3rem] border border-gray-100 hover:border-primary transition-all duration-500 group flex flex-col h-full shadow-sm">
-              <div className="text-4xl font-black text-yellow-500 mb-6 opacity-50">02</div>
+              <div className="text-yellow-500 mb-6 bg-yellow-50 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <MessageCircle className="w-8 h-8" />
+              </div>
               <h3 className="text-2xl font-black text-brand-dark mb-4">AI Webchat (Your 24/7 Receptionist)</h3>
               <p className="text-brand-dark/70 text-lg leading-relaxed">
                 Never miss a lead again. AdHello's webchat answers customer questions, captures contact info, and qualifies leads — even at 2am when you're on a job. It's like having a receptionist who never takes a day off and never has a bad morning.
               </p>
             </div>
             <div className="bg-white p-10 rounded-[3rem] border border-gray-100 hover:border-primary transition-all duration-500 group flex flex-col h-full shadow-sm">
-              <div className="text-4xl font-black text-yellow-500 mb-6 opacity-50">03</div>
-              <h3 className="text-2xl font-black text-brand-dark mb-4">Basic Analytics Dashboard</h3>
+              <div className="text-yellow-500 mb-6 bg-yellow-50 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Search className="w-8 h-8" />
+              </div>
+              <h3 className="text-2xl font-black text-brand-dark mb-4">AI & Search Optimization</h3>
               <p className="text-brand-dark/70 text-lg leading-relaxed">
-                See exactly where your leads are coming from, how your website is performing, and what's working — all in one clean dashboard. No spreadsheets. No guesswork. Just clear data that helps you make smart decisions.
+                Ensure your business is the top recommendation across AI search engines and LLM models. We optimize your brand to be cited, trusted, and prioritized by the world's most advanced AI systems.
               </p>
             </div>
             <div className="bg-white p-10 rounded-[3rem] border border-gray-100 hover:border-primary transition-all duration-500 group flex flex-col h-full shadow-sm">
-              <div className="text-4xl font-black text-yellow-500 mb-6 opacity-50">04</div>
+              <div className="text-yellow-500 mb-6 bg-yellow-50 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Brain className="w-8 h-8" />
+              </div>
               <h3 className="text-2xl font-black text-brand-dark mb-4">AI Growth Coach</h3>
               <p className="text-brand-dark/70 text-lg leading-relaxed mb-4">
                 This is where AdHello gets interesting. Your built-in AI Growth Coach analyzes your business, your market, and your competitors — then gives you specific, actionable advice to grow. Think of it as having a marketing strategist in your pocket, available every day, personalized to your business.
@@ -421,7 +560,7 @@ export default function App() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4">
-        <div className="hand-divider opacity-20"></div>
+        <div className="hand-divider hand-divider-v4 opacity-20"></div>
       </div>
 
       <section className="py-24 bg-white" id="pricing">
@@ -508,7 +647,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="py-24 bg-soft-peach" id="how-it-works">
+      <section className="py-24 bg-yellow-50" id="how-it-works">
         <div className="max-w-7xl mx-auto px-4 w-full">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-6xl font-extrabold text-brand-dark mb-6">
@@ -524,10 +663,15 @@ export default function App() {
                   src="https://images.unsplash.com/photo-1512428559087-560fa5ceab42?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 />
               </div>
-              <div className="p-10 pt-8">
-                <h4 className="text-2xl font-black text-brand-dark mb-4">
-                  Step 1 — We Build Your Site
-                </h4>
+              <div className="p-10 pt-8 text-left">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-10 h-10 bg-primary rounded-full flex-shrink-0 flex items-center justify-center text-lg font-black text-brand-dark shadow-sm">
+                    1
+                  </div>
+                  <h4 className="text-2xl font-black text-brand-dark">
+                    We Build Your Site
+                  </h4>
+                </div>
                 <p className="text-lg text-brand-dark/60 leading-relaxed font-bold">
                   Tell us about your business. We build a professional, lead-focused website tailored to your services and service area. No homework for you.
                 </p>
@@ -539,13 +683,18 @@ export default function App() {
                 <img
                   alt="AI Webchat Assistant"
                   className="w-full h-full object-cover"
-                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=800"
+                  src={aiReceptionistImg}
                 />
               </div>
-              <div className="p-10 pt-8">
-                <h4 className="text-2xl font-black text-brand-dark mb-4">
-                  Step 2 — We Activate Your Webchat
-                </h4>
+              <div className="p-10 pt-8 text-left">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-10 h-10 bg-white rounded-full flex-shrink-0 flex items-center justify-center text-lg font-black text-brand-dark shadow-sm">
+                    2
+                  </div>
+                  <h4 className="text-2xl font-black text-brand-dark">
+                    We Activate Your Webchat
+                  </h4>
+                </div>
                 <p className="text-lg text-brand-dark/80 leading-relaxed font-bold">
                   Your AI receptionist goes live instantly. It greets visitors, answers questions, and captures leads around the clock.
                 </p>
@@ -557,13 +706,18 @@ export default function App() {
                 <img
                   alt="AdHello Business Growth Dashboard"
                   className="w-full h-full object-cover"
-                  src="https://drive.google.com/thumbnail?id=1e4CPR8UPUMtsTQyKGUnil51Cf9qg2S1b&sz=w1000"
+                  src={dashboardImg}
                 />
               </div>
-              <div className="p-10 pt-8">
-                <h4 className="text-2xl font-black text-brand-dark mb-4">
-                  Step 3 — You Start Seeing Results
-                </h4>
+              <div className="p-10 pt-8 text-left">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-10 h-10 bg-primary rounded-full flex-shrink-0 flex items-center justify-center text-lg font-black text-brand-dark shadow-sm">
+                    3
+                  </div>
+                  <h4 className="text-2xl font-black text-brand-dark">
+                    You Start Seeing Results
+                  </h4>
+                </div>
                 <p className="text-lg text-brand-dark/60 leading-relaxed font-bold">
                   Log into your AdHello dashboard to see your analytics, chat with your AI Growth Coach, and watch your leads grow. When you're ready for more, upgrade with one click.
                 </p>
@@ -574,7 +728,7 @@ export default function App() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4">
-        <div className="hand-divider opacity-20"></div>
+        <div className="hand-divider hand-divider-v2 opacity-20"></div>
       </div>
 
       <section className="py-24 bg-warm-cream" id="comparison">
@@ -615,9 +769,7 @@ export default function App() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="hand-divider opacity-20"></div>
-      </div>
+
 
       <section className="py-24 bg-white" id="niches">
         <div className="max-w-7xl mx-auto px-4 w-full">
@@ -645,11 +797,9 @@ export default function App() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="hand-divider opacity-20"></div>
-      </div>
 
-      <section className="py-24 bg-soft-peach" id="testimonials">
+
+      <section className="py-24 bg-yellow-50" id="testimonials">
         <div className="max-w-7xl mx-auto px-4 w-full">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-brand-dark mb-6 tracking-tight">
@@ -696,7 +846,7 @@ export default function App() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4">
-        <div className="hand-divider opacity-20"></div>
+        <div className="hand-divider hand-divider-v2 opacity-20"></div>
       </div>
 
       <section className="py-24 bg-white" id="faq">
@@ -711,20 +861,18 @@ export default function App() {
           </div>
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div 
+              <div
                 key={index}
-                className={`border rounded-2xl transition-all duration-300 overflow-hidden ${
-                  openFaqIndex === index ? 'border-primary bg-primary/5' : 'border-gray-100 bg-white hover:border-gray-200'
-                }`}
+                className={`border rounded-2xl transition-all duration-300 overflow-hidden ${openFaqIndex === index ? 'border-primary bg-primary/5' : 'border-gray-100 bg-white hover:border-gray-200'
+                  }`}
               >
                 <button
                   onClick={() => toggleFaq(index)}
                   className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
                 >
                   <span className="text-lg font-bold text-brand-dark pr-8">{faq.question}</span>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-                    openFaqIndex === index ? 'bg-primary text-brand-dark' : 'bg-gray-100 text-gray-500'
-                  }`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${openFaqIndex === index ? 'bg-primary text-brand-dark' : 'bg-gray-100 text-gray-500'
+                    }`}>
                     {openFaqIndex === index ? (
                       <ChevronUp className="w-5 h-5" />
                     ) : (
@@ -732,10 +880,9 @@ export default function App() {
                     )}
                   </div>
                 </button>
-                <div 
-                  className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${
-                    openFaqIndex === index ? 'max-h-48 pb-6 opacity-100' : 'max-h-0 opacity-0'
-                  }`}
+                <div
+                  className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${openFaqIndex === index ? 'max-h-48 pb-6 opacity-100' : 'max-h-0 opacity-0'
+                    }`}
                 >
                   <p className="text-brand-dark/70 text-lg leading-relaxed">
                     {faq.answer}
@@ -764,11 +911,12 @@ export default function App() {
             No long-term contracts. Cancel anytime.
           </div>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <button 
+            <button
               onClick={openChat}
-              className="bg-primary hover:bg-primary-hover text-brand-dark font-extrabold py-5 px-12 rounded-full shadow-[0px_0px_20px_rgba(243,221,109,0.3)] hover:shadow-[0px_0px_30px_rgba(243,221,109,0.5)] transition-all transform hover:scale-105 flex items-center justify-center gap-3 text-xl md:text-2xl"
+              className="bg-primary hover:bg-primary-hover text-brand-dark font-extrabold py-5 px-12 rounded-full shadow-[0px_0px_20px_rgba(243,221,109,0.3)] hover:shadow-[0px_0px_30px_rgba(243,221,109,0.5)] transition-all transform hover:scale-105 flex items-center justify-center gap-3 text-xl md:text-2xl group"
             >
-              Get Your Free Website
+              <Sparkles className="w-8 h-8 text-brand-dark group-hover:scale-110 transition-transform" />
+              Build My Smart Site
             </button>
           </div>
         </div>
@@ -779,9 +927,7 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-10">
             <div>
               <div className="flex items-center gap-3 mb-8">
-                <h2 className="text-3xl font-extrabold text-brand-dark">
-                  AdHello.ai
-                </h2>
+                <img src={logoImg} alt="AdHello.ai Logo" className="h-12 w-auto" />
               </div>
               <p className="text-lg leading-relaxed mb-8 italic text-brand-dark/80">
                 "Websites built for home service businesses that want more leads."
@@ -864,89 +1010,91 @@ export default function App() {
         </div>
       </footer>
       {/* Contact Modal */}
-      {isContactModalOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
-          <div 
-            className="absolute inset-0 bg-brand-dark/60 backdrop-blur-sm"
-            onClick={() => setIsContactModalOpen(false)}
-          ></div>
-          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="p-6 sm:p-8">
-              <button 
-                onClick={() => setIsContactModalOpen(false)}
-                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-brand-dark hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              
-              <div className="mb-8">
-                <div className="w-12 h-12 bg-primary/20 text-brand-dark rounded-2xl flex items-center justify-center mb-4">
-                  <Smile className="w-6 h-6" />
-                </div>
-                <h3 className="text-2xl font-bold text-brand-dark mb-2">Let's grow together</h3>
-                <p className="text-brand-dark/70">Fill out the form below and we'll get back to you within 24 hours.</p>
-              </div>
+      {
+        isContactModalOpen && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
+            <div
+              className="absolute inset-0 bg-brand-dark/60 backdrop-blur-sm"
+              onClick={() => setIsContactModalOpen(false)}
+            ></div>
+            <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+              <div className="p-6 sm:p-8">
+                <button
+                  onClick={() => setIsContactModalOpen(false)}
+                  className="absolute top-4 right-4 p-2 text-gray-400 hover:text-brand-dark hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
 
-              {formStatus === 'success' ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle2 className="w-8 h-8" />
+                <div className="mb-8">
+                  <div className="w-12 h-12 bg-primary/20 text-brand-dark rounded-2xl flex items-center justify-center mb-4">
+                    <Smile className="w-6 h-6" />
                   </div>
-                  <h4 className="text-xl font-bold text-brand-dark mb-2">Message Sent!</h4>
-                  <p className="text-brand-dark/70">We're excited to chat with you soon.</p>
+                  <h3 className="text-2xl font-bold text-brand-dark mb-2">Let's grow together</h3>
+                  <p className="text-brand-dark/70">Fill out the form below and we'll get back to you within 24 hours.</p>
                 </div>
-              ) : (
-                <form onSubmit={handleContactSubmit} className="space-y-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-bold text-brand-dark mb-1">Name</label>
-                    <input 
-                      type="text" 
-                      id="name" 
-                      required
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                      placeholder="Jane Doe"
-                    />
+
+                {formStatus === 'success' ? (
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle2 className="w-8 h-8" />
+                    </div>
+                    <h4 className="text-xl font-bold text-brand-dark mb-2">Message Sent!</h4>
+                    <p className="text-brand-dark/70">We're excited to chat with you soon.</p>
                   </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-bold text-brand-dark mb-1">Email</label>
-                    <input 
-                      type="email" 
-                      id="email" 
-                      required
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                      placeholder="jane@example.com"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="business" className="block text-sm font-bold text-brand-dark mb-1">Business Name</label>
-                    <input 
-                      type="text" 
-                      id="business" 
-                      required
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                      placeholder="Jane's Flowers"
-                    />
-                  </div>
-                  <button 
-                    type="submit"
-                    disabled={formStatus === 'submitting'}
-                    className="w-full py-4 bg-brand-dark text-white font-bold rounded-xl hover:bg-brand-dark/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-6"
-                  >
-                    {formStatus === 'submitting' ? (
-                      <span className="animate-pulse">Sending...</span>
-                    ) : (
-                      <>
-                        Send Message
-                        <ArrowRight className="w-5 h-5" />
-                      </>
-                    )}
-                  </button>
-                </form>
-              )}
+                ) : (
+                  <form onSubmit={handleContactSubmit} className="space-y-4">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-bold text-brand-dark mb-1">Name</label>
+                      <input
+                        type="text"
+                        id="name"
+                        required
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                        placeholder="Jane Doe"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-bold text-brand-dark mb-1">Email</label>
+                      <input
+                        type="email"
+                        id="email"
+                        required
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                        placeholder="jane@example.com"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="business" className="block text-sm font-bold text-brand-dark mb-1">Business Name</label>
+                      <input
+                        type="text"
+                        id="business"
+                        required
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                        placeholder="Jane's Flowers"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={formStatus === 'submitting'}
+                      className="w-full py-4 bg-brand-dark text-white font-bold rounded-xl hover:bg-brand-dark/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-6"
+                    >
+                      {formStatus === 'submitting' ? (
+                        <span className="animate-pulse">Sending...</span>
+                      ) : (
+                        <>
+                          Send Message
+                          <ArrowRight className="w-5 h-5" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 }
