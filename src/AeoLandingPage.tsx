@@ -45,15 +45,7 @@ export default function AeoLandingPage() {
   };
 
   const openChat = () => {
-    try {
-      // @ts-ignore
-      if (window.chatbase) {
-        // @ts-ignore
-        window.chatbase('open');
-      }
-    } catch (e) {
-      console.error("Error opening chat:", e);
-    }
+    window.open('https://calendar.app.google/QQsVbiAt4QdCX8mx8', '_blank');
   };
 
   return (
@@ -377,8 +369,8 @@ export default function AeoLandingPage() {
               <h4 className="font-extrabold text-brand-dark mb-4">Company</h4>
               <ul className="space-y-3">
                 <li><a href="#" className="text-brand-dark/60 hover:text-primary-dark font-medium transition-colors">About Us</a></li>
-                <li><a href="#" className="text-brand-dark/60 hover:text-primary-dark font-medium transition-colors">Contact</a></li>
-                <li><a href="#" className="text-brand-dark/60 hover:text-primary-dark font-medium transition-colors">Partners</a></li>
+                <li><a href="tel:3607731505" target="_top" className="text-brand-dark/60 hover:text-primary-dark font-medium transition-colors">360-773-1505</a></li>
+                <li><a href="https://calendar.app.google/QQsVbiAt4QdCX8mx8" target="_blank" rel="noopener noreferrer" className="text-brand-dark/60 hover:text-primary-dark font-medium transition-colors">Book Demo Today</a></li>
               </ul>
             </div>
           </div>

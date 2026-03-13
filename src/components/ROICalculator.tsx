@@ -152,15 +152,7 @@ export function ROICalculator() {
 
                             <button
                                 onClick={() => {
-                                    try {
-                                        // @ts-ignore
-                                        if (window.chatbase) {
-                                            // @ts-ignore
-                                            window.chatbase('open');
-                                        }
-                                    } catch (e) {
-                                        console.error("Error opening chat:", e);
-                                    }
+                                    window.open('https://calendar.app.google/QQsVbiAt4QdCX8mx8', '_blank');
                                 }}
                                 className="w-full py-5 bg-[#fbe169] hover:bg-[#ebd258] text-brand-dark font-black text-xl rounded-full transition-all shadow-[0_4px_14px_0_rgba(251,225,105,0.39)] hover:shadow-[0_6px_20px_rgba(251,225,105,0.23)] hover:-translate-y-1"
                             >

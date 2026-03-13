@@ -18,15 +18,7 @@ import { Link } from 'react-router-dom';
 
 export default function AboutPage() {
     const openChat = () => {
-        try {
-            // @ts-ignore
-            if (window.chatbase) {
-                // @ts-ignore
-                window.chatbase('open');
-            }
-        } catch (e) {
-            console.error("Error opening chat:", e);
-        }
+        window.open('https://calendar.app.google/QQsVbiAt4QdCX8mx8', '_blank');
     };
 
     return (
@@ -226,7 +218,8 @@ export default function AboutPage() {
                             <div>
                                 <h4 className="font-black text-xl mb-6">Connect</h4>
                                 <ul className="space-y-4 text-white/50 font-bold">
-                                    <li><a href="#" className="hover:text-primary transition-colors">Support</a></li>
+                                    <li><a href="tel:3607731505" target="_top" className="hover:text-primary transition-colors">360-773-1505</a></li>
+                                    <li><a href="https://calendar.app.google/QQsVbiAt4QdCX8mx8" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Book Demo Today</a></li>
                                     <li><a href="#" className="hover:text-primary transition-colors">Legal</a></li>
                                 </ul>
                             </div>

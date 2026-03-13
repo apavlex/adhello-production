@@ -65,8 +65,7 @@ export default function TemplatesIndex() {
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => {
-                                    // @ts-ignore
-                                    if (window.chatbase) window.chatbase('open');
+                                    window.open('https://calendar.app.google/QQsVbiAt4QdCX8mx8', '_blank');
                                 }}
                                 className="bg-primary hover:bg-primary-hover text-brand-dark text-sm font-bold px-6 py-2.5 rounded-full transition-all duration-300 shadow-sm hover:shadow-md"
                             >
@@ -205,8 +204,7 @@ export default function TemplatesIndex() {
                     </p>
                     <button
                         onClick={() => {
-                            // @ts-ignore
-                            if (window.chatbase) window.chatbase('open');
+                            window.open('https://calendar.app.google/QQsVbiAt4QdCX8mx8', '_blank');
                         }}
                         className="bg-white hover:bg-gray-50 text-brand-dark font-bold py-4 px-10 rounded-full transition-all shadow-sm"
                     >

@@ -6,12 +6,17 @@ import AboutPage from './AboutPage.tsx';
 import AeoLandingPage from './AeoLandingPage.tsx';
 import TemplatesIndex from './TemplatesIndex.tsx';
 import TemplateDetails from './TemplateDetails.tsx';
+import AdStudio from './AdStudio.tsx';
 import './index.css';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "/studio",
+    element: <AdStudio />,
   },
   {
     path: "/templates",

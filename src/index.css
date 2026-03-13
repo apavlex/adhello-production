@@ -11,6 +11,11 @@
   --color-brand-dark: #2d3436;
   --color-dark-teal: #1a4d52;
 
+  /* Explicit hex colors for PDF generation compatibility (avoids oklch) */
+  --color-green-500: #22c55e;
+  --color-yellow-500: #eab308;
+  --color-red-500: #ef4444;
+
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   --background-image-organic-blob: url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSIjRjNERDZEIiBkPSJNMzkuOSwtNjUuN0M1MC44LC01Ni42LDU4LjEsLTQ1LjIsNjUuNCwtMzMuM0M3Mi43LC0yMS40LDc5LjksLTksNzguMywzLjJDNzYuNywxNS40LDY2LjMsMjcuNSw1Ni44LDM3LjJDNDcuNCw0Ni45LDM4LjgsNTQuMiwyOS4yLDU5LjRDMTkuNiw2NC42LDguOSw2Ny43LC0wLjksNjkuM0MtMTAuNyw3MC45LC0yMS40LDcxLC0zMS4yLDY1LjdDLTQxLDYwLjQsLTQ5LjksNDkuNywtNTYuNiwzOC4xQy02My4zLDI2LjUsLTY3LjgsMTQsLTY2LjksMS44Qy02NiwtMTAuNCwtNTkuNywtMjIuMywtNTIsLTMyLjRDNDQuMywtNDIuNSwzNS4yLDUwLjgsMjQuMyw1Ny44QzEzLjMsNjQuOCwzLjIsNzAuNiw2LjksNzQuOCw4LjRjMCwwLDAsMCwwLDBsMCwweiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTAwIDEwMCkiIC8+PC9zdmc+');
@@ -110,4 +115,46 @@
   .petal-card-shape {
     border-radius: 160px 40px 160px 40px;
   }
+}
+
+@media print {
+  @page {
+    margin: 1cm;
+    size: auto;
+  }
+
+  body {
+    background-color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:p-0 {
+    padding: 0 !important;
+  }
+
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+
+  .print\:border-none {
+    border: none !important;
+  }
+
+  /* Ensure cards look good in print */
+  .rounded-2xl, .rounded-3xl, .rounded-\[2\.5rem\] {
+    border: 1px solid #eee !important;
+    break-inside: avoid;
+  }
+
+  /* Force colors to show */
+  .bg-primary { background-color: #f3dd6d !important; }
+  .text-primary { color: #f3dd6d !important; }
+  .bg-green-500 { background-color: #22c55e !important; }
+  .bg-yellow-500 { background-color: #eab308 !important; }
+  .bg-red-500 { background-color: #ef4444 !important; }
 }

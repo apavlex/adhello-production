@@ -33,12 +33,16 @@ import {
   Home,
   Star,
   Droplets,
-  Sparkles
+  Sparkles,
+  Paintbrush,
+  Truck
 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SiteAudit } from './components/SiteAudit';
+import { AdBrief } from './components/AdBrief';
 import { ROICalculator } from './components/ROICalculator';
+import { SalesChatbot } from './components/SalesChatbot';
 import { OpenAI, Gemini, Claude, Meta, Grok, Perplexity } from '@lobehub/icons';
 import logoImg from './assets/logo.png';
 import aiReceptionistImg from './assets/ai-receptionist.jpg';
@@ -50,31 +54,31 @@ const HERO_VARIANTS = [
   {
     tagline: "Built for HVAC Services",
     headline: "Get more HVAC leads with a website built for comfort.",
-    subheadline: "While you’re fixing an AC or furnace, your smart website helps book your next service. Built to convert local traffic from Google, Maps, and AI search.",
+    subheadline: "Your smart website works for you 24/7. It automatically optimizes your content, improves your rank, and finds new leads while you're fixing an AC.",
     image: "https://drive.google.com/thumbnail?id=1e4CPR8UPUMtsTQyKGUnil51Cf9qg2S1b&sz=w1000"
   },
   {
     tagline: "Built for Electrical Services",
     headline: "Power up your business with more electrical leads.",
-    subheadline: "While you’re wiring a panel or installing lights, your smart website helps book your next job. Built to convert local traffic from Google, Maps, and AI search.",
+    subheadline: "While you’re wiring a panel, AdHello is working on autopilot—optimizing your site, boosting your search rank, and finding new lead opportunities automatically.",
     image: "https://drive.google.com/thumbnail?id=1zbMCrvpcoCBuzJk60gE9k2_eIFnYZoYB&sz=w1000"
   },
   {
     tagline: "Built for Plumbing Services",
     headline: "Fill your plumbing schedule with high-quality leads.",
-    subheadline: "While you’re fixing a leak or installing a heater, your smart website helps book your next job. Built to convert local traffic from Google, Maps, and AI search.",
+    subheadline: "Put your marketing on autopilot. AdHello handles the technical stuff, constantly improving your rank and suggesting growth strategies so you can focus on the pipes.",
     image: "https://drive.google.com/thumbnail?id=1iH1uKlOuXDQ2zBjvzjF82eOcJz2u0k6P&sz=w1000"
   },
   {
     tagline: "Built for Roofing Services",
     headline: "Get more roofing estimates without lifting a finger.",
-    subheadline: "While you’re on a roof or meeting a client, your smart website helps book your next estimate. Built to convert local traffic from Google, Maps, and AI search.",
+    subheadline: "Marketing that grows your business for you. AdHello automates your search optimization 24/7, finding the best ways to capture more roofing leads.",
     image: "https://drive.google.com/thumbnail?id=1oCWDHteOB-GWTxZAA73MktTXMb0dD6to&sz=w1000"
   },
   {
-    tagline: "Built for Flooring Companies",
+    tagline: "Built for Flooring",
     headline: "Step up your business with more flooring leads.",
-    subheadline: "While you’re installing hardwood or laying tile, your smart website helps book your next job. Built to convert local traffic from Google, Maps, and AI search.",
+    subheadline: "Stop worrying about the technical parts of your website. AdHello automates your growth and suggests lead-gen ideas while you lay the tile.",
     image: flooringImg
   }
 ];
@@ -85,6 +89,17 @@ export default function App() {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [heroIndex, setHeroIndex] = useState(0);
+  const [activeStudioTab, setActiveStudioTab] = useState<'audit' | 'brief'>('audit');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
+
+  const scrollToAudit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setActiveStudioTab('audit');
+    const element = document.getElementById('studio');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -112,7 +127,7 @@ export default function App() {
     },
     {
       question: "Am I locked into a contract?",
-      answer: "Never. AdHello is month-to-month. If you're not getting value, you can cancel anytime."
+      answer: "Never. AdHello is flexible. You can choose a month-to-month plan or save significantly with our annual plan (which gives you 2 months free). If you're not getting value, you can cancel anytime."
     }
   ];
 
@@ -120,20 +135,10 @@ export default function App() {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
   };
 
+  const BOOKING_LINK = "https://calendar.app.google/QQsVbiAt4QdCX8mx8";
+
   const openChat = () => {
-    try {
-      // @ts-ignore
-      if (window.chatbase) {
-        // @ts-ignore
-        window.chatbase('open');
-      } else {
-        console.warn("Chatbase not loaded");
-        setIsContactModalOpen(true); // Fallback to contact modal
-      }
-    } catch (e) {
-      console.error("Error opening chat:", e);
-      setIsContactModalOpen(true);
-    }
+    window.open(BOOKING_LINK, '_blank');
   };
 
   const handleContactSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -156,51 +161,35 @@ export default function App() {
             <div className="flex items-center gap-2">
               <img src={logoImg} alt="AdHello.ai Logo" className="h-10 w-auto" />
             </div>
-            <nav className="hidden md:flex gap-10">
-              <a
-                className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
-                href="#how-it-works"
-              >
-                How It Works
-              </a>
-              <a
-                className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
-                href="#what-you-get"
-              >
-                What's Included
-              </a>
-              <a
-                className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
-                href="#pricing"
-              >
-                Pricing
-              </a>
-              <a
-                className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
-                href="#testimonials"
-              >
-                Success Stories
-              </a>
-              <Link
-                className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
-                to="/about"
-              >
-                About
-              </Link>
-            </nav>
-            <div className="hidden md:flex items-center gap-8">
-              <a
-                href="https://app.adhello.ai/login"
-                className="text-sm font-extrabold text-brand-dark hover:text-primary transition-colors"
-              >
-                Sign In
-              </a>
-              <button
-                onClick={openChat}
-                className="bg-primary hover:bg-primary-hover text-brand-dark text-sm font-bold px-6 py-3 rounded-full transition-all duration-300 shadow-[4px_4px_0px_rgba(0,0,0,0.1)] hover:shadow-[0_0_15px_rgba(243,221,109,0.6)] hover:-translate-y-0.5 hover:scale-105 flex items-center gap-2"
-              >
-                Build My Smart Site
-              </button>
+            <div className="hidden md:flex items-center gap-10">
+              <nav className="flex gap-10">
+                <a
+                  className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
+                  href="#how-it-works"
+                >
+                  How It Works
+                </a>
+                <Link
+                  className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
+                  to="/about"
+                >
+                  About
+                </Link>
+              </nav>
+              <div className="flex items-center gap-8">
+                <a
+                  href="https://app.adhello.ai/login"
+                  className="text-sm font-extrabold text-brand-dark hover:text-primary transition-colors"
+                >
+                  Sign In
+                </a>
+                <button
+                  onClick={openChat}
+                  className="bg-primary hover:bg-primary-hover text-brand-dark text-sm font-bold px-6 py-3 rounded-full transition-all duration-300 shadow-[4px_4px_0px_rgba(0,0,0,0.1)] hover:shadow-[0_0_15px_rgba(243,221,109,0.6)] hover:-translate-y-0.5 hover:scale-105 flex items-center gap-2"
+                >
+                  Build My Smart Site
+                </button>
+              </div>
             </div>
             <button
               className="md:hidden p-2 text-brand-dark hover:bg-gray-100 rounded-lg transition-colors"
@@ -221,27 +210,6 @@ export default function App() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 How It Works
-              </a>
-              <a
-                className="text-base font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
-                href="#what-you-get"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                What's Included
-              </a>
-              <a
-                className="text-base font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
-                href="#pricing"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Pricing
-              </a>
-              <a
-                className="text-base font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
-                href="#testimonials"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Success Stories
               </a>
               <Link
                 className="text-base font-bold text-brand-dark/70 hover:text-brand-dark transition-colors"
@@ -354,12 +322,12 @@ export default function App() {
                     <Sparkles className="w-6 h-6 text-brand-dark group-hover:animate-pulse" />
                     Build My Smart Site
                   </button>
-                  <a
-                    href="https://app.adhello.ai/welcome"
+                  <button
+                    onClick={scrollToAudit}
                     className="px-10 py-5 bg-white hover:bg-gray-50 text-brand-dark font-bold rounded-full transition-all shadow-[6px_6px_0px_rgba(45,52,54,0.1)] hover:shadow-none hover:translate-y-[4px] flex items-center justify-center gap-2 text-xl w-full sm:w-auto border-2 border-brand-dark/5"
                   >
                     See How It Works
-                  </a>
+                  </button>
                 </div>
                 <p className="text-sm font-bold text-brand-dark/40 ml-4 mt-2">No long-term contracts. Setup in 7 days. Built for HVAC, Plumbing, Electrical, Roofing &amp; More.</p>
               </div>
@@ -551,7 +519,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 relative z-10 w-full">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-brand-dark mb-6 tracking-tight">
-              Everything You Need to Win Locally — Starting at $97/Month
+              Everything You Need to Win Locally — Starting at $80/Month
             </h2>
             <p className="text-brand-dark/70 text-xl md:text-2xl">
               One platform. One price. Built to grow with you.
@@ -573,30 +541,106 @@ export default function App() {
               </div>
               <h3 className="text-2xl font-black text-brand-dark mb-4">AI Webchat (Your 24/7 Receptionist)</h3>
               <p className="text-brand-dark/70 text-lg leading-relaxed">
-                Never miss a lead again. AdHello's webchat answers customer questions, captures contact info, and qualifies leads — even at 2am when you're on a job. It's like having a receptionist who never takes a day off and never has a bad morning.
+                Never miss a lead again. AdHello's webchat answers customer questions, captures contact info, and qualifies leads — even at 2am when you are asleep. It's like having a receptionist who never takes a day off and never has a bad morning.
               </p>
             </div>
             <div className="bg-white p-10 rounded-[3rem] border border-gray-100 hover:border-primary transition-all duration-500 group flex flex-col h-full shadow-sm">
               <div className="text-yellow-500 mb-6 bg-yellow-50 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <Search className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-black text-brand-dark mb-4">AI & Search Optimization</h3>
+              <h3 className="text-2xl font-black text-brand-dark mb-4">Continuous SEO/AEO Optimization</h3>
               <p className="text-brand-dark/70 text-lg leading-relaxed">
-                Ensure your business is the top recommendation across AI search engines and LLM models. We optimize your brand to be cited, trusted, and prioritized by the world's most advanced AI systems.
+                Our AI engine doesn't just build your site—it lives in it. It continuously works on improving your SEO and AEO (Answer Engine Optimization) rank, ensuring your business is the top recommendation across Google and AI search engines like ChatGPT and Perplexity.
               </p>
             </div>
             <div className="bg-white p-10 rounded-[3rem] border border-gray-100 hover:border-primary transition-all duration-500 group flex flex-col h-full shadow-sm">
               <div className="text-yellow-500 mb-6 bg-yellow-50 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <Brain className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-black text-brand-dark mb-4">AI Growth Coach</h3>
+              <h3 className="text-2xl font-black text-brand-dark mb-4">Self-Guided AI Growth Coach</h3>
               <p className="text-brand-dark/70 text-lg leading-relaxed mb-4">
-                This is where AdHello gets interesting. Your built-in AI Growth Coach analyzes your business, your market, and your competitors — then gives you specific, actionable advice to grow. Think of it as having a marketing strategist in your pocket, available every day, personalized to your business.
+                The technical and difficult parts of growing a website are gone. Your AI Growth Coach analyzes your market and competitors, then suggests specific, actionable ways to get more leads. It's a self-guided system that handles the heavy lifting so you don't have to.
               </p>
               <p className="text-brand-dark/70 text-lg leading-relaxed italic">
-                "What should I post this week?" "How do I get more reviews?" "Why am I not ranking on Google?" — Ask it anything.
+                "How do I get more reviews?" "What's my current AEO rank?" "Suggest a new lead strategy." — It's always ready.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="hand-divider hand-divider-v2 opacity-20"></div>
+      </div>
+
+      <section className="py-24 bg-brand-dark text-white overflow-hidden relative">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="text-4xl md:text-6xl font-extrabold mb-8 leading-tight">
+                Your Growth <br />
+                <span className="text-primary">on Autopilot</span>
+              </h2>
+              <p className="text-white/70 text-xl md:text-2xl mb-10 leading-relaxed">
+                Stop worrying about the technical stuff. AdHello automates the hard parts of growing your business online, so you can focus on your customers.
+              </p>
+              <div className="space-y-6">
+                {[
+                  { title: "Automated Optimization", desc: "AdHello works 24/7 to improve your site's performance and conversion rates automatically." },
+                  { title: "Search Domination", desc: "We automatically optimize your brand to be the #1 answer on Google and AI search engines." },
+                  { title: "Proactive Lead Strategies", desc: "The system doesn't wait for you. It proactively finds and suggests new ways to capture more local leads." }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-4">
+                    <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
+                      <Zap className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold mb-1">{item.title}</h4>
+                      <p className="text-white/50">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <div className="bg-white/5 backdrop-blur-xl p-8 rounded-[3rem] border border-white/10 shadow-2xl">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                    <Zap className="w-6 h-6 text-brand-dark" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold">Growth Autopilot</h4>
+                    <p className="text-xs text-white/50">Status: Automating Your Growth</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <p className="text-sm text-white/70 italic">"I've analyzed your local area. I'm automatically updating your site to target 'emergency repair' which is trending right now."</p>
+                  </div>
+                  <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <p className="text-sm text-white/70 italic">"Your search rank has improved by 14%. You are now the top-cited business for local service queries."</p>
+                  </div>
+                  <div className="bg-primary/10 p-4 rounded-2xl border border-primary/20">
+                    <p className="text-sm text-primary font-bold">New Suggestion: "I've drafted a new promotion to get you more leads this weekend. Click to activate."</p>
+                  </div>
+                </div>
+              </div>
+              {/* Decorative elements */}
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -673,11 +717,11 @@ export default function App() {
                     3
                   </div>
                   <h4 className="text-2xl font-black text-brand-dark">
-                    You Start Seeing Results
+                    The AI Engine Takes Over
                   </h4>
                 </div>
                 <p className="text-lg text-brand-dark/60 leading-relaxed font-bold">
-                  Log into your AdHello dashboard to see your analytics, chat with your AI Growth Coach, and watch your leads grow. When you're ready for more, upgrade with one click.
+                  This is where it gets easy. Our self-guided AI engine continuously optimizes your site, improves your SEO/AEO rank, and suggests new ways to get leads. You focus on your jobs; the AI handles the growth.
                 </p>
               </div>
             </div>
@@ -689,13 +733,63 @@ export default function App() {
         <div className="hand-divider hand-divider-v2 opacity-20"></div>
       </div>
 
-      <SiteAudit />
+      <section className="bg-warm-cream py-16" id="studio">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-center mb-6">
+            <div className="bg-white/50 backdrop-blur-sm p-1.5 rounded-full flex items-center border border-brand-dark/5 shadow-2xl">
+              <button
+                onClick={() => setActiveStudioTab('audit')}
+                className={`flex items-center gap-2 px-8 py-3 rounded-full text-sm font-black transition-all ${
+                  activeStudioTab === 'audit' ? 'bg-white text-brand-dark shadow-xl scale-105' : 'text-brand-dark/40 hover:text-brand-dark/60'
+                }`}
+              >
+                <Globe className={`w-4 h-4 ${activeStudioTab === 'audit' ? 'text-primary' : ''}`} />
+                Site Audit
+              </button>
+              <button
+                onClick={() => setActiveStudioTab('brief')}
+                className={`flex items-center gap-2 px-8 py-3 rounded-full text-sm font-black transition-all ${
+                  activeStudioTab === 'brief' ? 'bg-white text-brand-dark shadow-xl scale-105' : 'text-brand-dark/40 hover:text-brand-dark/60'
+                }`}
+              >
+                <Sparkles className={`w-4 h-4 ${activeStudioTab === 'brief' ? 'text-primary' : ''}`} />
+                Ad Brief
+              </button>
+            </div>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {activeStudioTab === 'audit' ? (
+              <motion.div
+                key="audit"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+              >
+                <SiteAudit />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="brief"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+              >
+                <AdBrief />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </section>
 
       <div className="max-w-7xl mx-auto px-4">
         <div className="hand-divider hand-divider-v4 opacity-20"></div>
       </div>
 
       <ROICalculator />
+      <SalesChatbot />
 
       <div className="max-w-7xl mx-auto px-4">
         <div className="hand-divider hand-divider-v2 opacity-20"></div>
@@ -708,21 +802,45 @@ export default function App() {
               Built for the Trades. Built for You.
             </h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {[
-              { title: "Plumbers", icon: <Droplets className="w-8 h-8 text-primary" /> },
-              { title: "HVAC", icon: <ThermometerSnowflake className="w-8 h-8 text-primary" /> },
-              { title: "Electricians", icon: <Zap className="w-8 h-8 text-primary" /> },
-              { title: "Roofers", icon: <Home className="w-8 h-8 text-primary" /> },
-              { title: "Flooring Companies", icon: <Layout className="w-8 h-8 text-primary" /> }
-            ].map((niche, i) => (
-              <div key={i} className="bg-warm-cream p-8 rounded-3xl text-center border border-gray-100 hover:border-primary transition-all duration-300 group flex flex-col items-center gap-4">
-                <div className="p-4 bg-white rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-300">
-                  {niche.icon}
+          <div className="relative overflow-hidden py-10">
+            {/* Gradient masks for smooth edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-24 md:w-48 bg-gradient-to-r from-white to-transparent z-10"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-24 md:w-48 bg-gradient-to-l from-white to-transparent z-10"></div>
+
+            <motion.div 
+              className="flex gap-6 w-max"
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{ 
+                duration: 40, 
+                repeat: Infinity, 
+                ease: "linear" 
+              }}
+            >
+              {[
+                { title: "Plumbers", icon: <Droplets className="w-8 h-8 text-primary" /> },
+                { title: "HVAC", icon: <ThermometerSnowflake className="w-8 h-8 text-primary" /> },
+                { title: "Electricians", icon: <Zap className="w-8 h-8 text-primary" /> },
+                { title: "Roofers", icon: <Home className="w-8 h-8 text-primary" /> },
+                { title: "Flooring", icon: <Layout className="w-8 h-8 text-primary" /> },
+                { title: "Painters", icon: <Paintbrush className="w-8 h-8 text-primary" /> },
+                { title: "Movers", icon: <Truck className="w-8 h-8 text-primary" /> }
+              ].concat([
+                { title: "Plumbers", icon: <Droplets className="w-8 h-8 text-primary" /> },
+                { title: "HVAC", icon: <ThermometerSnowflake className="w-8 h-8 text-primary" /> },
+                { title: "Electricians", icon: <Zap className="w-8 h-8 text-primary" /> },
+                { title: "Roofers", icon: <Home className="w-8 h-8 text-primary" /> },
+                { title: "Flooring", icon: <Layout className="w-8 h-8 text-primary" /> },
+                { title: "Painters", icon: <Paintbrush className="w-8 h-8 text-primary" /> },
+                { title: "Movers", icon: <Truck className="w-8 h-8 text-primary" /> }
+              ]).map((niche, i) => (
+                <div key={i} className="bg-warm-cream p-8 rounded-3xl text-center border border-gray-100 hover:border-primary transition-all duration-300 group flex flex-col items-center gap-4 min-w-[220px]">
+                  <div className="p-4 bg-white rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-300">
+                    {niche.icon}
+                  </div>
+                  <h3 className="text-xl font-black text-brand-dark">{niche.title}</h3>
                 </div>
-                <h3 className="text-xl font-black text-brand-dark">{niche.title}</h3>
-              </div>
-            ))}
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
@@ -761,7 +879,7 @@ export default function App() {
                 <Star className="w-6 h-6 fill-current" /><Star className="w-6 h-6 fill-current" /><Star className="w-6 h-6 fill-current" /><Star className="w-6 h-6 fill-current" /><Star className="w-6 h-6 fill-current" />
               </div>
               <p className="text-xl text-brand-dark/80 font-medium italic mb-8 leading-relaxed">
-                "The Growth Coach is wild. I asked it how to get more AC tune-up jobs before summer, and it gave me an exact script to text my past customers. Booked 4 jobs the next day. Best $97 I spend every month."
+                "The Growth Coach is wild. I asked it how to get more AC tune-up jobs before summer, and it gave me an exact script to text my past customers. Booked 4 jobs the next day. Best investment I make for my business."
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
@@ -787,9 +905,26 @@ export default function App() {
             <h2 className="text-4xl md:text-5xl font-extrabold text-brand-dark mb-6 tracking-tight">
               Start Simple. Scale When You're Ready.
             </h2>
-            <p className="text-brand-dark/60 max-w-2xl mx-auto text-xl md:text-2xl">
+            <p className="text-brand-dark/60 max-w-2xl mx-auto text-xl md:text-2xl mb-12">
               AdHello grows with your business. Start with the foundation, add tools as you need them. No pressure. No lock-in.
             </p>
+
+            {/* Billing Toggle */}
+            <div className="flex items-center justify-center gap-4 mb-16">
+              <span className={`text-lg font-bold ${billingCycle === 'monthly' ? 'text-brand-dark' : 'text-brand-dark/40'}`}>Monthly</span>
+              <button
+                onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
+                className="w-16 h-8 bg-brand-dark rounded-full relative p-1 transition-all duration-300"
+              >
+                <div className={`w-6 h-6 bg-primary rounded-full transition-all duration-300 ${billingCycle === 'annual' ? 'translate-x-8' : 'translate-x-0'}`}></div>
+              </button>
+              <div className="flex items-center gap-2">
+                <span className={`text-lg font-bold ${billingCycle === 'annual' ? 'text-brand-dark' : 'text-brand-dark/40'}`}>Annual</span>
+                <span className="bg-green-100 text-green-700 text-xs font-black px-2 py-1 rounded-full uppercase tracking-wider">
+                  2 Months Free
+                </span>
+              </div>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Tier 1 */}
@@ -798,9 +933,16 @@ export default function App() {
                 Most Popular
               </div>
               <h3 className="text-3xl font-black text-brand-dark mb-2">Starter</h3>
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-5xl font-extrabold text-brand-dark">$97</span>
-                <span className="text-brand-dark/60 font-bold">/month</span>
+              <div className="flex flex-col mb-6">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-5xl font-extrabold text-brand-dark">
+                    {billingCycle === 'monthly' ? '$97' : '$80'}
+                  </span>
+                  <span className="text-brand-dark/60 font-bold">/month</span>
+                </div>
+                {billingCycle === 'annual' && (
+                  <span className="text-brand-dark/40 text-sm font-bold mt-1">Billed annually ($970/year)</span>
+                )}
               </div>
               <p className="text-brand-dark/70 text-lg mb-8 font-medium">The foundation every home service business needs.</p>
               <ul className="space-y-4 mb-10 flex-1">
@@ -827,6 +969,7 @@ export default function App() {
               <p className="text-brand-dark/70 text-lg mb-8 font-medium">For businesses ready to scale their marketing.</p>
               <ul className="space-y-4 mb-10 flex-1">
                 <li className="flex items-start gap-3 text-brand-dark font-bold"><span className="text-gray-300 font-black">•</span> Everything in Starter</li>
+                <li className="flex items-start gap-3 text-brand-dark font-bold"><span className="text-gray-300 font-black">•</span> Continuous AI Optimization</li>
                 <li className="flex items-start gap-3 text-brand-dark font-bold"><span className="text-gray-300 font-black">•</span> Ad Briefs (AI-generated ad strategies ready to run)</li>
                 <li className="flex items-start gap-3 text-brand-dark font-bold"><span className="text-gray-300 font-black">•</span> Content Studio — create images, video, and audio for your brand</li>
                 <li className="flex items-start gap-3 text-brand-dark font-bold"><span className="text-gray-300 font-black">•</span> Advanced analytics & competitor tracking</li>
@@ -1002,6 +1145,17 @@ export default function App() {
                 <li>
                   <a className="hover:text-primary-dark transition-colors" href="#testimonials">
                     Success Stories
+                  </a>
+                </li>
+                <li>
+                  <a className="hover:text-primary-dark transition-colors flex items-center gap-2" href="tel:3607731505" target="_top">
+                    <Phone className="w-4 h-4" />
+                    (360) 773-1505
+                  </a>
+                </li>
+                <li>
+                  <a className="hover:text-primary-dark transition-colors" href="https://calendar.app.google/QQsVbiAt4QdCX8mx8" target="_blank" rel="noopener noreferrer">
+                    Book Demo Today
                   </a>
                 </li>
                 <li>
