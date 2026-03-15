@@ -43,6 +43,7 @@ import { SiteAudit } from './components/SiteAudit';
 import { AdBrief } from './components/AdBrief';
 import { ROICalculator } from './components/ROICalculator';
 import { SalesChatbot } from './components/SalesChatbot';
+import { TransformationSlider } from './components/TransformationSlider';
 import { OpenAI, Gemini, Claude, Meta, Grok, Perplexity } from '@lobehub/icons';
 import logoImg from './assets/logo.png';
 import aiReceptionistImg from './assets/ai-receptionist.jpg';
@@ -729,6 +730,8 @@ export default function App() {
         </div>
       </section>
 
+      <TransformationSlider />
+
       <div className="max-w-7xl mx-auto px-4">
         <div className="hand-divider hand-divider-v2 opacity-20"></div>
       </div>
@@ -790,6 +793,40 @@ export default function App() {
 
       <ROICalculator />
       <SalesChatbot />
+
+      <section className="bg-black py-24 text-white overflow-hidden relative">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
+          <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+            <div className="relative shrink-0">
+              <div className="w-64 h-64 md:w-[480px] md:h-[480px] rounded-full overflow-hidden border-8 border-white/5 shadow-[0_0_60px_rgba(243,221,109,0.15)]">
+                <img 
+                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Alex Pavlenko" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+            <div className="flex-1 text-center md:text-left py-4">
+              <h2 className="text-4xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight text-primary">
+                <span className="italic underline decoration-white/30 underline-offset-8">FREE</span> WEBSITE ASSESSMENT VIDEO
+              </h2>
+              <p className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl leading-relaxed">
+                Get a personal video recording from Alex Pavlenko reviewing your website to help you become more successful online.
+              </p>
+              <button 
+                onClick={openChat}
+                className="bg-primary hover:bg-primary-hover text-brand-dark px-12 py-6 rounded-2xl font-black text-2xl transition-all hover:scale-105 flex items-center gap-6 mx-auto md:mx-0 shadow-[0_10px_30px_rgba(243,221,109,0.3)] group"
+              >
+                <div className="w-10 h-10 bg-brand-dark rounded-full flex items-center justify-center group-hover:rotate-45 transition-transform">
+                  <ArrowRight className="w-6 h-6 text-primary" />
+                </div>
+                GET STARTED
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div className="max-w-7xl mx-auto px-4">
         <div className="hand-divider hand-divider-v2 opacity-20"></div>
