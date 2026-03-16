@@ -488,8 +488,8 @@ export default function App() {
             <BeforeAfterSlider 
               beforeImage="/old-site.png"
               afterImage="/new-site.png"
-              beforeLabel="OLD AGENCY SITE"
-              afterLabel="ADHELLO SMART SITE"
+              beforeLabel="Old Site"
+              afterLabel="AdHello Smart Site"
             />
             
             {/* Decorative Elements */}
