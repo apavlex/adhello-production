@@ -97,151 +97,23 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
     setReport(null);
 
     try {
-      let responseText = '';
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: targetUrl }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      data.url = targetUrl;
       
-      // Try Gemini first
-      try {
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) throw new Error("Gemini API key is missing");
-        
-        const ai = new GoogleGenAI({ apiKey });
-        const response = await ai.models.generateContent({
-          model: 'gemini-3-flash-preview',
-          contents: `Analyze the website ${targetUrl} and provide an AEO (Answer Engine Optimization) report in JSON format.
-          
-          CRITICAL: Be extremely stringent. Most sites are NOT ready for the AI-first search era. 
-          If a site is just standard SEO, score it poorly (40-60) as it lacks semantic structure for AI agents.
-          
-          SSL VERIFICATION: 
-          - Search for "${targetUrl} security status" and "${targetUrl} ssl certificate".
-          - CRITICAL: If the site is flagged as "Not Secure" in Chrome or has a "Privacy Error", mark "sslCertificate" as "fail".
-          - Even if the URL is https://, if it's reported as having an invalid, expired, or self-signed certificate, it MUST be marked as "fail".
-          - If no positive proof of a valid, modern SSL certificate, mark as "warning" or "fail".
-
-          The JSON must have this exact structure:
-          {
-            "score": number (0-100),
-            "mobileFirstScore": number (0-100),
-            "leadsEstimatesScore": number (0-100),
-            "googleAiReadyScore": number (0-100),
-            "summary": "string (Write this summary for a middle school audience. It should be clear and informative but not overly technical. Use the term 'AI' instead of 'robots' when referring to AI search tools.)",
-            "brandAnalysis": "string (Analyze the brand's positioning and review sentiment. What is their unique value proposition? How do customers perceive them? Keep it concise but insightful.)",
-            "technicalAudit": {
-              "mobileSpeed": { "label": "Mobile Load Speed", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-              "contactForm": { "label": "Contact Form", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-              "sslCertificate": { "label": "SSL Certificate", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-              "metaDescription": { "label": "Meta Description", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-              "googleBusinessProfile": { "label": "Google Business Profile", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-              "reviewSentiment": { "label": "Review Sentiment", "status": "pass|fail|warning", "value": "string", "reason": "string" }
-            },
-            "strengths": [{"indicator": "string", "description": "string"}],
-            "weaknesses": [{"indicator": "string", "description": "string"}],
-            "recommendations": [{"title": "string", "description": "string", "action": "string"}]
-          }
-
-          Evaluation:
-          1. Mobile-first: Penalty for slow LCP.
-          2. Built for leads: Penalty for non-clickable phone or buried forms.
-          3. AEO Readiness: Check for JSON-LD schema and structured content for LLMs.
-          4. Technical: Verify SSL status, meta tags, GBP verified status, and local review sentiment.`,
-          config: {
-            tools: [{ googleSearch: {} }],
-            responseMimeType: 'application/json'
-          }
-        });
-        responseText = response.text || '';
-      } catch (geminiError) {
-        console.warn("Gemini analysis failed, trying Kie.ai fallback:", geminiError);
-        
-        const kieApiKey = process.env.KIE_API_KEY;
-        if (!kieApiKey) {
-          throw geminiError; // Re-throw if no fallback key available
-        }
-
-        const kieResponse = await fetch('https://api.kie.ai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${kieApiKey}`
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o',
-            messages: [
-              {
-                role: 'system',
-                content: 'You are an expert AEO (Answer Engine Optimization) auditor. You provide detailed website analysis in strict JSON format.'
-              },
-              {
-                role: 'user',
-                content: `Analyze the website ${targetUrl} and provide an AEO report in JSON format.
-                
-                CRITICAL: Be extremely stringent. Most sites are NOT ready for the AI-first search era. 
-                If a site is just standard SEO, score it poorly (40-60) as it lacks semantic structure for AI agents.
-
-                SSL VERIFICATION:
-                - Check if the site is flagged as "Not Secure" or has certificate errors.
-                - Even if it uses https://, if the certificate is invalid, expired, or untrusted, mark "sslCertificate" as "fail".
-                - If no valid SSL is found, mark as "fail".
-
-                The JSON must have this exact structure:
-                {
-                  "score": number (0-100),
-                  "mobileFirstScore": number (0-100),
-                  "leadsEstimatesScore": number (0-100),
-                  "googleAiReadyScore": number (0-100),
-                  "summary": "string",
-                  "brandAnalysis": "string",
-                  "technicalAudit": {
-                    "mobileSpeed": { "label": "Mobile Load Speed", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-                    "contactForm": { "label": "Contact Form", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-                    "sslCertificate": { "label": "SSL Certificate", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-                    "metaDescription": { "label": "Meta Description", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-                    "googleBusinessProfile": { "label": "Google Business Profile", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-                    "reviewSentiment": { "label": "Review Sentiment", "status": "pass|fail|warning", "value": "string", "reason": "string" }
-                  },
-                  "strengths": [{"indicator": "string", "description": "string"}],
-                  "weaknesses": [{"indicator": "string", "description": "string"}],
-                  "recommendations": [{"title": "string", "description": "string", "action": "string"}]
-                }`
-              }
-            ],
-            response_format: { type: 'json_object' }
-          })
-        });
-
-        if (!kieResponse.ok) {
-          let errorMessage = `Status ${kieResponse.status}`;
-          try {
-            const errorData = await kieResponse.json();
-            errorMessage += `: ${errorData.error?.message || errorData.message || JSON.stringify(errorData)}`;
-          } catch (e) {
-            const text = await kieResponse.text().catch(() => '');
-            if (text) errorMessage += `: ${text.substring(0, 200)}`;
-          }
-          throw new Error(`Kie.ai API failed: ${errorMessage}`);
-        }
-
-        const kieData = await kieResponse.json();
-        responseText = kieData.choices[0].message.content;
-      }
-
       setProgress(100);
-
-      if (!responseText) {
-        throw new Error("No response from AI");
-      }
-
-      // Robust JSON parsing
-      let data;
-      try {
-        const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-        data = JSON.parse(cleanJson);
-        data.url = targetUrl; // Store the URL in the report
-      } catch (e) {
-        console.error("JSON Parse Error:", e, responseText);
-        throw new Error("Failed to parse analysis data");
-      }
-
       setReport(data);
       setStatus('complete');
     } catch (error: any) {
@@ -251,8 +123,8 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
       let errorMessage = "Failed to analyze website. Please check the URL and try again.";
       if (error.message?.includes("blocked")) {
         errorMessage = "The website analysis was blocked. This can happen with some protected sites.";
-      } else if (error.message?.includes("fetch")) {
-        errorMessage = "Could not reach the website. Please ensure it is publicly accessible.";
+      } else if (error.message?.includes("reach") || error.message?.includes("fetch")) {
+        errorMessage = "Could not reach the analysis server. Please ensure the backend is running.";
       }
 
       alert(errorMessage);

@@ -536,9 +536,12 @@ export default function App() {
               <div className="text-yellow-500 mb-6 bg-yellow-50 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <Search className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-black text-brand-dark mb-4">Continuous SEO/AEO Optimization</h3>
-              <p className="text-brand-dark/70 text-lg leading-relaxed">
-                Our AI engine doesn't just build your site—it lives in it. It continuously works on improving your SEO and AEO (Answer Engine Optimization) rank, ensuring your business is the top recommendation across Google and AI search engines like ChatGPT and Perplexity.
+              <h3 className="text-2xl font-black text-brand-dark mb-4">SEO & AEO Built In — and Kept Up</h3>
+              <p className="text-brand-dark/70 text-lg leading-relaxed mb-4">
+                Your site is optimized for Google and AI search from day one — with SEO and AEO (Answer Engine Optimization) best practices built into every page. And we don't stop there. We continuously refine your site over time so your business stays visible as search keeps evolving.
+              </p>
+              <p className="text-brand-dark/70 text-lg leading-relaxed font-bold">
+                Show up on Google, Google Maps, and AI search engines like ChatGPT and Perplexity — from launch and beyond.
               </p>
             </div>
             <div className="bg-white p-10 rounded-[3rem] border border-gray-100 hover:border-primary transition-all duration-500 group flex flex-col h-full shadow-sm">
