@@ -5,7 +5,7 @@ export function ROICalculator() {
     const [averageCustomerValue, setAverageCustomerValue] = useState(1500);
     const [expectedNewCustomersMonthly, setExpectedNewCustomersMonthly] = useState(5);
 
-    const annualCost = 1164; // $97 * 12
+    const annualCost = 970; // $97 * 10 (2 months free)
 
     // Calculations
     const yearlyRevenue = (averageCustomerValue * expectedNewCustomersMonthly) * 12;

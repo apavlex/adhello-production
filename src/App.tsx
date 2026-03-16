@@ -45,11 +45,10 @@ import { ROICalculator } from './components/ROICalculator';
 import { SalesChatbot } from './components/SalesChatbot';
 import { TransformationSlider } from './components/TransformationSlider';
 import { OpenAI, Gemini, Claude, Meta, Grok, Perplexity } from '@lobehub/icons';
-import logoImg from './assets/logo.png';
-import aiReceptionistImg from './assets/ai-receptionist.jpg';
-import dashboardImg from './assets/dashboard.jpg';
-import flooringImg from './assets/flooring-workers.jpg';
 import { Link } from 'react-router-dom';
+import { BeforeAfterSlider } from './components/BeforeAfterSlider';
+import { AssessmentCTA } from './components/AssessmentCTA';
+import { Logo } from './components/Logo';
 
 const HERO_VARIANTS = [
   {
@@ -76,11 +75,10 @@ const HERO_VARIANTS = [
     subheadline: "Marketing that grows your business for you. AdHello automates your search optimization 24/7, finding the best ways to capture more roofing leads.",
     image: "https://drive.google.com/thumbnail?id=1oCWDHteOB-GWTxZAA73MktTXMb0dD6to&sz=w1000"
   },
-  {
     tagline: "Built for Flooring",
     headline: "Step up your business with more flooring leads.",
-    subheadline: "Stop worrying about the technical parts of your website. AdHello automates your growth and suggests lead-gen ideas while you lay the tile.",
-    image: flooringImg
+    subheadline: "While you’re installing hardwood or laying tile, your smart website helps book your next job. Built to convert local traffic from Google, Maps, and AI search.",
+    image: "/flooring-workers.jpg"
   }
 ];
 
@@ -160,7 +158,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <header className="flex items-center justify-between h-16 sm:h-20">
             <div className="flex items-center gap-2">
-              <img src={logoImg} alt="AdHello.ai Logo" className="h-10 w-auto" />
+              <Logo variant="dark" />
             </div>
             <div className="hidden md:flex items-center gap-10">
               <nav className="flex gap-10">
@@ -475,39 +473,27 @@ export default function App() {
       </div>
 
       <section className="py-24 bg-warm-cream" id="comparison">
-        <div className="max-w-5xl mx-auto px-4 w-full">
+        <div className="max-w-6xl mx-auto px-4 w-full">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-7xl font-extrabold mb-6 tracking-tight">
               Why AdHello?
             </h2>
+            <p className="text-brand-dark/70 text-xl md:text-2xl max-w-2xl mx-auto">
+              Stop losing leads to a slow, outdated website. See the difference a smart, lead-generating site makes.
+            </p>
           </div>
-          <div className="bg-white rounded-[3.5rem] overflow-hidden border border-gray-100 shadow-sm">
-            <div className="grid grid-cols-2 divide-x divide-gray-100 border-b border-gray-100">
-              <div className="p-10 text-center text-brand-dark/40 font-black bg-gray-50 text-sm md:text-base uppercase tracking-[0.2em]">
-                The Old Way (Agencies & DIY)
-              </div>
-              <div className="p-10 text-center text-brand-dark font-black bg-primary/20 text-lg md:text-xl uppercase tracking-[0.1em]">
-                The AdHello Way
-              </div>
-            </div>
-            <div className="divide-y divide-gray-100">
-              {[
-                { old: "Pay $3,000+ upfront for a website", new: "$97/month. No setup fees." },
-                { old: "Wait weeks for simple text changes", new: "Updates handled for you" },
-                { old: "Miss calls when you're on a job", new: "AI Webchat captures leads 24/7" },
-                { old: "Guess what marketing works", new: "AI Growth Coach tells you exactly what to do" },
-                { old: "Locked into a 12-month contract", new: "Cancel anytime" }
-              ].map((row, i) => (
-                <div key={i} className="grid grid-cols-2 divide-x divide-gray-100 group hover:bg-yellow-50/30 transition-colors">
-                  <div className="p-8 text-center text-lg md:text-xl text-gray-500 font-medium">
-                    {row.old}
-                  </div>
-                  <div className="p-8 text-center text-lg md:text-xl font-black text-brand-dark flex items-center justify-center gap-3">
-                    <CheckCircle2 className="text-green-500 w-6 h-6 shrink-0" /> {row.new}
-                  </div>
-                </div>
-              ))}
-            </div>
+          
+          <div className="relative">
+            <BeforeAfterSlider 
+              beforeImage="/old-site.png"
+              afterImage="/new-site.png"
+              beforeLabel="OLD AGENCY SITE"
+              afterLabel="ADHELLO SMART SITE"
+            />
+            
+            {/* Decorative Elements */}
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-yellow-200 rounded-full mix-blend-multiply filter blur-2xl opacity-60 pointer-events-none"></div>
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-primary rounded-full mix-blend-multiply filter blur-2xl opacity-40 pointer-events-none"></div>
           </div>
         </div>
       </section>
@@ -686,7 +672,7 @@ export default function App() {
                 <img
                   alt="AI Webchat Assistant"
                   className="w-full h-full object-cover"
-                  src={aiReceptionistImg}
+                  src="/ai-receptionist.jpg"
                 />
               </div>
               <div className="p-10 pt-8 text-left">
@@ -709,7 +695,7 @@ export default function App() {
                 <img
                   alt="AdHello Business Growth Dashboard"
                   className="w-full h-full object-cover"
-                  src={dashboardImg}
+                  src="/dashboard.jpg"
                 />
               </div>
               <div className="p-10 pt-8 text-left">
@@ -786,6 +772,8 @@ export default function App() {
           </AnimatePresence>
         </div>
       </section>
+
+      <AssessmentCTA />
 
       <div className="max-w-7xl mx-auto px-4">
         <div className="hand-divider hand-divider-v4 opacity-20"></div>
@@ -946,6 +934,7 @@ export default function App() {
               AdHello grows with your business. Start with the foundation, add tools as you need them. No pressure. No lock-in.
             </p>
 
+<<<<<<< HEAD
             {/* Billing Toggle */}
             <div className="flex items-center justify-center gap-4 mb-16">
               <span className={`text-lg font-bold ${billingCycle === 'monthly' ? 'text-brand-dark' : 'text-brand-dark/40'}`}>Monthly</span>
@@ -960,9 +949,23 @@ export default function App() {
                 <span className="bg-green-100 text-green-700 text-xs font-black px-2 py-1 rounded-full uppercase tracking-wider">
                   2 Months Free
                 </span>
+=======
+            <div className="flex items-center justify-center gap-4 mb-16">
+              <span className={`text-sm font-black transition-colors ${billingCycle === 'monthly' ? 'text-brand-dark' : 'text-brand-dark/40'}`}>Monthly</span>
+              <button 
+                onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
+                className="w-16 h-8 bg-brand-dark rounded-full relative p-1 transition-all duration-300"
+              >
+                <div className={`w-6 h-6 bg-[#fbe169] rounded-full transition-transform duration-300 ${billingCycle === 'annual' ? 'translate-x-8' : 'translate-x-0'}`}></div>
+              </button>
+              <div className="flex items-center gap-2">
+                <span className={`text-sm font-black transition-colors ${billingCycle === 'annual' ? 'text-brand-dark' : 'text-brand-dark/40'}`}>Annual</span>
+                <span className="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">2 Months Free</span>
+>>>>>>> a2ae907 (Fix memory leaks in before-after slider, update pricing to 7 with annual toggle, and modernize logo branding)
               </div>
             </div>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Tier 1 */}
             <div className="bg-warm-cream rounded-[3rem] p-10 flex flex-col h-full border-2 border-primary relative">
@@ -970,18 +973,30 @@ export default function App() {
                 Most Popular
               </div>
               <h3 className="text-3xl font-black text-brand-dark mb-2">Starter</h3>
+<<<<<<< HEAD
               <div className="flex flex-col mb-6">
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl font-extrabold text-brand-dark">
                     {billingCycle === 'monthly' ? '$97' : '$80'}
+=======
+              <div className="mb-6">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-5xl font-extrabold text-brand-dark">
+                    ${billingCycle === 'monthly' ? '97' : '80'}
+>>>>>>> a2ae907 (Fix memory leaks in before-after slider, update pricing to 7 with annual toggle, and modernize logo branding)
                   </span>
                   <span className="text-brand-dark/60 font-bold">/month</span>
                 </div>
                 {billingCycle === 'annual' && (
+<<<<<<< HEAD
                   <span className="text-brand-dark/40 text-sm font-bold mt-1">Billed annually ($970/year)</span>
+=======
+                  <p className="text-brand-dark/40 text-xs font-bold mt-1">Billed annually ($970/year)</p>
+>>>>>>> a2ae907 (Fix memory leaks in before-after slider, update pricing to 7 with annual toggle, and modernize logo branding)
                 )}
               </div>
               <p className="text-brand-dark/70 text-lg mb-8 font-medium">The foundation every home service business needs.</p>
+
               <ul className="space-y-4 mb-10 flex-1">
                 <li className="flex items-start gap-3 text-brand-dark font-bold"><span className="text-primary font-black">•</span> Smart website built for you</li>
                 <li className="flex items-start gap-3 text-brand-dark font-bold"><span className="text-primary font-black">•</span> AI Webchat (24/7 lead capture)</li>
@@ -1127,7 +1142,7 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-10">
             <div>
               <div className="flex items-center gap-3 mb-8">
-                <img src={logoImg} alt="AdHello.ai Logo" className="h-12 w-auto" />
+                <Logo variant="dark" className="h-12 w-auto" />
               </div>
               <p className="text-lg leading-relaxed mb-8 italic text-brand-dark/80">
                 "Websites built for home service businesses that want more leads."
