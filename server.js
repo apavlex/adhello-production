@@ -63,14 +63,14 @@ const server = http.createServer(async (req, res) => {
     req.on('end', async () => {
       const globalTimeout = setTimeout(() => {
         if (!res.writableEnded) {
-          console.error('[TIMEOUT] Analysis took too long, sending 504/503 fallback');
+          console.error('[TIMEOUT] Analysis watchdog triggered (25s), aborting request');
           res.writeHead(503, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ 
             error: 'Analysis timeout', 
-            detail: 'The website analysis took too long to respond. Please try again with a different URL or at a later time.' 
+            detail: 'The AI analysis took too long. We have tightened limits to ensure the server responds before your connection drops. Please try a simpler URL.' 
           }));
         }
-      }, 28000); // 28s global timeout to beat most proxy timeouts
+      }, 25000); // 25s global watchdog
 
       try {
         const { url } = JSON.parse(body);
@@ -80,26 +80,25 @@ const server = http.createServer(async (req, res) => {
           return res.end(JSON.stringify({ error: 'URL is required' }));
         }
         
+        console.log(`[ANALYSIS] Starting check for: ${url}`);
+        
         const prompt = `Analyze the website ${url} and provide an AEO (Answer Engine Optimization) report in JSON format.
         
-        CRITICAL: Be extremely stringent. Most sites are NOT ready for the AI-first search era. 
-        If a site is just standard SEO, score it poorly (40-60) as it lacks semantic structure for AI agents.
-
         The JSON must have this exact structure:
         {
-          "score": number (0-100),
-          "mobileFirstScore": number (0-100),
-          "leadsEstimatesScore": number (0-100),
-          "googleAiReadyScore": number (0-100),
+          "score": number,
+          "mobileFirstScore": number,
+          "leadsEstimatesScore": number,
+          "googleAiReadyScore": number,
           "summary": "string",
           "brandAnalysis": "string",
           "technicalAudit": {
-            "mobileSpeed": { "label": "Mobile Load Speed", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-            "contactForm": { "label": "Contact Form", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-            "sslCertificate": { "label": "SSL Certificate", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-            "metaDescription": { "label": "Meta Description", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-            "googleBusinessProfile": { "label": "Google Business Profile", "status": "pass|fail|warning", "value": "string", "reason": "string" },
-            "reviewSentiment": { "label": "Review Sentiment", "status": "pass|fail|warning", "value": "string", "reason": "string" }
+            "mobileSpeed": { "label": "Mobile Load Speed", "status": "pass|fail", "value": "string", "reason": "string" },
+            "contactForm": { "label": "Contact Form", "status": "pass|fail", "value": "string", "reason": "string" },
+            "sslCertificate": { "label": "SSL Certificate", "status": "pass|fail", "value": "string", "reason": "string" },
+            "metaDescription": { "label": "Meta Description", "status": "pass|fail", "value": "string", "reason": "string" },
+            "googleBusinessProfile": { "label": "Google Business Profile", "status": "pass|fail", "value": "string", "reason": "string" },
+            "reviewSentiment": { "label": "Review Sentiment", "status": "pass|fail", "value": "string", "reason": "string" }
           },
           "strengths": [{"indicator": "string", "description": "string"}],
           "weaknesses": [{"indicator": "string", "description": "string"}],
@@ -109,13 +108,13 @@ const server = http.createServer(async (req, res) => {
         let reportContent = null;
         let usedModel = null;
 
-        // Attempt Kie.ai first
+        // 1. Primary: Kie.ai (15s limit)
         if (KIE_API_KEY && !res.writableEnded) {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 15000); // Tightened to 15s
+          const timeoutId = setTimeout(() => controller.abort(), 15000); 
 
           try {
-            console.log('Attempting analysis with Kie.ai...');
+            console.log('[AI] Attempting Kie.ai (gpt-4o)...');
             const kieResponse = await fetch('https://api.kie.ai/v1/chat/completions', {
               method: 'POST',
               headers: {
@@ -134,53 +133,41 @@ const server = http.createServer(async (req, res) => {
 
             if (kieResponse.ok) {
               const data = await kieResponse.json();
-              if (data.choices && data.choices[0] && data.choices[0].message) {
+              if (data.choices?.[0]?.message?.content) {
                 reportContent = data.choices[0].message.content;
                 usedModel = 'Kie.ai';
               }
             } else {
-              console.warn(`Kie.ai failed with status: ${kieResponse.status}`);
+              console.warn(`[AI] Kie.ai returned status: ${kieResponse.status}`);
             }
           } catch (e) {
             clearTimeout(timeoutId);
-            if (e.name === 'AbortError') {
-              console.error('Kie.ai request timed out after 15s');
-            } else {
-              console.error('Kie.ai error:', e.message);
-            }
+            console.error(`[AI] Kie.ai error: ${e.name === 'AbortError' ? 'Timed out (15s)' : e.message}`);
           }
         }
 
-        // Fallback to Gemini
+        // 2. Fallback: Gemini (10s limit)
         if (!reportContent && GEMINI_API_KEY && !res.writableEnded) {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 10000); // Tightened to 10s
-
           try {
-            console.log('Attempting analysis with Gemini fallback...');
+            console.log('[AI] Attempting Gemini fallback...');
             const genAI = new GoogleGenAI(GEMINI_API_KEY);
             const model = genAI.getGenerativeModel({ 
               model: 'gemini-1.5-flash',
               generationConfig: { responseMimeType: 'application/json' }
             });
             
+            // Promise.race to ensure Gemini doesn't hang the thread
             const geminiPromise = model.generateContent(prompt);
             const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('GeminiTimeout')), 10000));
 
             const result = await Promise.race([geminiPromise, timeoutPromise]);
             
-            if (result && result.response) {
+            if (result?.response) {
               reportContent = result.response.text();
               usedModel = 'Gemini';
             }
-            clearTimeout(timeoutId);
           } catch (e) {
-            clearTimeout(timeoutId);
-            if (e.message === 'GeminiTimeout') {
-              console.error('Gemini attempt timed out after 10s');
-            } else {
-              console.error('Gemini fallback error:', e.message);
-            }
+            console.error(`[AI] Gemini error: ${e.message === 'GeminiTimeout' ? 'Timed out (10s)' : e.message}`);
           }
         }
 
@@ -188,22 +175,25 @@ const server = http.createServer(async (req, res) => {
         clearTimeout(globalTimeout);
 
         if (!reportContent) {
-          throw new Error('All AI analysis providers failed or are misconfigured.');
+          console.error('[ANALYSIS] All AI providers failed.');
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ 
+            error: 'Analysis failed', 
+            detail: 'Both analysis engines were unable to provide a report. This might be due to high traffic or API key rate limits.' 
+          }));
         }
 
-        console.log(`Website analysis complete using ${usedModel}`);
+        console.log(`[SUCCESS] Analysis complete using ${usedModel}`);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(reportContent);
       } catch (error) {
         if (res.writableEnded) return;
         clearTimeout(globalTimeout);
-        console.error('Critical analysis error:', error);
+        console.error('[CRITICAL] Analysis error:', error);
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        const errorMessage = error.message || 'Internal Server Error during analysis';
         res.end(JSON.stringify({ 
-          error: errorMessage,
-          detail: 'No AI providers were able to process the request. Check API key status in logs.',
-          model: usedModel || 'None'
+          error: 'Internal processing error',
+          detail: error.message || 'An unexpected error occurred during website analysis.'
         }));
       }
     });

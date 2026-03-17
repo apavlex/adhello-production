@@ -115,7 +115,10 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: `Server error: ${response.status}` }));
+        const errorData = await response.json().catch(() => ({ 
+          error: "Server Error", 
+          detail: `The server returned a ${response.status} error. This usually indicates a temporary service interruption.` 
+        }));
         throw new Error(JSON.stringify(errorData));
       }
 
@@ -129,25 +132,29 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
       console.error("Error analyzing website:", error);
       setStatus('idle');
 
-      let errorMessage = "Failed to analyze website. Please check the URL and try again.";
-      let detailMessage = "";
+      let errorMessage = "Analysis Failed";
+      let detailMessage = "We encountered an unexpected issue while analyzing your site. Please try again in a moment.";
 
       if (error.name === 'AbortError') {
-        errorMessage = "The analysis is taking longer than expected. Please try again or use a different URL.";
-      } else if (error.message?.includes("blocked")) {
-        errorMessage = "The website analysis was blocked. This can happen with some protected sites.";
-      } else if (error.message?.includes("reach") || error.message?.includes("fetch")) {
-        errorMessage = "Could not reach the analysis server. Please ensure the backend is running.";
-      } else if (error.message) {
-        // Try to parse if it's our structured error
+        errorMessage = "Analysis Timeout";
+        detailMessage = "The analysis is taking longer than expected. We have tried multiple AI engines, but the request timed out. Please try a different URL.";
+      } else {
         try {
+          // Attempt to parse structured error from server
           const parsed = JSON.parse(error.message);
           if (parsed.error) {
             errorMessage = parsed.error;
-            detailMessage = parsed.detail || "";
+            detailMessage = parsed.detail || detailMessage;
           }
         } catch (e) {
-          errorMessage = error.message;
+          // Fallback for non-JSON errors
+          if (error.message?.includes("fetch")) {
+            errorMessage = "Connection Error";
+            detailMessage = "Could not reach the analysis server. Please check your internet connection and try again.";
+          } else if (error.message) {
+            errorMessage = "Processing Error";
+            detailMessage = error.message;
+          }
         }
       }
 
