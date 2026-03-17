@@ -83,6 +83,8 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
     return () => clearInterval(interval);
   }, [status]);
 
+  const [errorInfo, setErrorInfo] = useState<{ message: string, detail?: string } | null>(null);
+
   const handleScan = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url) return;
@@ -95,15 +97,22 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
     setStatus('analyzing');
     setProgress(0);
     setReport(null);
+    setErrorInfo(null);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 45000); // 45s client-side timeout
+
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ url: targetUrl }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: `Server error: ${response.status}` }));
@@ -123,7 +132,9 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
       let errorMessage = "Failed to analyze website. Please check the URL and try again.";
       let detailMessage = "";
 
-      if (error.message?.includes("blocked")) {
+      if (error.name === 'AbortError') {
+        errorMessage = "The analysis is taking longer than expected. Please try again or use a different URL.";
+      } else if (error.message?.includes("blocked")) {
         errorMessage = "The website analysis was blocked. This can happen with some protected sites.";
       } else if (error.message?.includes("reach") || error.message?.includes("fetch")) {
         errorMessage = "Could not reach the analysis server. Please ensure the backend is running.";
@@ -140,7 +151,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
         }
       }
 
-      alert(`${errorMessage}${detailMessage ? '\n\n' + detailMessage : ''}`);
+      setErrorInfo({ message: errorMessage, detail: detailMessage });
     }
   };
 
@@ -250,7 +261,35 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
     <section className={`${isStudio ? 'bg-transparent py-0' : 'full-screen-section bg-warm-cream py-0'} text-brand-dark font-sans`} id="site-audit">
       <div className={`${isStudio ? 'max-w-full' : 'max-w-4xl'} mx-auto px-4 w-full`}>
 
-        {status === 'idle' && (
+        {status === 'idle' && errorInfo && (
+          <div className="mb-12 animate-in fade-in slide-in-from-top-4 duration-500 max-w-2xl mx-auto">
+            <div className={`${isStudio ? 'bg-red-500/10 border-red-500/20' : 'bg-red-50 border-red-100'} rounded-[2.5rem] p-8 border text-left shadow-lg`}>
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                  <XCircle className="w-6 h-6 text-red-500" />
+                </div>
+                <div className="flex-1">
+                  <h3 className={`text-xl font-bold mb-2 ${isStudio ? 'text-white' : 'text-brand-dark'}`}>
+                    {errorInfo.message}
+                  </h3>
+                  {errorInfo.detail && (
+                    <p className={`text-sm mb-6 leading-relaxed ${isStudio ? 'text-white/60' : 'text-brand-dark/70'}`}>
+                      {errorInfo.detail}
+                    </p>
+                  )}
+                  <button
+                    onClick={() => setErrorInfo(null)}
+                    className="bg-brand-dark text-white hover:bg-black font-bold py-2.5 px-6 rounded-full transition-all text-sm shadow-sm"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {status === 'idle' && !errorInfo && (
           <div className="text-center animate-in fade-in duration-500">
             <h2 className={`text-5xl md:text-6xl font-extrabold mb-4 ${isStudio ? 'text-white' : 'text-brand-dark'}`}>
               Get Found by <span className="text-primary">AI & Customers</span>
@@ -495,34 +534,36 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
                   Technical Audit
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {Object.entries(report.technicalAudit).map(([key, check]) => (
+                  {Object.entries(report.technicalAudit).map(([key, check]) => {
+                    const auditCheck = check as AuditCheck;
+                    return (
                     <div key={key} className={`${isStudio ? 'bg-white/5 border-white/5' : 'bg-gray-50 border-gray-100'} rounded-2xl p-4 border flex flex-col gap-2`}>
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className={`text-xs font-bold uppercase tracking-wider block mb-1 ${isStudio ? 'text-white/40' : 'text-brand-dark/40'}`}>{check.label}</span>
-                          <span className={`text-sm font-bold ${isStudio ? 'text-white' : 'text-brand-dark'}`}>{check.value}</span>
+                          <span className={`text-xs font-bold uppercase tracking-wider block mb-1 ${isStudio ? 'text-white/40' : 'text-brand-dark/40'}`}>{auditCheck.label}</span>
+                          <span className={`text-sm font-bold ${isStudio ? 'text-white' : 'text-brand-dark'}`}>{auditCheck.value}</span>
                         </div>
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                          check.status === 'pass' ? 'bg-green-500/10 text-green-500' : 
-                          check.status === 'warning' ? 'bg-yellow-500/10 text-yellow-500' : 
+                          auditCheck.status === 'pass' ? 'bg-green-500/10 text-green-500' : 
+                          auditCheck.status === 'warning' ? 'bg-yellow-500/10 text-yellow-500' : 
                           'bg-red-500/10 text-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]'
                         }`}>
-                          {check.status === 'pass' ? (
+                          {auditCheck.status === 'pass' ? (
                             <CheckCircle2 className="w-5 h-5" />
-                          ) : check.status === 'warning' ? (
+                          ) : auditCheck.status === 'warning' ? (
                             <AlertTriangle className="w-5 h-5" />
                           ) : (
                             <XCircle className="w-5 h-5 animate-pulse" />
                           )}
                         </div>
                       </div>
-                      {check.reason && (
+                      {auditCheck.reason && (
                         <p className={`text-sm leading-relaxed border-t pt-2 mt-auto ${isStudio ? 'text-white/60 border-white/10' : 'text-brand-dark/60 border-gray-200'}`}>
-                          {check.reason}
+                          {auditCheck.reason}
                         </p>
                       )}
                     </div>
-                  ))}
+                  );})}
                 </div>
               </div>
 

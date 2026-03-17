@@ -61,9 +61,21 @@ const server = http.createServer(async (req, res) => {
     });
     
     req.on('end', async () => {
+      const globalTimeout = setTimeout(() => {
+        if (!res.writableEnded) {
+          console.error('[TIMEOUT] Analysis took too long, sending 504/503 fallback');
+          res.writeHead(503, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ 
+            error: 'Analysis timeout', 
+            detail: 'The website analysis took too long to respond. Please try again with a different URL or at a later time.' 
+          }));
+        }
+      }, 28000); // 28s global timeout to beat most proxy timeouts
+
       try {
         const { url } = JSON.parse(body);
         if (!url) {
+          clearTimeout(globalTimeout);
           res.writeHead(400, { 'Content-Type': 'application/json' });
           return res.end(JSON.stringify({ error: 'URL is required' }));
         }
@@ -98,9 +110,9 @@ const server = http.createServer(async (req, res) => {
         let usedModel = null;
 
         // Attempt Kie.ai first
-        if (KIE_API_KEY) {
+        if (KIE_API_KEY && !res.writableEnded) {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 45000); // 45s timeout
+          const timeoutId = setTimeout(() => controller.abort(), 15000); // Tightened to 15s
 
           try {
             console.log('Attempting analysis with Kie.ai...');
@@ -122,15 +134,17 @@ const server = http.createServer(async (req, res) => {
 
             if (kieResponse.ok) {
               const data = await kieResponse.json();
-              reportContent = data.choices[0].message.content;
-              usedModel = 'Kie.ai';
+              if (data.choices && data.choices[0] && data.choices[0].message) {
+                reportContent = data.choices[0].message.content;
+                usedModel = 'Kie.ai';
+              }
             } else {
               console.warn(`Kie.ai failed with status: ${kieResponse.status}`);
             }
           } catch (e) {
             clearTimeout(timeoutId);
             if (e.name === 'AbortError') {
-              console.error('Kie.ai request timed out after 45s');
+              console.error('Kie.ai request timed out after 15s');
             } else {
               console.error('Kie.ai error:', e.message);
             }
@@ -138,9 +152,9 @@ const server = http.createServer(async (req, res) => {
         }
 
         // Fallback to Gemini
-        if (!reportContent && GEMINI_API_KEY) {
+        if (!reportContent && GEMINI_API_KEY && !res.writableEnded) {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout for fallback
+          const timeoutId = setTimeout(() => controller.abort(), 10000); // Tightened to 10s
 
           try {
             console.log('Attempting analysis with Gemini fallback...');
@@ -150,27 +164,28 @@ const server = http.createServer(async (req, res) => {
               generationConfig: { responseMimeType: 'application/json' }
             });
             
-            // Note: GoogleGenAI SDK doesn't natively take an AbortSignal in generateContent yet in most versions
-            // but we can wrap it in a Promise.race for protection
             const geminiPromise = model.generateContent(prompt);
-            const timeoutPromise = new Promise((_, reject) => 
-               setTimeout(() => reject(new Error('GeminiTimeout')), 30000)
-            );
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('GeminiTimeout')), 10000));
 
             const result = await Promise.race([geminiPromise, timeoutPromise]);
             
-            reportContent = result.response.text();
-            usedModel = 'Gemini';
+            if (result && result.response) {
+              reportContent = result.response.text();
+              usedModel = 'Gemini';
+            }
             clearTimeout(timeoutId);
           } catch (e) {
             clearTimeout(timeoutId);
             if (e.message === 'GeminiTimeout') {
-              console.error('Gemini attempt timed out after 30s');
+              console.error('Gemini attempt timed out after 10s');
             } else {
               console.error('Gemini fallback error:', e.message);
             }
           }
         }
+
+        if (res.writableEnded) return;
+        clearTimeout(globalTimeout);
 
         if (!reportContent) {
           throw new Error('All AI analysis providers failed or are misconfigured.');
@@ -180,6 +195,8 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(reportContent);
       } catch (error) {
+        if (res.writableEnded) return;
+        clearTimeout(globalTimeout);
         console.error('Critical analysis error:', error);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         const errorMessage = error.message || 'Internal Server Error during analysis';

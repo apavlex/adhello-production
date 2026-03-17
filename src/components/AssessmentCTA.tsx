@@ -18,7 +18,7 @@ export function AssessmentCTA() {
 
   return (
     <section className="py-2 bg-white px-4">
-      <div className="max-w-6xl mx-auto overflow-hidden rounded-2xl bg-brand-dark relative shadow-xl border border-white/5">
+      <div className="max-w-6xl mx-auto overflow-hidden rounded-2xl bg-brand-dark relative shadow-[0_20px_50px_rgba(0,0,0,0.3),0_10px_30px_rgba(151,114,64,0.15)] border border-white/5">
         {/* Subtle Background Texture/Glow */}
         <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/5 blur-[80px] pointer-events-none"></div>
 
