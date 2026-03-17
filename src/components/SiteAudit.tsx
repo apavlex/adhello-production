@@ -106,8 +106,8 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Server error: ${response.status}`);
+        const errorData = await response.json().catch(() => ({ error: `Server error: ${response.status}` }));
+        throw new Error(JSON.stringify(errorData));
       }
 
       const data = await response.json();
@@ -121,13 +121,26 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
       setStatus('idle');
 
       let errorMessage = "Failed to analyze website. Please check the URL and try again.";
+      let detailMessage = "";
+
       if (error.message?.includes("blocked")) {
         errorMessage = "The website analysis was blocked. This can happen with some protected sites.";
       } else if (error.message?.includes("reach") || error.message?.includes("fetch")) {
         errorMessage = "Could not reach the analysis server. Please ensure the backend is running.";
+      } else if (error.message) {
+        // Try to parse if it's our structured error
+        try {
+          const parsed = JSON.parse(error.message);
+          if (parsed.error) {
+            errorMessage = parsed.error;
+            detailMessage = parsed.detail || "";
+          }
+        } catch (e) {
+          errorMessage = error.message;
+        }
       }
 
-      alert(errorMessage);
+      alert(`${errorMessage}${detailMessage ? '\n\n' + detailMessage : ''}`);
     }
   };
 
