@@ -21,7 +21,7 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 // API Key fallbacks (environment variables from .env or platform should take precedence)
-const KIE_API_KEY = process.env.KIE_API_KEY || '947d584b060f8c7bc799b6e3f1a100ec';
+const KIE_API_KEY = process.env.KIE_API_KEY || '2866f7739ece403e80cc57c0919ae685';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || ''; 
 
 console.log(`[STARTUP] AdHello AI Server initializing...`);
@@ -86,24 +86,26 @@ const server = http.createServer(async (req, res) => {
         
         The JSON must have this exact structure:
         {
-          "score": number,
-          "mobileFirstScore": number,
-          "leadsEstimatesScore": number,
-          "googleAiReadyScore": number,
+          "score": number (0-100),
+          "mobileFirstScore": number (0-100),
+          "leadsEstimatesScore": number (0-100),
+          "googleAiReadyScore": number (0-100),
           "summary": "string",
           "brandAnalysis": "string",
           "technicalAudit": {
-            "mobileSpeed": { "label": "Mobile Load Speed", "status": "pass|fail", "value": "string", "reason": "string" },
-            "contactForm": { "label": "Contact Form", "status": "pass|fail", "value": "string", "reason": "string" },
-            "sslCertificate": { "label": "SSL Certificate", "status": "pass|fail", "value": "string", "reason": "string" },
-            "metaDescription": { "label": "Meta Description", "status": "pass|fail", "value": "string", "reason": "string" },
-            "googleBusinessProfile": { "label": "Google Business Profile", "status": "pass|fail", "value": "string", "reason": "string" },
-            "reviewSentiment": { "label": "Review Sentiment", "status": "pass|fail", "value": "string", "reason": "string" }
+            "mobileSpeed": { "label": "Mobile Load Speed", "status": "pass" or "fail" or "warning", "value": "string", "reason": "string" },
+            "contactForm": { "label": "Contact Form", "status": "pass" or "fail" or "warning", "value": "string", "reason": "string" },
+            "sslCertificate": { "label": "SSL Certificate", "status": "pass" or "fail" or "warning", "value": "string", "reason": "string" },
+            "metaDescription": { "label": "Meta Description", "status": "pass" or "fail" or "warning", "value": "string", "reason": "string" },
+            "googleBusinessProfile": { "label": "Google Business Profile", "status": "pass" or "fail" or "warning", "value": "string", "reason": "string" },
+            "reviewSentiment": { "label": "Review Sentiment", "status": "pass" or "fail" or "warning", "value": "string", "reason": "string" }
           },
           "strengths": [{"indicator": "string", "description": "string"}],
           "weaknesses": [{"indicator": "string", "description": "string"}],
           "recommendations": [{"title": "string", "description": "string", "action": "string"}]
-        }`;
+        }
+        
+        IMPORTANT: Return only raw JSON. Do not wrap in markdown code fences or add any text before or after the JSON.`;
 
         let reportContent = null;
         let usedModel = null;
@@ -122,7 +124,7 @@ const server = http.createServer(async (req, res) => {
                 'Authorization': `Bearer ${KIE_API_KEY}`
               },
               body: JSON.stringify({
-                model: 'gpt-4o',
+                model: 'gpt-5-4',
                 messages: [{ role: 'user', content: prompt }],
                 response_format: { type: 'json_object' }
               }),
@@ -150,20 +152,20 @@ const server = http.createServer(async (req, res) => {
         if (!reportContent && GEMINI_API_KEY && !res.writableEnded) {
           try {
             console.log('[AI] Attempting Gemini fallback...');
-            const genAI = new GoogleGenAI(GEMINI_API_KEY);
-            const model = genAI.getGenerativeModel({ 
-              model: 'gemini-1.5-flash',
-              generationConfig: { responseMimeType: 'application/json' }
-            });
-            
+            const genAI = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+
             // Promise.race to ensure Gemini doesn't hang the thread
-            const geminiPromise = model.generateContent(prompt);
+            const geminiPromise = genAI.models.generateContent({
+              model: 'gemini-1.5-flash',
+              contents: prompt,
+              config: { responseMimeType: 'application/json' }
+            });
             const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('GeminiTimeout')), 10000));
 
             const result = await Promise.race([geminiPromise, timeoutPromise]);
             
-            if (result?.response) {
-              reportContent = result.response.text();
+            if (result?.text) {
+              reportContent = result.text;
               usedModel = 'Gemini';
             }
           } catch (e) {
@@ -183,9 +185,24 @@ const server = http.createServer(async (req, res) => {
           }));
         }
 
+        // Strip markdown code fences if AI wrapped the JSON (e.g. ```json ... ```)
+        const cleanedContent = reportContent.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+
+        // Validate it's actually parseable JSON before sending
+        try {
+          JSON.parse(cleanedContent);
+        } catch (parseErr) {
+          console.error('[ANALYSIS] AI returned invalid JSON:', parseErr.message);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({
+            error: 'Analysis failed',
+            detail: 'The AI returned a malformed report. Please try again.'
+          }));
+        }
+
         console.log(`[SUCCESS] Analysis complete using ${usedModel}`);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(reportContent);
+        res.end(cleanedContent);
       } catch (error) {
         if (res.writableEnded) return;
         clearTimeout(globalTimeout);
@@ -244,5 +261,3 @@ server.listen(PORT, '0.0.0.0', () => {
   }
   process.exit(1);
 });
-
-
