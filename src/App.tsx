@@ -843,20 +843,12 @@ export default function App() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="hand-divider hand-divider-v4 opacity-20"></div>
-      </div>
-
-      <ROICalculator />
-      <SalesChatbot />
-
-      <section className="bg-black py-8 text-white overflow-hidden relative">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
+      <section className="bg-white py-6 text-brand-dark overflow-hidden relative border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 lg:gap-16">
-            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-10 flex-1">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12">
+            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 flex-1">
               <div className="relative shrink-0">
-                <div className="w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-white/5 shadow-[0_0_40px_rgba(243,221,109,0.1)]">
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm">
                   <img 
                     src="/alex-profile.png" 
                     alt="Alex Pavlenko" 
@@ -864,22 +856,22 @@ export default function App() {
                   />
                 </div>
               </div>
-              <div className="text-center md:text-left py-2">
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-black mb-4 leading-tight text-primary">
-                  <span className="italic underline decoration-white/30 underline-offset-4">FREE</span> ASSESSMENT VIDEO
+              <div className="text-center md:text-left">
+                <h2 className="text-xl md:text-2xl font-black mb-1 leading-tight text-brand-dark">
+                  Get a <span className="italic underline underline-offset-4 decoration-primary">FREE</span> Assessment Video from Alex
                 </h2>
-                <p className="text-lg md:text-xl text-white/80 max-w-xl leading-relaxed">
-                  Get a personal video recording from Alex Pavlenko reviewing your website to help you grow.
+                <p className="text-sm md:text-base text-brand-dark/60 font-medium">
+                  Reviewing your website to help you grow.
                 </p>
               </div>
             </div>
             <div className="shrink-0">
               <button 
                 onClick={openChat}
-                className="bg-primary hover:bg-primary-hover text-brand-dark px-8 py-4 rounded-2xl font-black text-lg transition-all hover:scale-105 flex items-center gap-4 shadow-[0_10px_30px_rgba(243,221,109,0.25)] group"
+                className="bg-primary hover:bg-primary-hover text-brand-dark px-6 py-3 rounded-xl font-black text-base transition-all hover:scale-105 flex items-center gap-3 shadow-sm group"
               >
-                <div className="w-6 h-6 bg-brand-dark rounded-full flex items-center justify-center group-hover:rotate-45 transition-transform">
-                  <ArrowRight className="w-4 h-4 text-primary" />
+                <div className="w-5 h-5 bg-brand-dark rounded-full flex items-center justify-center group-hover:rotate-45 transition-transform">
+                  <ArrowRight className="w-3 h-3 text-primary" />
                 </div>
                 GET STARTED
               </button>
@@ -887,6 +879,13 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="hand-divider hand-divider-v4 opacity-20"></div>
+      </div>
+
+      <ROICalculator />
+      <SalesChatbot />
 
       <div className="max-w-7xl mx-auto px-4">
         <div className="hand-divider hand-divider-v2 opacity-20"></div>
