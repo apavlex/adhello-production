@@ -850,32 +850,36 @@ export default function App() {
       <ROICalculator />
       <SalesChatbot />
 
-      <section className="bg-black py-12 text-white overflow-hidden relative">
+      <section className="bg-black py-8 text-white overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
         <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
-            <div className="relative shrink-0">
-              <div className="w-48 h-48 md:w-[320px] md:h-[320px] rounded-full overflow-hidden border-8 border-white/5 shadow-[0_0_60px_rgba(243,221,109,0.15)]">
-                <img 
-                  src="/alex-profile.png" 
-                  alt="Alex Pavlenko" 
-                  className="w-full h-full object-cover"
-                />
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 lg:gap-16">
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-10 flex-1">
+              <div className="relative shrink-0">
+                <div className="w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-white/5 shadow-[0_0_40px_rgba(243,221,109,0.1)]">
+                  <img 
+                    src="/alex-profile.png" 
+                    alt="Alex Pavlenko" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+              <div className="text-center md:text-left py-2">
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-black mb-4 leading-tight text-primary">
+                  <span className="italic underline decoration-white/30 underline-offset-4">FREE</span> ASSESSMENT VIDEO
+                </h2>
+                <p className="text-lg md:text-xl text-white/80 max-w-xl leading-relaxed">
+                  Get a personal video recording from Alex Pavlenko reviewing your website to help you grow.
+                </p>
               </div>
             </div>
-            <div className="flex-1 text-center md:text-left py-4">
-              <h2 className="text-4xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight text-primary">
-                <span className="italic underline decoration-white/30 underline-offset-8">FREE</span> WEBSITE ASSESSMENT VIDEO
-              </h2>
-              <p className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl leading-relaxed">
-                Get a personal video recording from Alex Pavlenko reviewing your website to help you become more successful online.
-              </p>
+            <div className="shrink-0">
               <button 
                 onClick={openChat}
-                className="bg-primary hover:bg-primary-hover text-brand-dark px-10 py-4 rounded-2xl font-black text-xl transition-all hover:scale-105 flex items-center gap-6 mx-auto md:mx-0 shadow-[0_10px_30px_rgba(243,221,109,0.3)] group"
+                className="bg-primary hover:bg-primary-hover text-brand-dark px-8 py-4 rounded-2xl font-black text-lg transition-all hover:scale-105 flex items-center gap-4 shadow-[0_10px_30px_rgba(243,221,109,0.25)] group"
               >
-                <div className="w-8 h-8 bg-brand-dark rounded-full flex items-center justify-center group-hover:rotate-45 transition-transform">
-                  <ArrowRight className="w-5 h-5 text-primary" />
+                <div className="w-6 h-6 bg-brand-dark rounded-full flex items-center justify-center group-hover:rotate-45 transition-transform">
+                  <ArrowRight className="w-4 h-4 text-primary" />
                 </div>
                 GET STARTED
               </button>

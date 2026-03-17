@@ -1,20 +1,20 @@
-import portlandProBlue from '../assets/templates/template-portland-pro-blue.png';
-import portlandProYellow from '../assets/templates/template-portland-pro-yellow.png';
-import portlandElectricHome from '../assets/templates/template-portland-electric-home.png';
-import portlandElectricServices from '../assets/templates/template-portland-electric-services.png';
-import portlandElectricQuote from '../assets/templates/template-portland-electric-quote.png';
+const portlandProBlue = '/templates/template-portland-pro-blue.png';
+const portlandProYellow = '/templates/template-portland-pro-yellow.png';
+const portlandElectricHome = '/templates/template-portland-electric-home.png';
+const portlandElectricServices = '/templates/template-portland-electric-services.png';
+const portlandElectricQuote = '/templates/template-portland-electric-quote.png';
 
-import plumbingLight from '../assets/templates/template-plumbing-light.png';
-import proPlumb from '../assets/templates/template-proplumb.png';
-import joesHome from '../assets/templates/template-joes-home.png';
-import joesEmergency from '../assets/templates/template-joes-emergency.png';
-import joesDashboard from '../assets/templates/template-joes-dashboard.png';
+const plumbingLight = '/templates/template-plumbing-light.png';
+const proPlumb = '/templates/template-proplumb.png';
+const joesHome = '/templates/template-joes-home.png';
+const joesEmergency = '/templates/template-joes-emergency.png';
+const joesDashboard = '/templates/template-joes-dashboard.png';
 
-import roofingLight from '../assets/templates/template-roofing-light.png';
-import roofingEmergency from '../assets/templates/template-roofing-emergency.png';
-import roofingCorporate from '../assets/templates/template-roofing-corporate.png';
-import roofingDashboard from '../assets/templates/template-roofing-dashboard.png';
-import roofingHome from '../assets/templates/template-roofing-home.png';
+const roofingLight = '/templates/template-roofing-light.png';
+const roofingEmergency = '/templates/template-roofing-emergency.png';
+const roofingCorporate = '/templates/template-roofing-corporate.png';
+const roofingDashboard = '/templates/template-roofing-dashboard.png';
+const roofingHome = '/templates/template-roofing-home.png';
 
 export interface TemplateFeature {
     icon: string; // lucide-react icon name as a string, e.g., 'ShieldCheck'

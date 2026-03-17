@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, LayoutTemplate, Star, CheckCircle2 } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import logoImg from './assets/logo.png';
 import { TEMPLATES, CATEGORIES, getTemplatesByCategory } from './data/templates';
 
 export default function TemplatesIndex() {
@@ -59,7 +58,7 @@ export default function TemplatesIndex() {
                                 Back to Home
                             </Link>
                             <div className="h-6 w-px bg-gray-200 hidden md:block"></div>
-                            <img src={logoImg} alt="AdHello.ai Logo" className="h-8 w-auto hidden md:block" />
+                            <img src="/logo-light.png" alt="AdHello.ai Logo" className="h-8 w-auto hidden md:block" />
                         </div>
 
                         <div className="flex items-center gap-4">

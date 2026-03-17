@@ -128,7 +128,12 @@ const server = http.createServer(async (req, res) => {
       } catch (error) {
         console.error('Critical analysis error:', error);
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: error.message || 'Failed to analyze website' }));
+        const errorMessage = error.message || 'Internal Server Error during analysis';
+        res.end(JSON.stringify({ 
+          error: errorMessage,
+          detail: 'This usually happens if the API keys are invalid or the AI service is overloaded.',
+          model: usedModel || 'Unknown'
+        }));
       }
     });
     return;
