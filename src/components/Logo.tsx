@@ -14,7 +14,7 @@ export function Logo({ variant = 'dark', className = "" }: LogoProps) {
       <img 
         src={logoSrc} 
         alt="AdHello.ai" 
-        className="h-10 md:h-14 w-auto object-contain transition-transform hover:scale-105"
+        className="h-5 md:h-7 w-auto object-contain transition-transform hover:scale-105"
         onError={(e) => {
           // Fallback if specific variants are missing
           e.currentTarget.src = '/logo.png';

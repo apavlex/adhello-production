@@ -91,6 +91,12 @@ const PORTFOLIO_EXAMPLES = [
     afterImage: '/new-site.png'
   },
   {
+    id: 'movers',
+    name: 'Movers',
+    beforeImage: '/old-movers-site.png',
+    afterImage: '/new-movers-site.png'
+  },
+  {
     id: 'plumbing',
     name: 'Plumbing',
     beforeImage: '/old-plumbing-site.png',
@@ -602,7 +608,7 @@ export default function App() {
               <p className="text-brand-dark/70 text-lg leading-relaxed mb-4">
                 Your site is optimized for Google and AI search from day one — with SEO and AEO (Answer Engine Optimization) best practices built into every page. And we don't stop there. We continuously refine your site over time so your business stays visible as search keeps evolving.
               </p>
-              <p className="text-brand-dark/70 text-lg leading-relaxed font-bold">
+              <p className="text-brand-dark/70 text-lg leading-relaxed font-bold italic">
                 Show up on Google, Google Maps, and AI search engines like ChatGPT and Perplexity — from launch and beyond.
               </p>
             </div>
