@@ -349,7 +349,7 @@ export default function App() {
                   The AI Growth Engine for Home Service Businesses
                 </div>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-brand-dark mb-8 leading-[1.05]">
-                  You’re Losing Leads in Search. <span className="hand-underline">Let’s Turn That Around.</span>
+                  More Leads. Less Headache. <span className="hand-underline">Smart Websites for Local Pros.</span>
                 </h1>
                 <p className="text-xl md:text-2xl text-brand-dark/70 mb-10 leading-relaxed max-w-xl">
                   AdHello gives your home service business a smart website, AI Webchat, and a built-in growth engine - all in one. No agency. No tech headaches. Just more leads.
