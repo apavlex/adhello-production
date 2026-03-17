@@ -1,24 +1,35 @@
 import http from 'http';
-// import 'dotenv/config';
+import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-// import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 const DIST_DIR = path.join(__dirname, 'dist');
 
-// Hardcoded environment variables to bypass .env EPERM and ensure startup in all environments
-process.env.KIE_API_KEY = '947d584b060f8c7bc799b6e3f1a100ec';
-process.env.GEMINI_API_KEY = process.env.GEMINI_API_KEY || ''; 
+// Global error handlers to prevent silent crashes
+process.on('uncaughtException', (err) => {
+  console.error('[CRITICAL] Uncaught Exception:', err);
+});
 
-console.log(`[STARTUP] AdHello AI Server initializing on port ${PORT}`);
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[CRITICAL] Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+// API Key fallbacks (environment variables from .env or platform should take precedence)
+const KIE_API_KEY = process.env.KIE_API_KEY || '947d584b060f8c7bc799b6e3f1a100ec';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || ''; 
+
+console.log(`[STARTUP] AdHello AI Server initializing...`);
+console.log(`[STARTUP] Node Version: ${process.version}`);
+console.log(`[STARTUP] Target Port: ${PORT}`);
 console.log(`[STARTUP] Serving static files from: ${DIST_DIR}`);
-console.log(`[STARTUP] KIE_API_KEY status: ${process.env.KIE_API_KEY ? 'Present' : 'MISSING'}`);
-console.log(`[STARTUP] GEMINI_API_KEY status: ${process.env.GEMINI_API_KEY ? 'Present' : 'MISSING'}`);
+console.log(`[STARTUP] KIE_API_KEY status: ${KIE_API_KEY ? 'Present' : 'MISSING'}`);
+console.log(`[STARTUP] GEMINI_API_KEY status: ${GEMINI_API_KEY ? 'Present' : 'MISSING'}`);
 
 // MIME types for static files
 const MIME_TYPES = {
@@ -56,9 +67,6 @@ const server = http.createServer(async (req, res) => {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           return res.end(JSON.stringify({ error: 'URL is required' }));
         }
-
-        const kieApiKey = process.env.KIE_API_KEY;
-        const geminiApiKey = process.env.GEMINI_API_KEY;
         
         const prompt = `Analyze the website ${url} and provide an AEO (Answer Engine Optimization) report in JSON format.
         
@@ -87,17 +95,17 @@ const server = http.createServer(async (req, res) => {
         }`;
 
         let reportContent = null;
-        let usedModel = 'Kie.ai';
+        let usedModel = null;
 
         // Attempt Kie.ai first
-        if (kieApiKey && kieApiKey !== 'MY_KIE_API_KEY') {
+        if (KIE_API_KEY) {
           try {
             console.log('Attempting analysis with Kie.ai...');
             const kieResponse = await fetch('https://api.kie.ai/v1/chat/completions', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${kieApiKey}`
+                'Authorization': `Bearer ${KIE_API_KEY}`
               },
               body: JSON.stringify({
                 model: 'gpt-4o',
@@ -109,6 +117,7 @@ const server = http.createServer(async (req, res) => {
             if (kieResponse.ok) {
               const data = await kieResponse.json();
               reportContent = data.choices[0].message.content;
+              usedModel = 'Kie.ai';
             } else {
               console.warn(`Kie.ai failed with status: ${kieResponse.status}`);
             }
@@ -117,21 +126,26 @@ const server = http.createServer(async (req, res) => {
           }
         }
 
-        // Fallback to Gemini if Kie.ai failed or no key
+        // Fallback to Gemini
+        if (!reportContent && GEMINI_API_KEY) {
+          try {
+            console.log('Attempting analysis with Gemini fallback...');
+            const genAI = new GoogleGenAI(GEMINI_API_KEY);
+            const model = genAI.getGenerativeModel({ 
+              model: 'gemini-1.5-flash',
+              generationConfig: { responseMimeType: 'application/json' }
+            });
+            
+            const result = await model.generateContent(prompt);
+            reportContent = result.response.text();
+            usedModel = 'Gemini';
+          } catch (e) {
+            console.error('Gemini fallback error:', e.message);
+          }
+        }
+
         if (!reportContent) {
-          console.log('Gemini fallback is disabled due to missing dependency.');
-          /*
-          usedModel = 'Gemini';
-          const genAI = new GoogleGenAI(geminiApiKey || 'MY_GEMINI_API_KEY');
-          const model = genAI.getGenerativeModel({ 
-            model: 'gemini-1.5-flash',
-            generationConfig: { responseMimeType: 'application/json' }
-          });
-          
-          const result = await model.generateContent(prompt);
-          reportContent = result.response.text();
-          */
-          throw new Error('Kie.ai failed and Gemini fallback is unavailable.');
+          throw new Error('All AI analysis providers failed or are misconfigured.');
         }
 
         console.log(`Website analysis complete using ${usedModel}`);
@@ -143,8 +157,8 @@ const server = http.createServer(async (req, res) => {
         const errorMessage = error.message || 'Internal Server Error during analysis';
         res.end(JSON.stringify({ 
           error: errorMessage,
-          detail: 'This usually happens if the API keys are invalid or the AI service is overloaded.',
-          model: usedModel || 'Unknown'
+          detail: 'No AI providers were able to process the request. Check API key status in logs.',
+          model: usedModel || 'None'
         }));
       }
     });
@@ -153,8 +167,6 @@ const server = http.createServer(async (req, res) => {
 
   // Serve static files
   let filePath = path.join(DIST_DIR, req.url === '/' ? 'index.html' : req.url);
-  
-  // Clean up URL (remove query strings, etc.)
   filePath = filePath.split('?')[0];
 
   const extname = path.extname(filePath);
@@ -163,7 +175,6 @@ const server = http.createServer(async (req, res) => {
   fs.readFile(filePath, (error, content) => {
     if (error) {
       if (error.code === 'ENOENT') {
-        // Fallback to index.html for SPA routing
         fs.readFile(path.join(DIST_DIR, 'index.html'), (err, indexContent) => {
           if (err) {
             res.writeHead(500);
@@ -184,13 +195,13 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   const addr = server.address();
-  console.log(`Server running at http://localhost:${addr.port}/`);
-  console.log(`Serving files from ${DIST_DIR}`);
+  console.log(`[SUCCESS] Server running at http://${addr.address}:${addr.port}/`);
+  console.log(`[INFO] Serving static assets from ${DIST_DIR}`);
 }).on('error', (err) => {
   if (err.code === 'EPERM') {
-    console.error(`CRITICAL: Port ${PORT} is restricted by the environment (EPERM).`);
+    console.error(`CRITICAL: Port ${PORT} is restricted (EPERM). Use PORT=<available_port> to override.`);
   } else if (err.code === 'EADDRINUSE') {
     console.error(`CRITICAL: Port ${PORT} is already in use.`);
   } else {
@@ -198,4 +209,5 @@ server.listen(PORT, () => {
   }
   process.exit(1);
 });
+
 
