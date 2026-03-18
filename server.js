@@ -140,7 +140,8 @@ const server = http.createServer(async (req, res) => {
                 usedModel = 'Kie.ai';
               }
             } else {
-              console.warn(`[AI] Kie.ai returned status: ${kieResponse.status}`);
+              const errText = await kieResponse.text().catch(() => 'No body');
+              console.warn(`[AI] Kie.ai returned status: ${kieResponse.status} - ${errText}`);
             }
           } catch (e) {
             clearTimeout(timeoutId);
@@ -152,19 +153,19 @@ const server = http.createServer(async (req, res) => {
         if (!reportContent && GEMINI_API_KEY && !res.writableEnded) {
           try {
             console.log('[AI] Attempting Gemini fallback...');
-            const genAI = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+            const genAI = new GoogleGenAI(GEMINI_API_KEY);
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
             // Promise.race to ensure Gemini doesn't hang the thread
-            const geminiPromise = genAI.models.generateContent({
-              model: 'gemini-1.5-flash',
-              contents: prompt,
-              config: { responseMimeType: 'application/json' }
+            const geminiPromise = model.generateContent({
+              contents: [{ role: 'user', parts: [{ text: prompt }] }],
+              generationConfig: { responseMimeType: 'application/json' }
             });
             const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('GeminiTimeout')), 10000));
 
             const result = await Promise.race([geminiPromise, timeoutPromise]);
             
-            const geminiText = result?.candidates?.[0]?.content?.parts?.[0]?.text || result?.text;
+            const geminiText = result.response?.text?.() || result.text;
             if (geminiText) {
               reportContent = geminiText;
               usedModel = 'Gemini';
