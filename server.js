@@ -28,8 +28,7 @@ console.log(`[STARTUP] AdHello AI Server initializing...`);
 console.log(`[STARTUP] Node Version: ${process.version}`);
 console.log(`[STARTUP] Target Port: ${PORT}`);
 console.log(`[STARTUP] Serving static files from: ${DIST_DIR}`);
-console.log(`[STARTUP] KIE_API_KEY status: ${KIE_API_KEY ? 'Present ✓' : 'MISSING ✗ — set KIE_API_KEY env var'}`);
-console.log(`[STARTUP] GEMINI_API_KEY status: ${GEMINI_API_KEY ? 'Present ✓' : 'MISSING ✗ — set GEMINI_API_KEY env var'}}`);
+console.log(`[STARTUP] GEMINI_API_KEY status: ${GEMINI_API_KEY ? 'Present ✓' : 'MISSING ✗ — set GEMINI_API_KEY env var'}`);
 
 // MIME types for static files
 const MIME_TYPES = {
@@ -81,6 +80,7 @@ const server = http.createServer(async (req, res) => {
         }
         
         console.log(`[ANALYSIS] Starting check for: ${url}`);
+        console.log(`[DEBUG] GEMINI_API_KEY present: ${!!GEMINI_API_KEY}`);
         
         const prompt = `Analyze the website ${url} and provide an AEO (Answer Engine Optimization) report in JSON format.
         
@@ -110,49 +110,10 @@ const server = http.createServer(async (req, res) => {
         let reportContent = null;
         let usedModel = null;
 
-        // 1. Primary: Kie.ai (15s limit)
-        if (KIE_API_KEY && !res.writableEnded) {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 15000); 
-
+        // Gemini only analysis
+        if (GEMINI_API_KEY && !res.writableEnded) {
           try {
-            console.log('[AI] Attempting Kie.ai (gpt-4o)...');
-            const kieResponse = await fetch('https://api.kie.ai/v1/chat/completions', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${KIE_API_KEY}`
-              },
-              body: JSON.stringify({
-                model: 'gpt-4o',
-                messages: [{ role: 'user', content: prompt }],
-                response_format: { type: 'json_object' }
-              }),
-              signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-
-            if (kieResponse.ok) {
-              const data = await kieResponse.json();
-              if (data.choices?.[0]?.message?.content) {
-                reportContent = data.choices[0].message.content;
-                usedModel = 'Kie.ai';
-              }
-            } else {
-              const errText = await kieResponse.text().catch(() => 'No body');
-              console.warn(`[AI] Kie.ai returned status: ${kieResponse.status} - ${errText}`);
-            }
-          } catch (e) {
-            clearTimeout(timeoutId);
-            console.error(`[AI] Kie.ai error: ${e.name === 'AbortError' ? 'Timed out (15s)' : e.message}`);
-          }
-        }
-
-        // 2. Fallback: Gemini (10s limit)
-        if (!reportContent && GEMINI_API_KEY && !res.writableEnded) {
-          try {
-            console.log('[AI] Attempting Gemini fallback...');
+            console.log('[AI] Attempting Gemini analysis...');
             const genAI = new GoogleGenAI(GEMINI_API_KEY);
             const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -183,7 +144,7 @@ const server = http.createServer(async (req, res) => {
           res.writeHead(500, { 'Content-Type': 'application/json' });
           return res.end(JSON.stringify({ 
             error: 'Analysis failed', 
-            detail: 'Both analysis engines were unable to provide a report. This might be due to high traffic or API key rate limits.' 
+            detail: GEMINI_API_KEY ? 'Gemini was unable to provide a report. Please check server logs for details.' : 'GEMINI_API_KEY is missing. Please configure it in your environment.'
           }));
         }
 
