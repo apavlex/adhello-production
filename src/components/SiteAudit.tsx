@@ -416,7 +416,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: targetUrl }),
+        body: JSON.stringify({ url: targetUrl, lite: false }),
         signal: controller.signal,
       });
 

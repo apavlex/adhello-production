@@ -73,7 +73,8 @@ const server = http.createServer(async (req, res) => {
       }, 25000); // 25s global watchdog
 
       try {
-        const { url } = JSON.parse(body);
+        const body_parsed = JSON.parse(body);
+        const { url } = body_parsed;
         if (!url) {
           clearTimeout(globalTimeout);
           res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -121,9 +122,16 @@ const server = http.createServer(async (req, res) => {
             // Using gemini-2.0-flash (nano banana 2)
             const modelName = "gemini-2.0-flash";
             console.log(`[AI] Using model: ${modelName}`);
+            // Lite mode: request shorter output for faster response
+            const isLite = body_parsed.lite !== false; // default to lite
+            const lengthHint = isLite
+              ? "Keep ALL text fields concise (1-2 sentences max). Return max 3 strengths, 3 weaknesses, 3 recommendations."
+              : "Provide detailed analysis.";
+            const fullPrompt = prompt + "\n\n" + lengthHint;
+
             const geminiPromise = genAI.models.generateContent({
               model: modelName,
-              contents: [{ role: "user", parts: [{ text: prompt }] }],
+              contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
               config: { responseMimeType: "application/json" }
             });
             const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("GeminiTimeout")), 10000));

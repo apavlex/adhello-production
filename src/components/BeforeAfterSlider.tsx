@@ -80,7 +80,7 @@ export function BeforeAfterSlider({
   return (
     <>
     <div 
-      className="relative w-full max-w-5xl mx-auto overflow-hidden rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/20 select-none bg-gray-50 group h-[600px]"
+      className="relative w-full max-w-5xl mx-auto overflow-hidden rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/20 select-none bg-gray-50 group h-[70vh] min-h-[500px]"
       ref={containerRef}
       style={{ 
         ['--slider-pos' as any]: `${sliderPosition}%`
