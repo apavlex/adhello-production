@@ -320,18 +320,20 @@ function GeoReportPanel({ geo, isStudio }: { geo: GeoReport; isStudio: boolean }
 export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
   const [url, setUrl] = useState('');
   const [status, setStatus] = useState<'idle' | 'analyzing' | 'complete'>('idle');
-  // Lead gate state
-  const [gateStep, setGateStep] = useState<'gate' | 'scan'>(
-    () => 'scan'
-  );
-  const [gateName, setGateName] = useState('');
-  const [gateEmail, setGateEmail] = useState('');
-  const [gateSubmitting, setGateSubmitting] = useState(false);
+  // Email capture modal state
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [modalName, setModalName] = useState('');
+  const [modalEmail, setModalEmail] = useState('');
+  const [modalSubmitting, setModalSubmitting] = useState(false);
+  const [modalDone, setModalDone] = useState(false);
+  // Aliases so report-email code still works
+  const gateName = modalName;
+  const gateEmail = modalEmail;
   const [progress, setProgress] = useState(0);
   const [report, setReport] = useState<Report | null>(null);
   const [geoReport, setGeoReport] = useState<GeoReport | null>(null);
   const [geoStatus, setGeoStatus] = useState<'idle' | 'loading' | 'complete' | 'error'>('idle');
-  const [activeTab, setActiveTab] = useState<'geo' | 'geo'>('geo');
+  // (tab state removed — single combined report)
   const [copySuccess, setCopySuccess] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
@@ -369,10 +371,10 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
 
   const [errorInfo, setErrorInfo] = useState<{ message: string, detail?: string } | null>(null);
 
-  const handleGateSubmit = async (e: React.FormEvent) => {
+  const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!gateName.trim() || !gateEmail.trim()) return;
-    setGateSubmitting(true);
+    setModalSubmitting(true);
     try {
       // Send lead to server
       await fetch('/api/lead', {
@@ -382,8 +384,9 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
       });
     } catch (_) {}
     sessionStorage.setItem('adhello-gate-passed', '1');
-    setGateSubmitting(false);
-    setGateStep('scan');
+    setModalSubmitting(false);
+    setModalDone(true);
+    setTimeout(() => setShowEmailModal(false), 2000);
   };
 
   const handleScan = async (e: React.FormEvent) => {
