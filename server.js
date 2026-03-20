@@ -566,46 +566,39 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
         const ts = new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
         console.log(`[LEAD] New lead: ${name} <${email}> via ${source || 'unknown'} at ${ts}`);
 
-        // Send email via Gmail SMTP using App Password
-        const gmailUser = process.env.GMAIL_USER || 'alex@adhello.ai';
-        const gmailPass = process.env.GMAIL_APP_PASSWORD;
+        // Send email via Resend (free tier: 100 emails/day, no 2FA needed)
+        const resendKey = process.env.RESEND_API_KEY;
 
-        if (gmailPass) {
+        if (resendKey) {
           try {
-            const nodemailer = await import('nodemailer');
-            const transporter = nodemailer.default.createTransport({
-              service: 'gmail',
-              auth: { user: gmailUser, pass: gmailPass }
-            });
-
-            await transporter.sendMail({
-              from: `AdHello.ai Leads <${gmailUser}>`,
+            const { Resend } = await import('resend');
+            const resend = new Resend(resendKey);
+            await resend.emails.send({
+              from: 'AdHello Leads <leads@adhello.ai>',
               to: 'alex@adhello.ai',
-              subject: `🔥 New Lead: ${name} — Site Audit Request`,
+              subject: `🔥 New Lead: ${name} — ${source === 'ad-brief' ? 'Ad Brief' : 'Site Audit'}`,
               html: `
                 <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px">
-                  <div style="background:#0d1520;border-radius:16px;padding:24px;margin-bottom:16px">
-                    <h2 style="color:#E8B84B;margin:0 0 4px;font-size:20px">New Site Audit Lead</h2>
-                    <p style="color:rgba(255,255,255,0.5);margin:0;font-size:13px">via AdHello.ai — ${source || 'site-audit'}</p>
+                  <div style="background:#0d1520;border-radius:16px;padding:24px;margin-bottom:20px">
+                    <h2 style="color:#E8B84B;margin:0 0 4px;font-size:20px">🔥 New Lead</h2>
+                    <p style="color:rgba(255,255,255,0.5);margin:0;font-size:13px">via AdHello.ai — ${source === 'ad-brief' ? 'Ad Brief Generator' : 'Site Audit Tool'}</p>
                   </div>
-                  <table style="width:100%;border-collapse:collapse">
-                    <tr><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;color:#666;font-size:13px;width:120px">Business</td><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-weight:700;color:#0d1520">${name}</td></tr>
-                    <tr><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;color:#666;font-size:13px">Email</td><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-weight:700;color:#0d1520"><a href="mailto:${email}" style="color:#E8B84B">${email}</a></td></tr>
-                    <tr><td style="padding:12px 0;color:#666;font-size:13px">Time</td><td style="padding:12px 0;font-weight:700;color:#0d1520">${ts} PT</td></tr>
+                  <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
+                    <tr><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;color:#888;font-size:13px;width:110px">Business</td><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-weight:700;color:#0d1520;font-size:15px">${name}</td></tr>
+                    <tr><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;color:#888;font-size:13px">Email</td><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-weight:700;font-size:15px"><a href="mailto:${email}" style="color:#E8B84B;text-decoration:none">${email}</a></td></tr>
+                    <tr><td style="padding:12px 0;color:#888;font-size:13px">Time</td><td style="padding:12px 0;font-weight:600;color:#555;font-size:13px">${ts} PT</td></tr>
                   </table>
-                  <div style="margin-top:20px">
-                    <a href="mailto:${email}?subject=Your AdHello.ai Site Audit&body=Hi ${name}," style="display:inline-block;background:#E8B84B;color:#0d1520;font-weight:900;padding:12px 24px;border-radius:999px;text-decoration:none;font-size:14px">Reply to ${name} →</a>
-                  </div>
-                  <p style="color:#aaa;font-size:11px;margin-top:20px">AdHello.ai · Camas, WA</p>
+                  <a href="mailto:${email}?subject=Your Free AdHello.ai Report is Ready&body=Hi ${name},%0D%0A%0D%0AThanks for trying AdHello.ai! I wanted to personally follow up..." style="display:inline-block;background:#E8B84B;color:#0d1520;font-weight:900;padding:14px 28px;border-radius:999px;text-decoration:none;font-size:14px">Reply to ${name} →</a>
+                  <p style="color:#ccc;font-size:11px;margin-top:24px">AdHello.ai · Camas, WA · adhello.ai</p>
                 </div>
               `
             });
-            console.log('[LEAD] Email notification sent to alex@adhello.ai');
+            console.log('[LEAD] Email sent via Resend to alex@adhello.ai');
           } catch (emailErr) {
-            console.error('[LEAD] Email send failed:', emailErr.message);
+            console.error('[LEAD] Resend error:', emailErr.message);
           }
         } else {
-          console.log('[LEAD] GMAIL_APP_PASSWORD not set — skipping email notification');
+          console.log('[LEAD] RESEND_API_KEY not set — skipping email (lead still logged above)');
         }
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
