@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Expand, X } from 'lucide-react';
 
 interface BeforeAfterSliderProps {
   beforeImage: string;
@@ -16,6 +16,7 @@ export function BeforeAfterSlider({
 }: BeforeAfterSliderProps) {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const beforeContainerRef = useRef<HTMLDivElement>(null);
@@ -77,6 +78,7 @@ export function BeforeAfterSlider({
   ];
 
   return (
+    <>
     <div 
       className="relative w-full max-w-5xl mx-auto overflow-hidden rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/20 select-none bg-gray-50 group h-[600px]"
       ref={containerRef}
@@ -162,6 +164,15 @@ export function BeforeAfterSlider({
         </div>
       </div>
 
+      {/* Expand Button */}
+      <button
+        onClick={() => setIsExpanded(true)}
+        className="absolute top-4 right-4 z-50 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-md text-white rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-all hover:scale-110"
+        title="Expand view"
+      >
+        <Expand className="w-4 h-4" />
+      </button>
+
       {/* Labels */}
       <div className="absolute top-8 left-8 z-10 pointer-events-none">
         <div 
@@ -199,6 +210,97 @@ export function BeforeAfterSlider({
            Slide to compare • Scroll to see full site
          </div>
       </div>
+
+      {/* Click hint */}
+      <div className="absolute bottom-6 right-6 z-50 pointer-events-none">
+        <div className="bg-white/10 backdrop-blur-md text-white/50 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border border-white/10">
+          Click ⤢ to expand
+        </div>
+      </div>
     </div>
+
+    {/* Fullscreen Modal */}
+    {isExpanded && (
+      <div className="fixed inset-0 z-[1000] bg-brand-dark/95 backdrop-blur-xl flex flex-col animate-in fade-in duration-300">
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 flex-shrink-0">
+          <div>
+            <h3 className="text-white font-extrabold text-lg">Website Comparison</h3>
+            <p className="text-white/40 text-xs">Drag the slider • Scroll to see the full site</p>
+          </div>
+          <button
+            onClick={() => setIsExpanded(false)}
+            className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all hover:scale-110"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Full slider in modal */}
+        <div className="flex-1 overflow-hidden p-4 md:p-8">
+          <div
+            className="relative w-full h-full overflow-hidden rounded-[2rem] shadow-2xl border border-white/10 select-none bg-gray-50 group"
+            ref={containerRef}
+            style={{ ['--slider-pos' as any]: `${sliderPosition}%` }}
+          >
+            <div className="absolute inset-0 overflow-y-auto scrollbar-hide" onScroll={handleScroll}>
+              <div className="relative h-[2000px] w-full">
+                {/* After */}
+                <div ref={afterContainerRef} className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+                  <img src={afterImage} alt="New AdHello Smart Site" className="w-full h-auto object-top" />
+                  {highlights.map((h, i) => (
+                    <div key={i} className="absolute z-30 transition-all duration-500"
+                      style={{ top: h.top, left: h.left,
+                        opacity: sliderPosition < (parseFloat(h.left) + 10) ? 1 : 0,
+                        transform: `scale(${sliderPosition < (parseFloat(h.left) + 10) ? 1 : 0.5})`
+                      }}>
+                      <div className="bg-primary/90 backdrop-blur-md text-brand-dark px-4 py-2 rounded-full font-black text-[10px] shadow-2xl border border-white/20 flex items-center gap-2 whitespace-nowrap">
+                        <Sparkles className="w-3 h-3" />{h.text}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Before */}
+                <div ref={beforeContainerRef} className="absolute inset-0 overflow-hidden pointer-events-none transition-all duration-75"
+                  style={{ clipPath: `inset(0 calc(100% - var(--slider-pos)) 0 0)` }}>
+                  <img src={beforeImage} alt="Old Site" className="w-full h-auto object-top filter blur-[0.5px] grayscale-[0.2]" />
+                  <div className="absolute inset-0 bg-black/15 mix-blend-multiply h-full"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Slider handle */}
+            <div className="absolute inset-0 z-40 pointer-events-none">
+              <div className="absolute top-0 bottom-0 w-1 bg-white/80 backdrop-blur-sm cursor-ew-resize pointer-events-auto"
+                style={{ left: `calc(var(--slider-pos) - 2px)` }}
+                onMouseDown={() => setIsDragging(true)}
+                onTouchStart={() => setIsDragging(true)}>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-white rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.4)] flex items-center justify-center border-4 border-white transition-transform duration-300 hover:scale-110 active:scale-95">
+                  <div className="flex gap-0.5 items-center text-brand-dark">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="rotate-180"><path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Labels */}
+            <div className="absolute top-6 left-6 z-10 pointer-events-none">
+              <div className="bg-brand-dark/80 backdrop-blur-xl text-white px-5 py-2.5 rounded-2xl font-black text-sm border border-white/10 shadow-2xl flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse"></div>
+                {beforeLabel.toUpperCase()}
+              </div>
+            </div>
+            <div className="absolute top-6 right-6 z-10 pointer-events-none">
+              <div className="bg-primary/90 backdrop-blur-xl text-brand-dark px-5 py-2.5 rounded-2xl font-black text-sm border border-brand-dark/10 shadow-2xl flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-bounce"></div>
+                {afterLabel.toUpperCase()}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
