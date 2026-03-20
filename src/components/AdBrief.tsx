@@ -59,12 +59,15 @@ interface AdBriefData {
 }
 
 export function AdBrief() {
-  const [briefStep, setBriefStep] = useState<'upload' | 'analyzing' | 'results'>('upload');
+  const [briefStep, setBriefStep] = useState<'gate' | 'upload' | 'analyzing' | 'results'>(
+    () => sessionStorage.getItem('adhello-gate-passed') === '1' ? 'upload' : 'gate'
+  );
+  const [gateName, setGateName] = useState('');
+  const [gateEmail, setGateEmail] = useState('');
+  const [gateSubmitting, setGateSubmitting] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [resultsTab, setResultsTab] = useState<'insights' | 'concepts'>('insights');
-  const [generatedImages, setGeneratedImages] = useState<Record<number, string>>({});
-  const [isGenerating, setIsGenerating] = useState<Record<number, boolean>>({});
   const [briefData, setBriefData] = useState<AdBriefData | null>(null);
   const [copySuccess, setCopySuccess] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -137,33 +140,6 @@ export function AdBrief() {
     }
   };
 
-  const handleGenerateImage = async (index: number, adConcept: any) => {
-    if (!briefData) return;
-    setIsGenerating(prev => ({ ...prev, [index]: true }));
-    try {
-      const prompt = `Professional advertisement image for ${adConcept.platform}. Product: ${adConcept.headline}. Visual Style: ${briefData.visualPrompt}. Optimized for ${adConcept.platform}. High-end commercial photography, vibrant lighting.`;
-
-      const response = await fetch('/api/generate-ad-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
-      });
-
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({ error: 'Server error' }));
-        throw new Error(err.error || `Server error ${response.status}`);
-      }
-
-      const { imageBase64, mimeType: imgMime } = await response.json();
-      setGeneratedImages(prev => ({ ...prev, [index]: `data:image/jpeg;base64,${imageBase64}` }));
-    } catch (error: any) {
-      console.error("Image generation failed:", error);
-      alert(`Image generation failed: ${error.message}`);
-    } finally {
-      setIsGenerating(prev => ({ ...prev, [index]: false }));
-    }
-  };
-
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -173,6 +149,22 @@ export function AdBrief() {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleGateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!gateName.trim() || !gateEmail.trim()) return;
+    setGateSubmitting(true);
+    try {
+      await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: gateName, email: gateEmail, source: 'ad-brief' })
+      });
+    } catch (_) {}
+    sessionStorage.setItem('adhello-gate-passed', '1');
+    setGateSubmitting(false);
+    setBriefStep('upload');
   };
 
   const startAnalysis = async () => {
@@ -217,6 +209,65 @@ export function AdBrief() {
 
   return (
     <div className="w-full animate-in fade-in duration-500">
+
+      {/* ── GATE ── */}
+      {briefStep === 'gate' && (
+        <div className="max-w-lg mx-auto animate-in fade-in duration-500">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4 bg-primary/10 text-brand-dark">
+              <svg className="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Free AI Ad Brief
+            </div>
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-3 text-brand-dark leading-tight">
+              Launch Your <span className="text-primary">Ad Strategy</span><br />in Seconds
+            </h2>
+            <p className="text-base text-brand-dark/60 leading-relaxed">
+              Upload one photo and our AI builds your complete market brief, target audiences, and platform-ready ad creatives — free.
+            </p>
+          </div>
+
+          <div className="bg-white border border-gray-100 shadow-xl rounded-[2.5rem] p-8">
+            <form onSubmit={handleGateSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-black uppercase tracking-widest mb-2 text-brand-dark/50">Business Name</label>
+                <input
+                  type="text"
+                  value={gateName}
+                  onChange={e => setGateName(e.target.value)}
+                  placeholder="e.g. Portland Pro Plumbing"
+                  className="w-full rounded-2xl py-3.5 px-5 font-medium border bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-black uppercase tracking-widest mb-2 text-brand-dark/50">Email Address</label>
+                <input
+                  type="email"
+                  value={gateEmail}
+                  onChange={e => setGateEmail(e.target.value)}
+                  placeholder="you@yourbusiness.com"
+                  className="w-full rounded-2xl py-3.5 px-5 font-medium border bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={gateSubmitting}
+                className="w-full bg-primary hover:bg-primary-hover text-brand-dark font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 disabled:opacity-60 text-base"
+              >
+                {gateSubmitting ? (
+                  <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                )}
+                {gateSubmitting ? 'Getting ready...' : 'Generate My Free Ad Brief →'}
+              </button>
+              <p className="text-center text-xs text-brand-dark/40">No credit card. No spam. Just your ads.</p>
+            </form>
+          </div>
+        </div>
+      )}
+
       {briefStep === 'upload' && (
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-5xl md:text-6xl font-extrabold mb-4 text-brand-dark">
@@ -502,24 +553,18 @@ export function AdBrief() {
                           Approved
                         </div>
                       )}
-                      <div className="aspect-square bg-gray-200 flex items-center justify-center relative group">
-                        <img 
-                          src={generatedImages[i] || selectedImage || ''} 
-                          alt="Ad" 
-                          className={`w-full h-full object-cover transition-opacity duration-500 ${!generatedImages[i] ? 'opacity-50' : 'opacity-100'}`} 
+                      <div className="aspect-square bg-gray-100 flex items-center justify-center relative overflow-hidden">
+                        <img
+                          src={selectedImage || ''}
+                          alt="Ad"
+                          className="w-full h-full object-cover"
                         />
-                        <button 
-                          onClick={() => handleGenerateImage(i, ad)}
-                          disabled={isGenerating[i]}
-                          className="absolute bg-primary text-brand-dark px-6 py-3 rounded-full font-bold flex items-center gap-2 transform transition-transform group-hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed print:hidden"
-                        >
-                          {isGenerating[i] ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <Sparkles className="w-4 h-4" />
-                          )}
-                          {isGenerating[i] ? 'Generating...' : 'Generate Image'}
-                        </button>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-4 print:hidden">
+                          <span className="text-white text-xs font-bold px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-1.5">
+                            <Sparkles className="w-3 h-3" />
+                            Use your uploaded photo
+                          </span>
+                        </div>
                       </div>
                       <div className="p-6 flex-grow flex flex-col">
                         <div className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-widest mb-4">
