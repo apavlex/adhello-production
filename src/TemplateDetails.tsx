@@ -48,7 +48,7 @@ export default function TemplateDetails() {
         <div className="min-h-screen bg-warm-cream font-sans selection:bg-primary/40 pb-24">
             <SEO
               title={`${template?.name || 'Website Template'} — AdHello.ai Contractor Templates`}
-              description={`Preview the ${template?.name || ''} website template by AdHello.ai — built for local home service contractors with SEO and AEO optimization.`}
+              description={`Preview the ${template?.name || ''} website template by AdHello.ai — built for local home service contractors with SEO and GEO optimization.`}
               canonical={`https://adhello.ai/templates/${category}/${templateId}`}
             />
             {/* Header */}

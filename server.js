@@ -82,7 +82,7 @@ const server = http.createServer(async (req, res) => {
         console.log(`[ANALYSIS] Starting check for: ${url}`);
         console.log(`[DEBUG] GEMINI_API_KEY present: ${!!GEMINI_API_KEY}`);
         
-        const prompt = `Analyze the website ${url} and provide an AEO (Answer Engine Optimization) report in JSON format.
+        const prompt = `Analyze the website ${url} and provide an GEO (Generative Engine Optimization) report in JSON format.
         
         The JSON must have this exact structure:
         {
@@ -320,7 +320,7 @@ const server = http.createServer(async (req, res) => {
         const genAI = new GoogleGenAI({ apiKey: geminiKey });
 
         const systemInstruction = `You are a helpful, professional, and friendly sales assistant for AdHello.ai.
-AdHello.ai provides smart websites, AI-powered local SEO, and AEO optimization for home service businesses (HVAC, Plumbing, Electrical, Roofing, Flooring, Painting, etc.).
+AdHello.ai provides smart websites, AI-powered local SEO, and GEO optimization for home service businesses (HVAC, Plumbing, Electrical, Roofing, Flooring, Painting, etc.).
 
 YOUR GOAL: Discover the user needs and guide them to book a demo meeting.
 
@@ -612,27 +612,27 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
     return;
   }
 
-  // API Endpoint — email the full AEO+GEO report to the business
+  // API Endpoint — email the full GEO report to the business
   if (req.method === 'POST' && req.url === '/api/send-report') {
     let body = '';
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', async () => {
       try {
-        const { name, email, url, aeoReport, geoReport } = JSON.parse(body);
+        const { name, email, url, geoReport, geoReport } = JSON.parse(body);
         const resendKey = process.env.RESEND_API_KEY;
         if (!resendKey) {
           res.writeHead(200, { 'Content-Type': 'application/json' });
           return res.end(JSON.stringify({ ok: false, reason: 'No RESEND_API_KEY' }));
         }
 
-        const score = aeoReport?.score ?? 0;
+        const score = geoReport?.score ?? 0;
         const geoScore = geoReport?.geoScore ?? 0;
         const scoreColor = score >= 80 ? '#22c55e' : score >= 50 ? '#E8B84B' : '#ef4444';
         const geoColor = geoScore >= 80 ? '#22c55e' : geoScore >= 50 ? '#E8B84B' : '#ef4444';
 
-        const strengthsList = (aeoReport?.strengths || []).slice(0, 3)
+        const strengthsList = (geoReport?.strengths || []).slice(0, 3)
           .map(s => `<li style="margin-bottom:6px;color:#374151">✅ ${s.indicator} — ${s.description}</li>`).join('');
-        const weaknessList = (aeoReport?.weaknesses || []).slice(0, 3)
+        const weaknessList = (geoReport?.weaknesses || []).slice(0, 3)
           .map(w => `<li style="margin-bottom:6px;color:#374151">⚠️ ${w.indicator} — ${w.description}</li>`).join('');
         const quickWins = (geoReport?.quickWins || []).slice(0, 3)
           .map(q => `<li style="margin-bottom:6px;color:#374151">🎯 <strong>${q.action}</strong> — Impact: ${q.impact}</li>`).join('');
@@ -646,7 +646,7 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
           from: 'AdHello.ai <results@adhello.ai>',
           to: email,
           bcc: 'alex@adhello.ai',
-          subject: `Your Free AEO + GEO Report for ${url} — AdHello.ai`,
+          subject: `Your Free GEO Report for ${url} — AdHello.ai`,
           html: `
             <div style="font-family:sans-serif;max-width:580px;margin:0 auto;padding:0;background:#f9f9f6">
               <!-- Header -->
@@ -658,13 +658,13 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
               <!-- Body -->
               <div style="background:white;padding:36px 40px">
                 <h2 style="color:#0d1520;font-size:22px;margin:0 0 8px">Hi ${name},</h2>
-                <p style="color:#555;margin:0 0 24px;line-height:1.6">Here's your free AEO + GEO report for <strong>${url}</strong>. We analyzed your site for AI search readiness, citation potential, and technical optimization.</p>
+                <p style="color:#555;margin:0 0 24px;line-height:1.6">Here's your free GEO report for <strong>${url}</strong>. We analyzed your site for AI search readiness, citation potential, and technical optimization.</p>
 
                 <!-- Score cards -->
                 <div style="display:flex;gap:16px;margin-bottom:28px">
                   <div style="flex:1;background:#f9f9f6;border-radius:12px;padding:20px;text-align:center;border:2px solid ${scoreColor}20">
                     <div style="font-size:48px;font-weight:900;color:${scoreColor};line-height:1">${score}</div>
-                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#888;margin-top:4px">AEO Score</div>
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#888;margin-top:4px">GEO Score</div>
                   </div>
                   <div style="flex:1;background:#f9f9f6;border-radius:12px;padding:20px;text-align:center;border:2px solid ${geoColor}20">
                     <div style="font-size:48px;font-weight:900;color:${geoColor};line-height:1">${geoScore}</div>
@@ -673,7 +673,7 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
                 </div>
 
                 <!-- Summary -->
-                ${aeoReport?.summary ? `<p style="color:#555;line-height:1.7;background:#f9f9f6;padding:16px;border-radius:10px;margin-bottom:24px">${aeoReport.summary}</p>` : ''}
+                ${geoReport?.summary ? `<p style="color:#555;line-height:1.7;background:#f9f9f6;padding:16px;border-radius:10px;margin-bottom:24px">${geoReport.summary}</p>` : ''}
 
                 ${strengthsList ? `
                 <h3 style="color:#0d1520;font-size:15px;margin:0 0 10px">✅ What's Working</h3>

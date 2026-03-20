@@ -331,7 +331,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
   const [report, setReport] = useState<Report | null>(null);
   const [geoReport, setGeoReport] = useState<GeoReport | null>(null);
   const [geoStatus, setGeoStatus] = useState<'idle' | 'loading' | 'complete' | 'error'>('idle');
-  const [activeTab, setActiveTab] = useState<'aeo' | 'geo'>('aeo');
+  const [activeTab, setActiveTab] = useState<'geo' | 'geo'>('geo');
   const [copySuccess, setCopySuccess] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
@@ -401,7 +401,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
     setGeoReport(null);
     setGeoStatus('idle');
     setErrorInfo(null);
-    setActiveTab('aeo');
+    setActiveTab('geo');
 
     try {
       const controller = new AbortController();
@@ -453,7 +453,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
                 name: gateName,
                 email: gateEmail,
                 url: targetUrl,
-                aeoReport: data,
+                geoReport: data,
                 geoReport: geo,
               })
             }).catch(() => {});
@@ -598,13 +598,13 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
           <div className="animate-in fade-in duration-500 max-w-lg mx-auto">
             <div className="text-center mb-8">
               <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4 ${isStudio ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-brand-dark'}`}>
-                <Sparkles className="w-3.5 h-3.5 text-primary" /> Free AEO + GEO Report
+                <Sparkles className="w-3.5 h-3.5 text-primary" /> Free GEO Report
               </div>
               <h2 className={`text-4xl md:text-5xl font-extrabold mb-3 leading-tight ${isStudio ? 'text-white' : 'text-brand-dark'}`}>
                 Get Your Free<br /><span className="text-primary">AI Search Report</span>
               </h2>
               <p className={`text-base leading-relaxed ${isStudio ? 'text-white/50' : 'text-brand-dark/60'}`}>
-                Enter your info and we'll analyze your website for AEO readiness, GEO score, and AI search visibility — free.
+                Enter your info and we'll analyze your website for GEO readiness, GEO score, and AI search visibility — free.
               </p>
             </div>
             <div className={`${isStudio ? 'bg-[#1C1F26] border-white/5' : 'bg-white border-gray-100 shadow-xl'} rounded-[2.5rem] p-8 border`}>
@@ -653,7 +653,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
               Get Found by <span className="text-primary">AI & Customers</span>
             </h2>
             <p className={`text-lg md:text-xl max-w-2xl mx-auto mb-6 leading-relaxed ${isStudio ? 'text-white/60' : 'text-brand-dark/70'}`}>
-              Analyze your website for AEO readiness, AI search visibility, and GEO optimization — all in one scan.
+              Analyze your website for GEO readiness, AI search visibility, and GEO optimization — all in one scan.
             </p>
             <div className={`${isStudio ? 'bg-[#1C1F26] border-white/5' : 'bg-white border-gray-100 shadow-xl'} rounded-[2.5rem] p-6 md:p-8 mb-8 border text-left`}>
               <div className="flex items-center gap-3 mb-6">
@@ -677,7 +677,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
               {[
                 { icon: <Eye className="w-6 h-6 text-primary mb-4" />, title: 'Brand Analysis', desc: 'Understand your positioning and messaging' },
-                { icon: <Target className="w-6 h-6 text-primary mb-4" />, title: 'AEO + GEO Audit', desc: 'Score your AI search readiness across 6 dimensions' },
+                { icon: <Target className="w-6 h-6 text-primary mb-4" />, title: 'GEO Audit', desc: 'Score your AI search readiness across 6 dimensions' },
                 { icon: <Sparkles className="w-6 h-6 text-primary mb-4" />, title: 'AI Search Ready', desc: 'Optimize for ChatGPT, Perplexity & AI Overviews' }
               ].map((feature, i) => (
                 <div key={i} className={`${isStudio ? 'bg-[#1C1F26] border-white/5' : 'bg-white border-gray-100 shadow-sm'} rounded-3xl p-6 border`}>
@@ -716,7 +716,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
             <div className="hidden print:block mb-10 border-b-2 border-primary pb-6">
               <div className="flex justify-between items-end">
                 <div>
-                  <h1 className="text-4xl font-black text-brand-dark mb-2">AEO + GEO Readiness Report</h1>
+                  <h1 className="text-4xl font-black text-brand-dark mb-2">GEO Readiness Report</h1>
                   <p className="text-brand-dark/60 font-bold">{report.url || url}</p>
                 </div>
                 <div className="text-right">
@@ -768,7 +768,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
                     </div>
                     <div>
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className={`text-2xl font-extrabold ${isStudio ? 'text-white' : 'text-brand-dark'}`}>AEO Readiness Score</h3>
+                        <h3 className={`text-2xl font-extrabold ${isStudio ? 'text-white' : 'text-brand-dark'}`}>GEO Readiness Score</h3>
                         {report.score < 70 && <span className="bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-tighter animate-pulse print:hidden">Critical Action Required</span>}
                       </div>
                       <p className={`text-sm font-bold mb-2 flex items-center gap-1 ${isStudio ? 'text-primary' : 'text-brand-dark/40'}`}><Globe className="w-3 h-3" />{report.url || url}</p>

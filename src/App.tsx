@@ -221,7 +221,7 @@ export default function App() {
         { "@type": "Question", "name": "What is AdHello.ai?", "acceptedAnswer": { "@type": "Answer", "text": "AdHello.ai builds AI-powered websites and handles local SEO and AEO for home service businesses — painters, electricians, plumbers, roofers, flooring companies, and movers." } },
         { "@type": "Question", "name": "How does AdHello.ai get more leads for contractors?", "acceptedAnswer": { "@type": "Answer", "text": "AdHello.ai builds a professional website optimized for Google and AI search engines like ChatGPT and Perplexity, so local customers find your business first." } },
         { "@type": "Question", "name": "Does AdHello.ai work for painters and electricians?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. AdHello.ai specializes in home service businesses including painters, electricians, plumbers, HVAC, roofers, flooring contractors, and movers." } },
-        { "@type": "Question", "name": "What is AEO and why does it matter for contractors?", "acceptedAnswer": { "@type": "Answer", "text": "AEO (Answer Engine Optimization) makes your business appear as a trusted answer in AI-powered search results on ChatGPT, Perplexity, and Google AI Overviews — not just traditional search." } }
+        { "@type": "Question", "name": "What is AEO and why does it matter for contractors?", "acceptedAnswer": { "@type": "Answer", "text": "GEO (Generative Engine Optimization) makes your business appear as a trusted answer in AI-powered search results on ChatGPT, Perplexity, and Google AI Overviews — not just traditional search." } }
       ]
     }
   ];
@@ -629,9 +629,9 @@ export default function App() {
               <div className="text-yellow-500 mb-6 bg-yellow-50 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <Search className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-black text-brand-dark mb-4">SEO & AEO Built In — and Kept Up</h3>
+              <h3 className="text-2xl font-black text-brand-dark mb-4">SEO & GEO Built In — and Kept Up</h3>
               <p className="text-brand-dark/70 text-lg leading-relaxed mb-4">
-                Your site is optimized for Google and AI search from day one — with SEO and AEO (Answer Engine Optimization) best practices built into every page. And we don't stop there. We continuously refine your site over time so your business stays visible as search keeps evolving.
+                Your site is optimized for Google and AI search from day one — with SEO and GEO (Generative Engine Optimization) best practices built into every page. And we don't stop there. We continuously refine your site over time so your business stays visible as search keeps evolving.
               </p>
               <p className="text-brand-dark/70 text-lg leading-relaxed font-bold italic">
                 Show up on Google, Google Maps, and AI search engines like ChatGPT and Perplexity — from launch and beyond.

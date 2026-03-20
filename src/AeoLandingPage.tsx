@@ -37,7 +37,7 @@ export default function AeoLandingPage() {
     },
     {
       question: "What is AEO and why does it matter?",
-      answer: "AEO stands for Answer Engine Optimization. It's the process of optimizing your website so that AI search engines like ChatGPT, Google Gemini, and AI Overviews recommend your business when local customers ask questions."
+      answer: "AEO stands for Generative Engine Optimization. It's the process of optimizing your website so that AI search engines like ChatGPT, Google Gemini, and AI Overviews recommend your business when local customers ask questions."
     }
   ];
 
@@ -53,10 +53,10 @@ export default function AeoLandingPage() {
     <div className="min-h-screen bg-warm-cream text-brand-dark font-sans selection:bg-primary/40">
       <EventBanner />
       <SEO
-        title="AEO Optimization for Contractors — AdHello.ai | Get Found on ChatGPT and Perplexity"
-        description="AI search engines like ChatGPT, Perplexity, and Google AI Overviews are stealing your leads. AdHello.ai AEO optimization makes your business the answer AI gives to local customers."
-        canonical="https://adhello.ai/aeo"
-        schema={aeoSchema}
+        title="GEO Optimization for Contractors — AdHello.ai | Get Found on ChatGPT and Perplexity"
+        description="AI search engines like ChatGPT, Perplexity, and Google AI Overviews are stealing your leads. AdHello.ai GEO optimization makes your business the answer AI gives to local customers."
+        canonical="https://adhello.ai/geo"
+        schema={geoSchema}
       />
       {/* Navigation */}
       <nav data-nav="main" className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-xl z-50 border-b border-yellow-100 transition-[top] duration-300">
@@ -98,7 +98,7 @@ export default function AeoLandingPage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-dark"></span>
             </span>
-            New: AEO Optimization Included
+            New: GEO Optimization Included
           </div>
 
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-brand-dark mb-6 leading-[1.1]">
@@ -194,7 +194,7 @@ export default function AeoLandingPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2 text-brand-dark">AEO Optimized</h3>
-                  <p className="text-brand-dark/70 font-medium">Answer Engine Optimization ensures AI agents recommend your services.</p>
+                  <p className="text-brand-dark/70 font-medium">Generative Engine Optimization ensures AI agents recommend your services.</p>
                 </div>
               </div>
               <div className="flex gap-4">
@@ -368,7 +368,7 @@ export default function AeoLandingPage() {
             <div>
               <h4 className="font-extrabold text-brand-dark mb-4">Services</h4>
               <ul className="space-y-3">
-                <li><a href="#" className="text-brand-dark/60 hover:text-primary-dark font-medium transition-colors">AEO Optimization</a></li>
+                <li><a href="#" className="text-brand-dark/60 hover:text-primary-dark font-medium transition-colors">GEO Optimization</a></li>
                 <li><a href="#" className="text-brand-dark/60 hover:text-primary-dark font-medium transition-colors">Speed Optimization</a></li>
                 <li><a href="#" className="text-brand-dark/60 hover:text-primary-dark font-medium transition-colors">AI Content</a></li>
               </ul>

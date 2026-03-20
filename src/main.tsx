@@ -36,7 +36,7 @@ const router = createBrowserRouter([
     element: <AboutPage />,
   },
   {
-    path: "/aeo",
+    path: "/geo",
     element: <AeoLandingPage />,
   },
 ]);

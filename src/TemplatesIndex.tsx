@@ -53,7 +53,7 @@ export default function TemplatesIndex() {
       "@type": "CollectionPage",
       "url": "https://adhello.ai/templates",
       "name": "Contractor Website Templates — AdHello.ai",
-      "description": "Browse website templates built for home service businesses. SEO and AEO optimized to rank on Google and AI search engines.",
+      "description": "Browse website templates built for home service businesses. SEO and GEO optimized to rank on Google and AI search engines.",
       "isPartOf": { "@id": "https://adhello.ai/#website" }
     };
 
@@ -62,7 +62,7 @@ export default function TemplatesIndex() {
             <EventBanner />
             <SEO
               title="Website Templates for Home Service Contractors — AdHello.ai"
-              description="Browse professionally designed website templates for painters, electricians, plumbers, HVAC, roofers, flooring and movers. SEO and AEO optimized out of the box."
+              description="Browse professionally designed website templates for painters, electricians, plumbers, HVAC, roofers, flooring and movers. SEO and GEO optimized out of the box."
               canonical="https://adhello.ai/templates"
               schema={templatesSchema}
             />
