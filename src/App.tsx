@@ -60,13 +60,13 @@ const HERO_VARIANTS = [
     tagline: "Built for Electrical Services",
     headline: "Power up your business with more electrical leads.",
     subheadline: "While you’re wiring a panel, AdHello is working on autopilot—optimizing your site, boosting your search rank, and finding new lead opportunities automatically.",
-    image: "https://drive.google.com/thumbnail?id=1zbMCrvpcoCBuzJk60gE9k2_eIFnYZoYB&sz=w1000"
+    image: "/electrician.png"
   },
   {
     tagline: "Built for Plumbing Services",
     headline: "Fill your plumbing schedule with high-quality leads.",
     subheadline: "Put your marketing on autopilot. AdHello handles the technical stuff, constantly improving your rank and suggesting growth strategies so you can focus on the pipes.",
-    image: "https://drive.google.com/thumbnail?id=1iH1uKlOuXDQ2zBjvzjF82eOcJz2u0k6P&sz=w1000"
+    image: "/plumber.png"
   },
   {
     tagline: "Built for Roofing Services",
