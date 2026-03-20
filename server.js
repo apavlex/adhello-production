@@ -117,8 +117,8 @@ const server = http.createServer(async (req, res) => {
             const genAI = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
             // Promise.race to ensure Gemini does not hang the thread
-            // Using gemini-2.0-flash-lite (nano banana 2)
-            const modelName = "gemini-2.0-flash-lite";
+            // Using gemini-2.0-flash (nano banana 2)
+            const modelName = "gemini-2.0-flash";
             console.log(`[AI] Using model: ${modelName}`);
             const geminiPromise = genAI.models.generateContent({
               model: modelName,
@@ -209,10 +209,10 @@ const server = http.createServer(async (req, res) => {
         const { GoogleGenAI } = await import('@google/genai');
         const genAI = new GoogleGenAI({ apiKey: geminiKey });
 
-        console.log('[AD-BRIEF] Starting image analysis with gemini-2.0-flash-lite');
+        console.log('[AD-BRIEF] Starting image analysis with gemini-2.0-flash');
 
         const result = await genAI.models.generateContent({
-          model: 'gemini-2.0-flash-lite',
+          model: 'gemini-2.0-flash',
           contents: [
             {
               parts: [
@@ -274,9 +274,9 @@ const server = http.createServer(async (req, res) => {
         }
         const { GoogleGenAI } = await import('@google/genai');
         const genAI = new GoogleGenAI({ apiKey: geminiKey });
-        console.log('[AD-IMAGE] Generating image with gemini-2.0-flash-lite');
+        console.log('[AD-IMAGE] Generating image with gemini-2.0-flash');
         const response = await genAI.models.generateContent({
-          model: 'gemini-2.0-flash-lite',
+          model: 'gemini-2.0-flash',
           contents: [{ parts: [{ text: prompt }] }],
           config: { responseModalities: ['IMAGE', 'TEXT'] }
         });
@@ -345,7 +345,7 @@ If they want to talk to a human, tell them to click the phone icon in the chat h
         }));
 
         const result = await genAI.models.generateContent({
-          model: 'gemini-2.0-flash-lite',
+          model: 'gemini-2.0-flash',
           contents: [
             { role: 'user', parts: [{ text: systemInstruction + '\n\nConversation so far:\n' + history.map(h => h.role + ': ' + h.parts[0].text).join('\n') + '\n\nUser: ' + userMessage }] }
           ]
