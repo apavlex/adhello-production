@@ -33,6 +33,7 @@ export default function AboutPage() {
 
     return (
         <div className="selection:bg-primary/40 bg-warm-cream min-h-screen">
+            <EventBanner />
             <SEO
               title="About AdHello.ai — Built in the Trenches, Designed for Growth"
               description="AdHello.ai was built by a founder who felt the pain of running a local business without a real marketing system. Learn how we turned that into an AI-powered growth platform for home service contractors."
@@ -40,7 +41,7 @@ export default function AboutPage() {
               schema={aboutSchema}
             />
             {/* Header */}
-            <div className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-xl border-b border-yellow-100 z-[100]">
+            <div data-nav="main" className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-xl border-b border-yellow-100 z-[100] transition-[top] duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <header className="flex items-center justify-between h-16 sm:h-20">
                         <Link to="/" className="flex items-center gap-2">

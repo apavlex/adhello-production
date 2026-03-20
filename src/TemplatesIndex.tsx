@@ -3,6 +3,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight, LayoutTemplate, Star, CheckCircle
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { TEMPLATES, CATEGORIES, getTemplatesByCategory } from './data/templates';
 import SEO from './components/SEO';
+import { EventBanner } from './components/EventBanner';
 
 export default function TemplatesIndex() {
     const { category = 'all' } = useParams();
@@ -58,6 +59,7 @@ export default function TemplatesIndex() {
 
     return (
         <div className="min-h-screen bg-warm-cream font-sans selection:bg-primary/40 pb-24">
+            <EventBanner />
             <SEO
               title="Website Templates for Home Service Contractors — AdHello.ai"
               description="Browse professionally designed website templates for painters, electricians, plumbers, HVAC, roofers, flooring and movers. SEO and AEO optimized out of the box."
@@ -65,7 +67,7 @@ export default function TemplatesIndex() {
               schema={templatesSchema}
             />
             {/* Header */}
-            <header className="bg-white/80 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-[100]">
+            <header data-nav="main" className="bg-white/80 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-[100] transition-[top] duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-20">
                         <div className="flex items-center gap-6">

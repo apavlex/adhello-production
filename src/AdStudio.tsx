@@ -30,6 +30,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 // @ts-ignore
 import html2pdf from 'html2pdf.js';
 import SEO from './components/SEO';
+import { EventBanner } from './components/EventBanner';
 
 type Tab = 'brief' | 'audit';
 
@@ -320,6 +321,7 @@ export default function AdStudio() {
 
   return (
     <div className="min-h-screen bg-[#121417] text-white font-sans selection:bg-primary/30">
+      <EventBanner />
       <SEO
         title="Ad Studio — AI-Powered Ad Creative for Contractors | AdHello.ai"
         description="Generate platform-ready ad creatives for Google, Facebook, Instagram, and TikTok in seconds. Upload one photo and let AdHello.ai AI build your complete ad strategy."
@@ -342,7 +344,7 @@ export default function AdStudio() {
       )}
 
       {/* Top Navigation */}
-      <div className="fixed top-0 left-0 w-full z-50 px-4 py-6">
+      <div data-nav="main" className="fixed top-0 left-0 w-full z-50 px-4 py-6 transition-[top] duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <img src={logoImg} alt="AdHello" className="h-8 w-auto brightness-0 invert" />
