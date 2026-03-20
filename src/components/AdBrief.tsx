@@ -154,7 +154,7 @@ export function AdBrief() {
         throw new Error(err.error || `Server error ${response.status}`);
       }
 
-      const { imageBase64 } = await response.json();
+      const { imageBase64, mimeType: imgMime } = await response.json();
       setGeneratedImages(prev => ({ ...prev, [index]: `data:image/jpeg;base64,${imageBase64}` }));
     } catch (error: any) {
       console.error("Image generation failed:", error);

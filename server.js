@@ -274,16 +274,27 @@ const server = http.createServer(async (req, res) => {
         }
         const { GoogleGenAI } = await import('@google/genai');
         const genAI = new GoogleGenAI({ apiKey: geminiKey });
-        console.log('[AD-IMAGE] Generating image with imagen-3.0-generate-002');
-        const response = await genAI.models.generateImages({
-          model: 'imagen-3.0-generate-002',
-          prompt,
-          config: { numberOfImages: 1, aspectRatio: '1:1', outputMimeType: 'image/jpeg' }
+        console.log('[AD-IMAGE] Generating image with gemini-2.0-flash-exp');
+        const response = await genAI.models.generateContent({
+          model: 'gemini-2.0-flash-exp',
+          contents: [{ parts: [{ text: prompt }] }],
+          config: { responseModalities: ['IMAGE', 'TEXT'] }
         });
-        const imageBytes = response.generatedImages?.[0]?.image?.imageBytes;
-        if (!imageBytes) throw new Error('No image generated');
+
+        // Extract inline image data from response parts
+        let imageBytes = null;
+        let mimeType = 'image/jpeg';
+        const parts = response.candidates?.[0]?.content?.parts || [];
+        for (const part of parts) {
+          if (part.inlineData?.data) {
+            imageBytes = part.inlineData.data;
+            mimeType = part.inlineData.mimeType || 'image/jpeg';
+            break;
+          }
+        }
+        if (!imageBytes) throw new Error('No image returned by model');
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ imageBase64: imageBytes }));
+        res.end(JSON.stringify({ imageBase64: imageBytes, mimeType }));
       } catch (err) {
         console.error('[AD-IMAGE] Error:', err.message);
         res.writeHead(500, { 'Content-Type': 'application/json' });
