@@ -48,6 +48,7 @@ import { BeforeAfterSlider } from './components/BeforeAfterSlider';
 import { AssessmentCTA } from './components/AssessmentCTA';
 import { Logo } from './components/Logo';
 import SEO from './components/SEO';
+import { EventBanner } from './components/EventBanner';
 
 const HERO_VARIANTS = [
   {
@@ -227,6 +228,7 @@ export default function App() {
 
   return (
     <div className="selection:bg-primary/40">
+      <EventBanner />
       <SEO
         title="AdHello.ai — AI-Powered Websites &amp; Marketing for Home Service Businesses"
         description="AdHello.ai builds conversion-optimized websites and AI marketing for local contractors — painters, electricians, plumbers, roofers and more. Get found on Google and AI search engines from day one."

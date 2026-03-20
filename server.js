@@ -364,6 +364,52 @@ If they want to talk to a human, tell them to click the phone icon in the chat h
     return;
   }
 
+  // API Endpoint for networking events from Google Calendar
+  if (req.method === 'GET' && req.url === '/api/events') {
+    try {
+      const calendarId = 'c_02916cf18d360ab381023fabc7b420ec226d7579ae2a08ce0507e574cc1c1a96%40group.calendar.google.com';
+      const apiKey = process.env.GEMINI_API_KEY; // Google API key (same project)
+      const now = new Date().toISOString();
+      const maxTime = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(); // 90 days ahead
+
+      let url;
+      if (apiKey) {
+        url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${now}&timeMax=${maxTime}&singleEvents=true&orderBy=startTime&maxResults=3`;
+      } else {
+        // Fallback: try without key (public calendar)
+        url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?timeMin=${now}&timeMax=${maxTime}&singleEvents=true&orderBy=startTime&maxResults=3`;
+      }
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        // Calendar API might not be enabled — return empty events gracefully
+        console.log('[EVENTS] Calendar API error:', response.status);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ events: [] }));
+      }
+
+      const data = await response.json();
+      const events = (data.items || []).map(e => ({
+        id: e.id,
+        title: e.summary,
+        description: e.description || '',
+        location: e.location || '',
+        start: e.start?.dateTime || e.start?.date,
+        end: e.end?.dateTime || e.end?.date,
+        url: e.htmlLink || 'https://calendar.google.com/calendar/embed?src=c_02916cf18d360ab381023fabc7b420ec226d7579ae2a08ce0507e574cc1c1a96%40group.calendar.google.com'
+      }));
+
+      console.log(`[EVENTS] Fetched ${events.length} upcoming events`);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ events }));
+    } catch (err) {
+      console.error('[EVENTS] Error:', err.message);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ events: [] }));
+    }
+    return;
+  }
+
   // Serve static files
   let filePath = path.join(DIST_DIR, req.url === '/' ? 'index.html' : req.url);
   filePath = filePath.split('?')[0];
