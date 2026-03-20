@@ -66,41 +66,45 @@ const GeminiColor = ({ size = 32 }: { size?: number }) => (
 );
 const Gemini = { Color: GeminiColor };
 
-// Claude — Anthropic coral/tan official mark
+// Claude — Anthropic official logomark (coral squircle with A-shape)
 const ClaudeColor = ({ size = 32 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="#CC9B7A" xmlns="http://www.w3.org/2000/svg">
-    <path d="M13.827 3.52h3.603L24 20.395h-3.603l-1.422-3.982H12.19l-1.422 3.982H7.165zm-.79 9.754h3.028L14.45 7.9z"/>
-    <path d="M.022 3.52h3.602l3.456 9.687 3.457-9.687h3.556L8.386 20.395H5.23z"/>
+  <svg width={size} height={size} viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="46" height="46" rx="10" fill="#D4956A"/>
+    <path d="M27.5 12L35 34H30.5L29 29.5H20.5L19 34H14.5L22 12H27.5ZM24.75 17.5L21.75 26H27.75L24.75 17.5Z" fill="white"/>
   </svg>
 );
 const Claude = { Color: ClaudeColor };
 
-// Meta — official infinity/figure-8 logo with blue gradient
+// Meta — official infinity figure-8 wordmark
 const MetaColor = ({ size = 32 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 60 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width={size} height={size} viewBox="0 0 287 191" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <linearGradient id="meta-g1" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#0064E1"/>
-        <stop offset="100%" stopColor="#0082FB"/>
+      <linearGradient id="mg1" x1="62.5" y1="95.4" x2="140" y2="52.8" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#0064E1"/>
+        <stop offset="0.4" stopColor="#0064E1"/>
+        <stop offset="0.83" stopColor="#0073EE"/>
+        <stop offset="1" stopColor="#0082FB"/>
       </linearGradient>
-      <linearGradient id="meta-g2" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#0082FB"/>
-        <stop offset="100%" stopColor="#0064E0"/>
+      <linearGradient id="mg2" x1="116.5" y1="107" x2="116.5" y2="65.5" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#0082FB"/>
+        <stop offset="1" stopColor="#0064E0"/>
       </linearGradient>
     </defs>
-    <path d="M5 18C5 10.82 8.8 4 14.5 4 19.3 4 22.5 7.5 26 13L30 19.5 34 13C37.5 7.5 40.7 4 45.5 4 51.2 4 55 10.82 55 18c0 4.5-1 8-3 10.5-1.8 2.2-4.3 3.5-7.5 3.5-3.5 0-6-1.5-9.5-6L30 21l-5 5c-3.5 4.5-6 6-9.5 6-3.2 0-5.7-1.3-7.5-3.5C6 26 5 22.5 5 18z" fill="url(#meta-g1)"/>
-    <path d="M10.5 18C10.5 12 12.5 7 14.5 7c1.8 0 3.5 2.2 5.5 5.5L26 22c-3.5 4.5-5.5 6-9.5 6-3.8 0-6-4-6-10z" fill="url(#meta-g2)"/>
-    <path d="M49.5 18C49.5 22 47.3 28 43.5 28c-4 0-6-1.5-9.5-6l6-9.5C42 9.2 43.7 7 45.5 7c2 0 4 5 4 11z" fill="#0082FB"/>
+    <path d="M31.1 109.6C31.1 125.7 34.6 138.1 39.9 146.1c5.8 8.6 13.8 12.9 23.3 12.9 11.1 0 19.1-3.2 29.3-14c3.8-4.1 7.8-9 11.5-14.7l7-10.1 14-20.7C165.3 65 183.9 46 206.5 46c18 0 31.3 9.5 40.7 26.8 8 14.8 12.5 36.1 12.5 58.4 0 18.4-3.7 33.4-11.2 44.5-5.5 8.2-13.7 14.3-24.5 14.3v-36.5c9.8 0 12.2-9 12.2-22.8 0-19.6-5-37.4-14-46.3-4.3-4.2-9.2-6-14.6-6-11.1 0-19.7 7.1-30.7 23.8l-7.2 10.8-14.4 21.5c-9.4 14.1-19.2 26.4-28.5 34.1-11.7 9.7-23.6 14.6-37 14.6-18.3 0-33.1-8.9-43.1-24.3C38.2 147 31.1 129.1 31.1 109.6z" fill="url(#mg1)"/>
+    <path d="M89 74c-8.6-12-16.8-18-26.2-18-18 0-31.7 18.5-31.7 53.6 0 13 2.5 24.2 7.2 32.7L5 165.9C-3.5 150.8-8 130.8-8 109.5-8 60.3 18.1 20 63.3 20c21.8 0 38.4 8.2 54 25.8L89 74z" fill="url(#mg2)"/>
+    <path d="M160.3 93.9l-13-20.2C133 50.3 118.9 34 96.7 34c-3.7 0-7.2.5-10.5 1.5L61 67.7c6.7-3.3 13.3-4.6 20-4.6 21.6 0 36 13.7 51.3 35.7l8.6 13z" fill="#0082FB"/>
   </svg>
 );
 const Meta = { Color: MetaColor };
 
-// Perplexity — official starburst/compass mark in teal
+// Perplexity — official geometric diamond mark
 const PerplexityColor = ({ size = 32 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 2L8.5 8.5H2L7 12.5 4.5 19.5 12 15.5 19.5 19.5 17 12.5 22 8.5H15.5L12 2Z" fill="#20808D"/>
-    <path d="M8.5 8.5H15.5V15.5H8.5V8.5Z" fill="#20808D" opacity="0.35"/>
-    <path d="M12 2V15.5M8.5 8.5H15.5" stroke="#20808D" strokeWidth="0.5" strokeOpacity="0.5"/>
+    <path d="M12 1.5L4.5 7.5V10.5H2.25V13.5H4.5V16.5L12 22.5L19.5 16.5V13.5H21.75V10.5H19.5V7.5L12 1.5Z" fill="#1F9B7A"/>
+    <rect x="7" y="10.5" width="10" height="3" fill="#1F9B7A" opacity="0.5"/>
+    <line x1="12" y1="1.5" x2="12" y2="22.5" stroke="white" strokeWidth="1" strokeOpacity="0.25"/>
+    <line x1="4.5" y1="10.5" x2="19.5" y2="10.5" stroke="white" strokeWidth="1" strokeOpacity="0.25"/>
+    <line x1="4.5" y1="13.5" x2="19.5" y2="13.5" stroke="white" strokeWidth="1" strokeOpacity="0.25"/>
   </svg>
 );
 const Perplexity = { Color: PerplexityColor };
