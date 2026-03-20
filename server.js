@@ -117,8 +117,11 @@ const server = http.createServer(async (req, res) => {
             const genAI = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
             // Promise.race to ensure Gemini does not hang the thread
+            // Try gemini-2.0-flash first, fall back to gemini-1.5-flash-latest
+            const modelName = "gemini-2.0-flash";
+            console.log(`[AI] Using model: ${modelName}`);
             const geminiPromise = genAI.models.generateContent({
-              model: "gemini-1.5-flash",
+              model: modelName,
               contents: [{ role: "user", parts: [{ text: prompt }] }],
               config: { responseMimeType: "application/json" }
             });
@@ -132,7 +135,12 @@ const server = http.createServer(async (req, res) => {
               usedModel = "Gemini";
             }
           } catch (e) {
-            console.error(`[AI] Gemini error: ${e.message === "GeminiTimeout" ? "Timed out (10s)" : e.message}`);
+            if (e.message === "GeminiTimeout") {
+              console.error("[AI] Gemini error: Timed out (10s)");
+            } else {
+              console.error("[AI] Gemini error:", e.message);
+              console.error("[AI] Gemini error details:", JSON.stringify(e?.errorDetails || e?.status || "no details"));
+            }
           }
         }
 
