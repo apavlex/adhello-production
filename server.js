@@ -421,9 +421,11 @@ If they want to talk to a human, tell them to click the phone icon in the chat h
         // Only show future events
         if (startDate.getTime() < now) continue;
 
+        const description = get('DESCRIPTION') || calDescription;
         events.push({
           id: uid,
           title: summary,
+          description: description,
           location: location,
           start: startDate.toISOString(),
           end: endDate.toISOString(),
