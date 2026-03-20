@@ -430,6 +430,10 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
       setProgress(100);
       setReport(data);
       setStatus('complete');
+      // Show email capture modal after 3s if not already done
+      if (!sessionStorage.getItem('adhello-gate-passed')) {
+        setTimeout(() => setShowEmailModal(true), 3000);
+      }
 
       // Kick off GEO analysis in parallel
       setGeoStatus('loading');
@@ -594,60 +598,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
         )}
 
         {/* ── GATE FORM ── */}
-        {status === 'idle' && gateStep === 'gate' && (
-          <div className="animate-in fade-in duration-500 max-w-lg mx-auto">
-            <div className="text-center mb-8">
-              <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4 ${isStudio ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-brand-dark'}`}>
-                <Sparkles className="w-3.5 h-3.5 text-primary" /> Free GEO Report
-              </div>
-              <h2 className={`text-4xl md:text-5xl font-extrabold mb-3 leading-tight ${isStudio ? 'text-white' : 'text-brand-dark'}`}>
-                Get Your Free<br /><span className="text-primary">AI Search Report</span>
-              </h2>
-              <p className={`text-base leading-relaxed ${isStudio ? 'text-white/50' : 'text-brand-dark/60'}`}>
-                Enter your info and we'll analyze your website for GEO readiness, GEO score, and AI search visibility — free.
-              </p>
-            </div>
-            <div className={`${isStudio ? 'bg-[#1C1F26] border-white/5' : 'bg-white border-gray-100 shadow-xl'} rounded-[2.5rem] p-8 border`}>
-              <form onSubmit={handleGateSubmit} className="space-y-4">
-                <div>
-                  <label className={`block text-xs font-black uppercase tracking-widest mb-2 ${isStudio ? 'text-white/50' : 'text-brand-dark/50'}`}>Business Name</label>
-                  <input
-                    type="text"
-                    value={gateName}
-                    onChange={e => setGateName(e.target.value)}
-                    placeholder="e.g. Portland Pro Plumbing"
-                    className={`w-full rounded-2xl py-3.5 px-5 font-medium border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all ${isStudio ? 'bg-[#121417] text-white border-white/10 placeholder:text-white/20' : 'bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400'}`}
-                    required
-                  />
-                </div>
-                <div>
-                  <label className={`block text-xs font-black uppercase tracking-widest mb-2 ${isStudio ? 'text-white/50' : 'text-brand-dark/50'}`}>Email Address</label>
-                  <input
-                    type="email"
-                    value={gateEmail}
-                    onChange={e => setGateEmail(e.target.value)}
-                    placeholder="you@yourbusiness.com"
-                    className={`w-full rounded-2xl py-3.5 px-5 font-medium border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all ${isStudio ? 'bg-[#121417] text-white border-white/10 placeholder:text-white/20' : 'bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400'}`}
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={gateSubmitting}
-                  className="w-full bg-primary hover:bg-primary-hover text-brand-dark font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 disabled:opacity-60 text-base"
-                >
-                  {gateSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Search className="w-5 h-5" />}
-                  {gateSubmitting ? 'Getting ready...' : 'Get My Free Report →'}
-                </button>
-                <p className={`text-center text-xs ${isStudio ? 'text-white/30' : 'text-brand-dark/40'}`}>
-                  No credit card. No spam. Just your report.
-                </p>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {status === 'idle' && !errorInfo && gateStep === 'scan' && (
+        {status === 'idle' && !errorInfo && (
           <div className="text-center animate-in fade-in duration-500">
             <h2 className={`text-5xl md:text-6xl font-extrabold mb-4 ${isStudio ? 'text-white' : 'text-brand-dark'}`}>
               Get Found by <span className="text-primary">AI & Customers</span>
@@ -896,6 +847,93 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
           </div>
         )}
       </div>
+    {/* ── Email Capture Modal (slide-up after report loads) ── */}
+    {showEmailModal && (
+      <div className="fixed inset-0 z-[500] flex items-end sm:items-center justify-center px-4 pb-4 sm:pb-0">
+        {/* Backdrop */}
+        <div
+          className="absolute inset-0 bg-brand-dark/40 backdrop-blur-sm animate-in fade-in duration-300"
+          onClick={() => setShowEmailModal(false)}
+        />
+        {/* Modal */}
+        <div className="relative w-full max-w-md bg-white rounded-[2rem] shadow-2xl animate-in slide-in-from-bottom-8 duration-500 overflow-hidden">
+          {/* Close button */}
+          <button
+            onClick={() => setShowEmailModal(false)}
+            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-brand-dark/50 hover:text-brand-dark transition-all z-10"
+            aria-label="Close"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+
+          {/* Header strip */}
+          <div className="bg-brand-dark px-6 py-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-brand-dark" />
+              </div>
+              <div>
+                <p className="text-white font-extrabold text-base leading-tight">Get your report in your inbox</p>
+                <p className="text-white/50 text-xs">We'll email you a copy to reference anytime</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="px-6 py-6">
+            {modalDone ? (
+              <div className="text-center py-4">
+                <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
+                  <svg className="w-7 h-7 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <p className="font-extrabold text-brand-dark text-lg mb-1">Report on its way!</p>
+                <p className="text-brand-dark/50 text-sm">Check your inbox in a few seconds.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleModalSubmit} className="space-y-3">
+                <div>
+                  <input
+                    type="text"
+                    value={modalName}
+                    onChange={e => setModalName(e.target.value)}
+                    placeholder="Business name"
+                    className="w-full rounded-xl py-3 px-4 font-medium border bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm"
+                    required
+                  />
+                </div>
+                <div>
+                  <input
+                    type="email"
+                    value={modalEmail}
+                    onChange={e => setModalEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    className="w-full rounded-xl py-3 px-4 font-medium border bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={modalSubmitting}
+                  className="w-full bg-primary hover:bg-primary-hover text-brand-dark font-black py-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md text-sm"
+                >
+                  {modalSubmitting
+                    ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
+                    : <>📩 Email Me My Report</>
+                  }
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowEmailModal(false)}
+                  className="w-full text-brand-dark/40 hover:text-brand-dark/60 text-xs py-1 transition-colors"
+                >
+                  No thanks, I'll just read it here
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+
     </section>
   );
 }
