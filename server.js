@@ -364,49 +364,79 @@ If they want to talk to a human, tell them to click the phone icon in the chat h
     return;
   }
 
-  // API Endpoint for networking events
-  // Tries Google Calendar API first (works when calendar is public)
-  // Falls back to EVENTS_JSON env var if Calendar API returns 403 (private calendar)
+  // API Endpoint for networking events — reads public iCal feed (no API key needed)
   if (req.method === 'GET' && req.url === '/api/events') {
     try {
-      const calendarId = 'c_02916cf18d360ab381023fabc7b420ec226d7579ae2a08ce0507e574cc1c1a96%40group.calendar.google.com';
-      const apiKey = process.env.GEMINI_API_KEY;
-      const nowIso = new Date().toISOString();
-      const maxTime = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString();
-      const calUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${nowIso}&timeMax=${maxTime}&singleEvents=true&orderBy=startTime&maxResults=5`;
+      const icalUrl = 'https://calendar.google.com/calendar/ical/c_02916cf18d360ab381023fabc7b420ec226d7579ae2a08ce0507e574cc1c1a96%40group.calendar.google.com/public/basic.ics';
+      const calPageUrl = 'https://calendar.google.com/calendar/embed?src=c_02916cf18d360ab381023fabc7b420ec226d7579ae2a08ce0507e574cc1c1a96%40group.calendar.google.com&ctz=America%2FLos_Angeles';
 
-      const response = await fetch(calUrl);
-
-      if (response.ok) {
-        const data = await response.json();
-        const events = (data.items || []).map(e => ({
-          id: e.id,
-          title: e.summary,
-          description: e.description || '',
-          location: e.location || '',
-          start: e.start?.dateTime || e.start?.date,
-          end: e.end?.dateTime || e.end?.date,
-          url: e.htmlLink || `https://calendar.google.com/calendar/embed?src=${calendarId}&ctz=America%2FLos_Angeles`
-        }));
-        console.log(`[EVENTS] Calendar API: ${events.length} events`);
+      const response = await fetch(icalUrl);
+      if (!response.ok) {
+        console.log('[EVENTS] iCal fetch failed:', response.status);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ events }));
+        return res.end(JSON.stringify({ events: [] }));
       }
 
-      // Calendar is private — fall back to EVENTS_JSON env var
-      console.log(`[EVENTS] Calendar API ${response.status} — using EVENTS_JSON fallback`);
-      const eventsJson = process.env.EVENTS_JSON;
-      if (eventsJson) {
-        const all = JSON.parse(eventsJson);
-        const now = Date.now();
-        const upcoming = all.filter(e => new Date(e.start).getTime() > now);
-        console.log(`[EVENTS] EVENTS_JSON: ${upcoming.length} upcoming events`);
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ events: upcoming }));
+      const ical = await response.text();
+      const now = Date.now();
+      const events = [];
+
+      // Parse VEVENT blocks from iCal
+      const veventRegex = /BEGIN:VEVENT([\s\S]*?)END:VEVENT/g;
+      let match;
+      while ((match = veventRegex.exec(ical)) !== null) {
+        const block = match[1];
+
+        const get = (key) => {
+          const m = block.match(new RegExp(`${key}[^:]*:([^\r\n]+(?:\r?\n[ \t][^\r\n]+)*)`));
+          if (!m) return '';
+          return m[1].replace(/\r?\n[ \t]/g, '').replace(/\\,/g, ',').replace(/\\n/g, ' ').trim();
+        };
+
+        const dtstart = get('DTSTART');
+        const dtend = get('DTEND');
+        const summary = get('SUMMARY');
+        const location = get('LOCATION');
+        const uid = get('UID');
+
+        if (!dtstart || !summary) continue;
+
+        // Parse iCal date format: 20260403T010000Z or 20260403T010000
+        const parseIcalDate = (s) => {
+          const clean = s.replace(/[^0-9TZ]/g, '');
+          if (clean.endsWith('Z')) {
+            const y=clean.slice(0,4), mo=clean.slice(4,6), d=clean.slice(6,8);
+            const h=clean.slice(9,11), mi=clean.slice(11,13), sc=clean.slice(13,15);
+            return new Date(`${y}-${mo}-${d}T${h}:${mi}:${sc}Z`);
+          }
+          const y=clean.slice(0,4), mo=clean.slice(4,6), d=clean.slice(6,8);
+          if (clean.length === 8) return new Date(`${y}-${mo}-${d}`);
+          const h=clean.slice(9,11), mi=clean.slice(11,13), sc=clean.slice(13,15);
+          return new Date(`${y}-${mo}-${d}T${h}:${mi}:${sc}-07:00`);
+        };
+
+        const startDate = parseIcalDate(dtstart);
+        const endDate = parseIcalDate(dtend || dtstart);
+
+        // Only show future events
+        if (startDate.getTime() < now) continue;
+
+        events.push({
+          id: uid,
+          title: summary,
+          location: location,
+          start: startDate.toISOString(),
+          end: endDate.toISOString(),
+          url: calPageUrl
+        });
       }
 
+      // Sort by start time
+      events.sort((a, b) => new Date(a.start) - new Date(b.start));
+
+      console.log(`[EVENTS] iCal parsed: ${events.length} upcoming events`);
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ events: [] }));
+      res.end(JSON.stringify({ events: events.slice(0, 5) }));
     } catch (err) {
       console.error('[EVENTS] Error:', err.message);
       res.writeHead(200, { 'Content-Type': 'application/json' });
