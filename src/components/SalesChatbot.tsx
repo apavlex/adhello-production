@@ -9,7 +9,7 @@ interface Message {
 export function SalesChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', text: "Hi! I'm your AdHello growth assistant. To help you get the most out of our platform, could you tell me what kind of home service business you're looking to grow?" }
+    { role: 'model', text: "Hey! I'm your AdHello Growth Coach. Ask me anything — more leads, better SEO, seasonal marketing, pricing, reviews, AI search — I'm here to give you real advice for your business. What trade are you in?" }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -99,7 +99,7 @@ export function SalesChatbot() {
                   <Sparkles className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-black text-brand-dark">AdHello Assistant</h3>
+                  <h3 className="font-black text-brand-dark">Growth Coach</h3>
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                     <span className="text-[10px] font-bold text-brand-dark/60 uppercase tracking-wider">Online</span>
@@ -152,13 +152,7 @@ export function SalesChatbot() {
             {/* Input */}
             <div className="p-4 bg-white border-t border-gray-100">
               <div className="flex flex-col gap-3">
-                <button 
-                  onClick={() => window.open('https://calendar.app.google/QQsVbiAt4QdCX8mx8', '_blank')}
-                  className="w-full py-2 bg-brand-dark text-white text-xs font-black uppercase tracking-widest rounded-full hover:bg-brand-dark/90 transition-all flex items-center justify-center gap-2"
-                >
-                  <Calendar className="w-3 h-3 text-primary" />
-                  Book Demo Meeting
-                </button>
+
                 
                 <div className="flex items-center gap-2 bg-gray-50 rounded-full px-4 py-2 border border-gray-200 focus-within:border-primary transition-colors">
                   <input
@@ -166,7 +160,7 @@ export function SalesChatbot() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                    placeholder="Ask me anything..."
+                    placeholder="Ask about leads, SEO, pricing, reviews..."
                     className="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none outline-none text-sm font-medium py-2"
                   />
                   <button
