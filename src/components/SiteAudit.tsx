@@ -110,7 +110,7 @@ function ScoreBar({ score, label }: { score: number; label: string }) {
   );
 }
 
-// ── GEO Report panel ───────────────────────────────────────────────────────
+// ── Full Report panel ───────────────────────────────────────────────────────
 function GeoReportPanel({ geo, isStudio }: { geo: GeoReport; isStudio: boolean }) {
   const card = isStudio ? 'bg-[#1C1F26] border-white/5' : 'bg-white border-gray-100 shadow-sm';
   const textMain = isStudio ? 'text-white' : 'text-brand-dark';
@@ -692,14 +692,14 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
                 onClick={() => setActiveTab('aeo')}
                 className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-black transition-all ${activeTab === 'aeo' ? 'bg-brand-dark text-white shadow-lg' : `${isStudio ? 'bg-white/5 text-white/40' : 'bg-white text-brand-dark/40 border border-gray-100'} hover:text-brand-dark`}`}
               >
-                <Target className="w-4 h-4" /> AEO Report
+                <Target className="w-4 h-4" /> Summary
               </button>
               <button
                 onClick={() => setActiveTab('geo')}
                 className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-black transition-all ${activeTab === 'geo' ? 'bg-brand-dark text-white shadow-lg' : `${isStudio ? 'bg-white/5 text-white/40' : 'bg-white text-brand-dark/40 border border-gray-100'} hover:text-brand-dark`}`}
               >
                 <Bot className="w-4 h-4" />
-                GEO Report
+                Full Report
                 {geoStatus === 'loading' && <Loader2 className="w-3 h-3 animate-spin" />}
                 {geoStatus === 'complete' && <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />}
               </button>
