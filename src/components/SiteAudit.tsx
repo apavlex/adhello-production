@@ -320,6 +320,13 @@ function GeoReportPanel({ geo, isStudio }: { geo: GeoReport; isStudio: boolean }
 export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
   const [url, setUrl] = useState('');
   const [status, setStatus] = useState<'idle' | 'analyzing' | 'complete'>('idle');
+  // Lead gate state
+  const [gateStep, setGateStep] = useState<'gate' | 'scan'>(
+    () => sessionStorage.getItem('adhello-gate-passed') === '1' ? 'scan' : 'gate'
+  );
+  const [gateName, setGateName] = useState('');
+  const [gateEmail, setGateEmail] = useState('');
+  const [gateSubmitting, setGateSubmitting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [report, setReport] = useState<Report | null>(null);
   const [geoReport, setGeoReport] = useState<GeoReport | null>(null);
@@ -361,6 +368,23 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
   }, [status]);
 
   const [errorInfo, setErrorInfo] = useState<{ message: string, detail?: string } | null>(null);
+
+  const handleGateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!gateName.trim() || !gateEmail.trim()) return;
+    setGateSubmitting(true);
+    try {
+      // Send lead to server
+      await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: gateName, email: gateEmail, source: 'site-audit' })
+      });
+    } catch (_) {}
+    sessionStorage.setItem('adhello-gate-passed', '1');
+    setGateSubmitting(false);
+    setGateStep('scan');
+  };
 
   const handleScan = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -554,7 +578,61 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
           </div>
         )}
 
-        {status === 'idle' && !errorInfo && (
+        {/* ── GATE FORM ── */}
+        {status === 'idle' && gateStep === 'gate' && (
+          <div className="animate-in fade-in duration-500 max-w-lg mx-auto">
+            <div className="text-center mb-8">
+              <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4 ${isStudio ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-brand-dark'}`}>
+                <Sparkles className="w-3.5 h-3.5 text-primary" /> Free AEO + GEO Report
+              </div>
+              <h2 className={`text-4xl md:text-5xl font-extrabold mb-3 leading-tight ${isStudio ? 'text-white' : 'text-brand-dark'}`}>
+                Get Your Free<br /><span className="text-primary">AI Search Report</span>
+              </h2>
+              <p className={`text-base leading-relaxed ${isStudio ? 'text-white/50' : 'text-brand-dark/60'}`}>
+                Enter your info and we'll analyze your website for AEO readiness, GEO score, and AI search visibility — free.
+              </p>
+            </div>
+            <div className={`${isStudio ? 'bg-[#1C1F26] border-white/5' : 'bg-white border-gray-100 shadow-xl'} rounded-[2.5rem] p-8 border`}>
+              <form onSubmit={handleGateSubmit} className="space-y-4">
+                <div>
+                  <label className={`block text-xs font-black uppercase tracking-widest mb-2 ${isStudio ? 'text-white/50' : 'text-brand-dark/50'}`}>Business Name</label>
+                  <input
+                    type="text"
+                    value={gateName}
+                    onChange={e => setGateName(e.target.value)}
+                    placeholder="e.g. Portland Pro Plumbing"
+                    className={`w-full rounded-2xl py-3.5 px-5 font-medium border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all ${isStudio ? 'bg-[#121417] text-white border-white/10 placeholder:text-white/20' : 'bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400'}`}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className={`block text-xs font-black uppercase tracking-widest mb-2 ${isStudio ? 'text-white/50' : 'text-brand-dark/50'}`}>Email Address</label>
+                  <input
+                    type="email"
+                    value={gateEmail}
+                    onChange={e => setGateEmail(e.target.value)}
+                    placeholder="you@yourbusiness.com"
+                    className={`w-full rounded-2xl py-3.5 px-5 font-medium border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all ${isStudio ? 'bg-[#121417] text-white border-white/10 placeholder:text-white/20' : 'bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400'}`}
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={gateSubmitting}
+                  className="w-full bg-primary hover:bg-primary-hover text-brand-dark font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 disabled:opacity-60 text-base"
+                >
+                  {gateSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Search className="w-5 h-5" />}
+                  {gateSubmitting ? 'Getting ready...' : 'Get My Free Report →'}
+                </button>
+                <p className={`text-center text-xs ${isStudio ? 'text-white/30' : 'text-brand-dark/40'}`}>
+                  No credit card. No spam. Just your report.
+                </p>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {status === 'idle' && !errorInfo && gateStep === 'scan' && (
           <div className="text-center animate-in fade-in duration-500">
             <h2 className={`text-5xl md:text-6xl font-extrabold mb-4 ${isStudio ? 'text-white' : 'text-brand-dark'}`}>
               Get Found by <span className="text-primary">AI & Customers</span>

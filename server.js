@@ -556,6 +556,31 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
     return;
   }
 
+  // API Endpoint — capture site audit leads
+  if (req.method === 'POST' && req.url === '/api/lead') {
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', async () => {
+      try {
+        const { name, email, source } = JSON.parse(body);
+        console.log(`[LEAD] New lead: ${name} <${email}> via ${source || 'unknown'}`);
+
+        // Send notification email via Gemini (simple log for now — add email service later)
+        // Store in memory log with timestamp
+        const lead = { name, email, source, ts: new Date().toISOString() };
+        console.log('[LEAD] Captured:', JSON.stringify(lead));
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true }));
+      } catch (err) {
+        console.error('[LEAD] Error:', err.message);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false }));
+      }
+    });
+    return;
+  }
+
   // Serve static files
   let filePath = path.join(DIST_DIR, req.url === '/' ? 'index.html' : req.url);
   filePath = filePath.split('?')[0];
