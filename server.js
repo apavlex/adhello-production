@@ -364,50 +364,49 @@ If they want to talk to a human, tell them to click the phone icon in the chat h
     return;
   }
 
-  // API Endpoint for networking events — reads from EVENTS_JSON env var (set in Cloud Run)
-  // Falls back to fetching from Google Calendar API if env var not set
+  // API Endpoint for networking events
+  // Tries Google Calendar API first (works when calendar is public)
+  // Falls back to EVENTS_JSON env var if Calendar API returns 403 (private calendar)
   if (req.method === 'GET' && req.url === '/api/events') {
     try {
-      // Primary: read from env var (set manually in Cloud Run for reliability)
+      const calendarId = 'c_02916cf18d360ab381023fabc7b420ec226d7579ae2a08ce0507e574cc1c1a96%40group.calendar.google.com';
+      const apiKey = process.env.GEMINI_API_KEY;
+      const nowIso = new Date().toISOString();
+      const maxTime = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString();
+      const calUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${nowIso}&timeMax=${maxTime}&singleEvents=true&orderBy=startTime&maxResults=5`;
+
+      const response = await fetch(calUrl);
+
+      if (response.ok) {
+        const data = await response.json();
+        const events = (data.items || []).map(e => ({
+          id: e.id,
+          title: e.summary,
+          description: e.description || '',
+          location: e.location || '',
+          start: e.start?.dateTime || e.start?.date,
+          end: e.end?.dateTime || e.end?.date,
+          url: e.htmlLink || `https://calendar.google.com/calendar/embed?src=${calendarId}&ctz=America%2FLos_Angeles`
+        }));
+        console.log(`[EVENTS] Calendar API: ${events.length} events`);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ events }));
+      }
+
+      // Calendar is private — fall back to EVENTS_JSON env var
+      console.log(`[EVENTS] Calendar API ${response.status} — using EVENTS_JSON fallback`);
       const eventsJson = process.env.EVENTS_JSON;
       if (eventsJson) {
-        const events = JSON.parse(eventsJson);
+        const all = JSON.parse(eventsJson);
         const now = Date.now();
-        const upcoming = events.filter(e => new Date(e.start).getTime() > now);
-        console.log(`[EVENTS] Serving ${upcoming.length} events from EVENTS_JSON env`);
+        const upcoming = all.filter(e => new Date(e.start).getTime() > now);
+        console.log(`[EVENTS] EVENTS_JSON: ${upcoming.length} upcoming events`);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ events: upcoming }));
       }
 
-      // Fallback: try Google Calendar API
-      const calendarId = 'c_02916cf18d360ab381023fabc7b420ec226d7579ae2a08ce0507e574cc1c1a96%40group.calendar.google.com';
-      const apiKey = process.env.GEMINI_API_KEY;
-      const now = new Date().toISOString();
-      const maxTime = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString();
-      const calUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${now}&timeMax=${maxTime}&singleEvents=true&orderBy=startTime&maxResults=5`;
-
-      const response = await fetch(calUrl);
-      if (!response.ok) {
-        const errText = await response.text();
-        console.log('[EVENTS] Calendar API error:', response.status, errText.slice(0, 300));
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ events: [] }));
-      }
-
-      const data = await response.json();
-      const events = (data.items || []).map(e => ({
-        id: e.id,
-        title: e.summary,
-        description: e.description || '',
-        location: e.location || '',
-        start: e.start?.dateTime || e.start?.date,
-        end: e.end?.dateTime || e.end?.date,
-        url: e.htmlLink || `https://calendar.google.com/calendar/embed?src=${calendarId}&ctz=America%2FLos_Angeles`
-      }));
-
-      console.log(`[EVENTS] Calendar API returned ${events.length} events`);
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ events }));
+      res.end(JSON.stringify({ events: [] }));
     } catch (err) {
       console.error('[EVENTS] Error:', err.message);
       res.writeHead(200, { 'Content-Type': 'application/json' });
