@@ -63,6 +63,7 @@ export function AdBrief() {
     () => 'upload'
   );
   const [selectedService, setSelectedService] = useState('');
+  const [customService, setCustomService] = useState('');
   const [gateName, setGateName] = useState('');
   const [gateEmail, setGateEmail] = useState('');
   const [gateSubmitting, setGateSubmitting] = useState(false);
@@ -166,7 +167,7 @@ export function AdBrief() {
     } catch (_) {}
     sessionStorage.setItem('adhello-gate-passed', '1');
     setGateSubmitting(false);
-    setBriefStep('upload'); setSelectedService('');
+    setBriefStep('upload'); setSelectedService(''); setCustomService('');
   };
 
   const generateAdImage = async (adIndex: number, ad: { platform: string; headline: string; body: string; cta: string }) => {
@@ -443,6 +444,21 @@ CRITICAL RULES:
               </button>
             ))}
           </div>
+          {selectedService === 'Other' && (
+            <div className="mb-4 animate-in fade-in slide-in-from-top-2 duration-200">
+              <input
+                type="text"
+                value={customService}
+                onChange={e => setCustomService(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && customService.trim()) { setSelectedService(customService.trim()); setTimeout(startAnalysis, 0); } }}
+                placeholder="e.g. Fence Installation, Pool Cleaning, Deck Building..."
+                autoFocus
+                className="w-full rounded-2xl py-3.5 px-5 font-medium border bg-white text-brand-dark border-primary/40 ring-2 ring-primary/20 placeholder:text-gray-400 focus:outline-none focus:ring-primary/40 transition-all text-sm"
+              />
+              <p className="text-xs text-brand-dark/40 mt-2 ml-1">Press Enter or click Generate to continue</p>
+            </div>
+          )}
+
           <div className="flex gap-3">
             <button
               onClick={() => setBriefStep('upload')}
@@ -451,11 +467,18 @@ CRITICAL RULES:
               ← Back
             </button>
             <button
-              onClick={() => { if (selectedService) startAnalysis(); }}
-              disabled={!selectedService}
+              onClick={() => {
+                if (selectedService === 'Other' && customService.trim()) {
+                  setSelectedService(customService.trim());
+                  setTimeout(startAnalysis, 0);
+                } else if (selectedService && selectedService !== 'Other') {
+                  startAnalysis();
+                }
+              }}
+              disabled={!selectedService || (selectedService === 'Other' && !customService.trim())}
               className="flex-1 bg-primary hover:bg-primary-hover disabled:opacity-40 disabled:cursor-not-allowed text-brand-dark font-black py-3 rounded-full transition-all shadow-md text-sm flex items-center justify-center gap-2"
             >
-              Generate Ad Brief for {selectedService || '...'}
+              Generate Ad Brief{selectedService && selectedService !== 'Other' ? ` for ${selectedService}` : selectedService === 'Other' && customService.trim() ? ` for ${customService.trim()}` : ''}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
             </button>
           </div>
