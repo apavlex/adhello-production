@@ -945,7 +945,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
                 <input type="text" value={modalName} onChange={e => setModalName(e.target.value)} placeholder="Business name" className="w-full rounded-xl py-3 px-4 font-medium border bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm" required />
                 <input type="email" value={modalEmail} onChange={e => setModalEmail(e.target.value)} placeholder="your@email.com" className="w-full rounded-xl py-3 px-4 font-medium border bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm" required />
                 <button type="submit" disabled={modalSubmitting} className="w-full bg-primary hover:bg-primary-hover text-brand-dark font-black py-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md text-sm">
-                  {modalSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</> : <>📩 Email Me My Report</>}
+                  {modalSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</> : <>Email Me My Report</>}
                 </button>
                 <button type="button" onClick={() => setShowEmailModal(false)} className="w-full text-brand-dark/40 hover:text-brand-dark/60 text-xs py-1 transition-colors">No thanks, I'll just read it here</button>
               </form>
