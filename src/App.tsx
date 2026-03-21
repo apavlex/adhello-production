@@ -133,6 +133,10 @@ export default function App() {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [heroIndex, setHeroIndex] = useState(0);
+  const [siteAnalysisOpen, setSiteAnalysisOpen] = useState(false);
+  const [analysisForm, setAnalysisForm] = useState({ name: '', email: '', url: '', message: '' });
+  const [analysisSubmitting, setAnalysisSubmitting] = useState(false);
+  const [analysisDone, setAnalysisDone] = useState(false);
   const [activeStudioTab, setActiveStudioTab] = useState<'audit' | 'brief'>('audit');
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   const [portfolioIndex, setPortfolioIndex] = useState(0);
@@ -893,22 +897,22 @@ export default function App() {
               </div>
               <div className="text-center md:text-left">
                 <h2 className="text-xl md:text-2xl font-black mb-1 leading-tight text-brand-dark">
-                  Get a <span className="italic underline underline-offset-4 decoration-primary">FREE</span> Assessment Video from Alex
+                  Get a <span className="italic underline underline-offset-4 decoration-primary">free</span> site analysis from Alex — founder of AdHello.ai
                 </h2>
                 <p className="text-sm md:text-base text-brand-dark/60 font-medium">
-                  Reviewing your website to help you grow.
+                  Submit your website and Alex will personally review it and send you feedback.
                 </p>
               </div>
             </div>
             <div className="shrink-0">
-              <button 
-                onClick={openChat}
+              <button
+                onClick={() => setSiteAnalysisOpen(true)}
                 className="bg-primary hover:bg-primary-hover text-brand-dark px-6 py-3 rounded-xl font-black text-base transition-all hover:scale-105 flex items-center gap-3 shadow-sm group"
               >
                 <div className="w-5 h-5 bg-brand-dark rounded-full flex items-center justify-center group-hover:rotate-45 transition-transform">
                   <ArrowRight className="w-3 h-3 text-primary" />
                 </div>
-                GET STARTED
+                REQUEST SITE ANALYSIS
               </button>
             </div>
           </div>
@@ -916,6 +920,74 @@ export default function App() {
       </section>
       <ROICalculator />
       <SalesChatbot />
+
+      {/* Site Analysis Request Modal */}
+      {siteAnalysisOpen && (
+        <div className="fixed inset-0 z-[600] flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-brand-dark/60 backdrop-blur-sm" onClick={() => { setSiteAnalysisOpen(false); setAnalysisDone(false); }} />
+          <div className="relative w-full max-w-md bg-white rounded-[2rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+            {/* Header */}
+            <div className="bg-brand-dark px-6 py-5 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/30 flex-shrink-0">
+                <img src="/alex-profile.png" alt="Alex" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=100&q=80"; }} />
+              </div>
+              <div className="flex-1">
+                <p className="text-white font-extrabold text-base leading-tight">Free Site Analysis</p>
+                <p className="text-white/50 text-xs">Alex will personally review your website</p>
+              </div>
+              <button onClick={() => { setSiteAnalysisOpen(false); setAnalysisDone(false); }} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white/60 hover:text-white flex items-center justify-center transition-all">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div className="px-6 py-6">
+              {analysisDone ? (
+                <div className="text-center py-6">
+                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                  </div>
+                  <p className="font-extrabold text-brand-dark text-xl mb-2">Request received!</p>
+                  <p className="text-brand-dark/50 text-sm">Alex will review your site and get back to you within 1 business day.</p>
+                </div>
+              ) : (
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  setAnalysisSubmitting(true);
+                  try {
+                    await fetch('/api/lead', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ ...analysisForm, source: 'site-analysis-request' })
+                    });
+                  } catch (_) {}
+                  setAnalysisSubmitting(false);
+                  setAnalysisDone(true);
+                }} className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-brand-dark/40 mb-1.5">Your Name</label>
+                    <input type="text" required placeholder="Mike Johnson" value={analysisForm.name} onChange={e => setAnalysisForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl py-3 px-4 text-sm font-medium border bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-brand-dark/40 mb-1.5">Email Address</label>
+                    <input type="email" required placeholder="you@yourbusiness.com" value={analysisForm.email} onChange={e => setAnalysisForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl py-3 px-4 text-sm font-medium border bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-brand-dark/40 mb-1.5">Website URL</label>
+                    <input type="text" required placeholder="yoursite.com" value={analysisForm.url} onChange={e => setAnalysisForm(f => ({...f, url: e.target.value}))} className="w-full rounded-xl py-3 px-4 text-sm font-medium border bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-brand-dark/40 mb-1.5">Anything specific? <span className="text-brand-dark/25 normal-case font-medium">(optional)</span></label>
+                    <textarea placeholder="e.g. not getting enough leads, bad mobile experience..." value={analysisForm.message} onChange={e => setAnalysisForm(f => ({...f, message: e.target.value}))} rows={2} className="w-full rounded-xl py-3 px-4 text-sm font-medium border bg-gray-50 text-brand-dark border-gray-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all resize-none" />
+                  </div>
+                  <button type="submit" disabled={analysisSubmitting} className="w-full bg-primary hover:bg-primary-hover text-brand-dark font-black py-3.5 rounded-xl transition-all shadow-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60">
+                    {analysisSubmitting ? <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Submitting...</> : 'Submit for Free Analysis →'}
+                  </button>
+                  <p className="text-center text-xs text-brand-dark/35">Free. No obligation. Alex replies within 1 business day.</p>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       <section className="py-24 bg-white" id="niches">
         <div className="max-w-7xl mx-auto px-4 w-full">
           <div className="text-center mb-16">

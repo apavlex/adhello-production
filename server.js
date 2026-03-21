@@ -602,9 +602,9 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', async () => {
       try {
-        const { name, email, source } = JSON.parse(body);
+        const { name, email, source, url: siteUrl, message } = JSON.parse(body);
         const ts = new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
-        console.log(`[LEAD] New lead: ${name} <${email}> via ${source || 'unknown'} at ${ts}`);
+        console.log(`[LEAD] New lead: ${name} <${email}> via ${source || 'unknown'} at ${ts}${siteUrl ? ' — '+siteUrl : ''}`);
 
         // Send email via Resend (free tier: 100 emails/day, no 2FA needed)
         const resendKey = process.env.RESEND_API_KEY;
@@ -624,8 +624,10 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
                     <p style="color:rgba(255,255,255,0.5);margin:0;font-size:13px">via AdHello.ai — ${source === 'ad-brief' ? 'Ad Brief Generator' : 'Site Audit Tool'}</p>
                   </div>
                   <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
-                    <tr><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;color:#888;font-size:13px;width:110px">Business</td><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-weight:700;color:#0d1520;font-size:15px">${name}</td></tr>
+                    <tr><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;color:#888;font-size:13px;width:110px">Name</td><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-weight:700;color:#0d1520;font-size:15px">${name}</td></tr>
                     <tr><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;color:#888;font-size:13px">Email</td><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-weight:700;font-size:15px"><a href="mailto:${email}" style="color:#E8B84B;text-decoration:none">${email}</a></td></tr>
+                    ${siteUrl ? `<tr><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;color:#888;font-size:13px">Website</td><td style="padding:12px 0;font-weight:700;font-size:15px"><a href="https://${siteUrl}" style="color:#E8B84B;text-decoration:none">${siteUrl}</a></td></tr>` : ''}
+                    ${message ? `<tr><td style="padding:12px 0;border-bottom:1px solid #f0f0f0;color:#888;font-size:13px">Notes</td><td style="padding:12px 0;font-weight:600;color:#555;font-size:13px">${message}</td></tr>` : ''}
                     <tr><td style="padding:12px 0;color:#888;font-size:13px">Time</td><td style="padding:12px 0;font-weight:600;color:#555;font-size:13px">${ts} PT</td></tr>
                   </table>
                   <a href="mailto:${email}?subject=Your Free AdHello.ai Report is Ready&body=Hi ${name},%0D%0A%0D%0AThanks for trying AdHello.ai! I wanted to personally follow up..." style="display:inline-block;background:#E8B84B;color:#0d1520;font-weight:900;padding:14px 28px;border-radius:999px;text-decoration:none;font-size:14px">Reply to ${name} →</a>
