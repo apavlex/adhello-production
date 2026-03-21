@@ -52,30 +52,35 @@ import { EventBanner } from './components/EventBanner';
 
 const HERO_VARIANTS = [
   {
+    trade: "HVAC",
     tagline: "Built for HVAC Services",
     headline: "Get more HVAC leads with a website built for comfort.",
     subheadline: "Your smart website works for you 24/7. It automatically optimizes your content, improves your rank, and finds new leads while you're fixing an AC.",
     image: "https://drive.google.com/thumbnail?id=1e4CPR8UPUMtsTQyKGUnil51Cf9qg2S1b&sz=w1000"
   },
   {
+    trade: "Electrical",
     tagline: "Built for Electrical Services",
     headline: "Power up your business with more electrical leads.",
     subheadline: "While you’re wiring a panel, AdHello is working on autopilot—optimizing your site, boosting your search rank, and finding new lead opportunities automatically.",
     image: "/electrician.png"
   },
   {
+    trade: "Plumbing",
     tagline: "Built for Plumbing Services",
     headline: "Fill your plumbing schedule with high-quality leads.",
     subheadline: "Put your marketing on autopilot. AdHello handles the technical stuff, constantly improving your rank and suggesting growth strategies so you can focus on the pipes.",
     image: "/plumber.png"
   },
   {
+    trade: "Roofing",
     tagline: "Built for Roofing Services",
     headline: "Get more roofing estimates without lifting a finger.",
     subheadline: "Marketing that grows your business for you. AdHello automates your search optimization 24/7, finding the best ways to capture more roofing leads.",
     image: "https://drive.google.com/thumbnail?id=1oCWDHteOB-GWTxZAA73MktTXMb0dD6to&sz=w1000"
   },
   {
+    trade: "Flooring",
     tagline: "Built for Flooring",
     headline: "Step up your business with more flooring leads.",
     subheadline: "While you’re installing hardwood or laying tile, your smart website helps book your next job. Built to convert local traffic from Google, Maps, and AI search.",
@@ -385,8 +390,8 @@ export default function App() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-left order-2 lg:order-1 relative h-auto lg:h-[450px] flex flex-col justify-center">
               <div className="flex flex-col justify-center">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-100 text-yellow-800 text-sm font-bold mb-6 border border-yellow-200 w-fit">
-                  The AI Growth Engine for Home Service Businesses
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-100 text-yellow-800 text-sm font-bold mb-6 border border-yellow-200 w-fit transition-all duration-500">
+                  The AI Growth Engine for <span className="text-primary font-black">{HERO_VARIANTS[heroIndex].trade}</span>&nbsp;Businesses
                 </div>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-brand-dark mb-8 leading-[1.05]">
                   More Leads. Less Headache. <span className="hand-underline">Smart Websites for Local Pros.</span>
