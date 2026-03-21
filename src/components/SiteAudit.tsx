@@ -734,28 +734,8 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
               </div>
             </div>
 
-            {/* Tab switcher: AEO | GEO */}
-            <div className="flex items-center gap-2 mb-6 print:hidden">
-              <button
-                onClick={() => setActiveTab('aeo')}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-black transition-all ${activeTab === 'aeo' ? 'bg-brand-dark text-white shadow-lg' : `${isStudio ? 'bg-white/5 text-white/40' : 'bg-white text-brand-dark/40 border border-gray-100'} hover:text-brand-dark`}`}
-              >
-                <Target className="w-4 h-4" /> Summary
-              </button>
-              <button
-                onClick={() => setActiveTab('geo')}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-black transition-all ${activeTab === 'geo' ? 'bg-brand-dark text-white shadow-lg' : `${isStudio ? 'bg-white/5 text-white/40' : 'bg-white text-brand-dark/40 border border-gray-100'} hover:text-brand-dark`}`}
-              >
-                <Bot className="w-4 h-4" />
-                Full Report
-                {geoStatus === 'loading' && <Loader2 className="w-3 h-3 animate-spin" />}
-                {geoStatus === 'complete' && <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />}
-              </button>
-            </div>
-
-            {/* ── AEO TAB ── */}
-            {activeTab === 'aeo' && (
-              <>
+            {/* ── Report ── */}
+            <>
                 <div className={`${isStudio ? 'bg-[#1C1F26] border-white/5' : 'bg-white border-gray-100 shadow-xl'} rounded-[2.5rem] p-8 border mb-8 print:shadow-none print:border-none`}>
                   <div className={`flex flex-col md:flex-row items-center gap-8 mb-8 pb-8 border-b ${isStudio ? 'border-white/5' : 'border-gray-100'}`}>
                     <div className="relative w-32 h-32 shrink-0">
@@ -880,31 +860,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
                     Get Expert Help Implementing This <Sparkles className="w-5 h-5" />
                   </button>
                 </div>
-              </>
-            )}
-
-            {/* ── GEO TAB ── */}
-            {activeTab === 'geo' && (
-              <div>
-                {geoStatus === 'loading' && (
-                  <div className="text-center py-16">
-                    <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-                    <h3 className={`text-xl font-bold mb-2 ${isStudio ? 'text-white' : 'text-brand-dark'}`}>Running GEO Analysis...</h3>
-                    <p className={`text-sm ${isStudio ? 'text-white/40' : 'text-brand-dark/50'}`}>Checking AI crawler access, schema, brand presence, and platform readiness</p>
-                  </div>
-                )}
-                {geoStatus === 'error' && (
-                  <div className="text-center py-12">
-                    <XCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-                    <h3 className={`text-xl font-bold mb-2 ${isStudio ? 'text-white' : 'text-brand-dark'}`}>GEO Analysis Failed</h3>
-                    <p className={`text-sm ${isStudio ? 'text-white/40' : 'text-brand-dark/50'}`}>Please try scanning again.</p>
-                  </div>
-                )}
-                {geoStatus === 'complete' && geoReport && (
-                  <GeoReportPanel geo={geoReport} isStudio={isStudio} />
-                )}
-              </div>
-            )}
+            </>
           </div>
         )}
       </div>
