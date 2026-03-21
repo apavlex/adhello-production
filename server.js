@@ -50,11 +50,12 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer(async (req, res) => {
-  console.log(`${req.method} ${req.url}`);
-  // v2.1 — iCal events + GEO audit + lead gate + email
+  const reqPath = req.url.split('?')[0]; // strip query string for all routing
+  console.log(`${req.method} ${reqPath}`);
+  // v2.2 — clean path routing, iCal events + GEO audit + lead gate + email
 
   // API Endpoint for website analysis
-  if (req.method === 'POST' && req.url === '/api/analyze') {
+  if (req.method === 'POST' && reqPath === '/api/analyze') {
     let body = '';
     req.on('data', chunk => {
       body += chunk.toString();
@@ -198,7 +199,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // API Endpoint for ad brief image analysis
-  if (req.method === 'POST' && req.url === '/api/ad-brief') {
+  if (req.method === 'POST' && reqPath === '/api/ad-brief') {
     let body = '';
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', async () => {
@@ -270,7 +271,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // API Endpoint for ad image generation (Imagen 3)
-  if (req.method === 'POST' && req.url === '/api/generate-ad-image') {
+  if (req.method === 'POST' && reqPath === '/api/generate-ad-image') {
     let body = '';
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', async () => {
@@ -314,7 +315,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // API Endpoint for sales chatbot
-  if (req.method === 'POST' && req.url === '/api/chat') {
+  if (req.method === 'POST' && reqPath === '/api/chat') {
     let body = '';
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', async () => {
@@ -382,7 +383,7 @@ If they want to talk to a human: click the phone icon above or call (360) 773-15
   }
 
   // API Endpoint for networking events — reads public iCal feed + hardcoded fallback
-  if (req.method === 'GET' && req.url === '/api/events') {
+  if (req.method === 'GET' && reqPath === '/api/events') {
     // Hardcoded fallback events (always shown if still in future)
     const FALLBACK_EVENTS = [
       {
@@ -480,7 +481,7 @@ If they want to talk to a human: click the phone icon above or call (360) 773-15
   }
 
   // API Endpoint for GEO (Generative Engine Optimization) audit
-  if (req.method === 'POST' && req.url === '/api/geo-analyze') {
+  if (req.method === 'POST' && reqPath === '/api/geo-analyze') {
     let body = '';
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', async () => {
@@ -589,7 +590,7 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
   }
 
   // API Endpoint — capture site audit leads and email notification
-  if (req.method === 'POST' && req.url === '/api/lead') {
+  if (req.method === 'POST' && reqPath === '/api/lead') {
     let body = '';
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', async () => {
@@ -645,7 +646,7 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
   }
 
   // API Endpoint — email the full GEO report to the business
-  if (req.method === 'POST' && req.url === '/api/send-report') {
+  if (req.method === 'POST' && reqPath === '/api/send-report') {
     let body = '';
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', async () => {

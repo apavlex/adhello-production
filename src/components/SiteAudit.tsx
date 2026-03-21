@@ -482,11 +482,9 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
   const handleShare = () => {
     if (!report) return;
     try {
-      const jsonStr = JSON.stringify(report);
-      const encoded = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (_, p1) =>
-        String.fromCharCode(parseInt(p1, 16))
-      ));
-      const shareUrl = `${window.location.origin}${window.location.pathname}?report=${encoded}`;
+      // Share the site audit page URL with the scanned domain as a param
+      const domain = encodeURIComponent(report.url || url);
+      const shareUrl = `${window.location.origin}/#site-audit?url=${domain}`;
       const copyToClipboard = (text: string) => {
         if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
         const textarea = document.createElement('textarea');
@@ -503,8 +501,8 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
       copyToClipboard(shareUrl).then(() => {
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 2500);
-      }).catch(err => window.prompt("Copy this link:", shareUrl));
-    } catch (err) { console.error("Failed to share report", err); }
+      }).catch(() => window.prompt('Copy this link:', shareUrl));
+    } catch (err) { console.error('Failed to share report', err); }
   };
 
   const handleDownload = () => {
