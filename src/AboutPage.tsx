@@ -42,24 +42,24 @@ export default function AboutPage() {
               canonical="https://adhello.ai/about"
               schema={aboutSchema}
             />
-            {/* Header — matches homepage */}
-            <div data-nav="main" className="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-xl z-[100] transition-[top] duration-300">
+            {/* Header — exact match to homepage */}
+            <div data-nav="main" className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-xl border-b border-yellow-100 z-[100] transition-[top] duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <header className="flex items-center justify-between h-16 sm:h-20">
                         <div className="flex items-center gap-2">
-                            <a href="/" onClick={(e) => { e.preventDefault(); window.location.href='/'; }}>
-                                <Logo variant="dark" />
-                            </a>
+                            <a href="/"><Logo variant="dark" /></a>
                         </div>
-                        <nav className="hidden md:flex gap-10">
-                            <a href="/#how-it-works" className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors">How It Works</a>
-                            <a href="/about" className="text-sm font-bold text-brand-dark underline decoration-primary decoration-2 underline-offset-4">About</a>
-                        </nav>
-                        <div className="hidden md:flex items-center gap-8">
-                            <a href="https://app.adhello.ai/login" className="text-sm font-extrabold text-brand-dark hover:text-primary transition-colors">Sign In</a>
-                            <a href="/#site-audit" className="bg-primary hover:bg-primary-hover text-brand-dark text-sm font-black px-6 py-3 rounded-full transition-all shadow-md hover:shadow-primary/20 hover:-translate-y-0.5 flex items-center gap-2">
-                                Build My Smart Site
-                            </a>
+                        <div className="hidden md:flex items-center gap-10">
+                            <nav className="flex gap-10">
+                                <a className="text-sm font-bold text-brand-dark/70 hover:text-brand-dark transition-colors" href="/#how-it-works">How It Works</a>
+                                <a className="text-sm font-bold text-brand-dark transition-colors" href="/about">About</a>
+                            </nav>
+                            <div className="flex items-center gap-8">
+                                <a href="https://app.adhello.ai/login" className="text-sm font-extrabold text-brand-dark hover:text-primary transition-colors">Sign In</a>
+                                <a href="/" className="bg-primary hover:bg-primary-hover text-brand-dark text-sm font-bold px-6 py-3 rounded-full transition-all duration-300 shadow-[4px_4px_0px_rgba(0,0,0,0.1)] hover:shadow-[0_0_15px_rgba(243,221,109,0.6)] hover:-translate-y-0.5 hover:scale-105 flex items-center gap-2">
+                                    Build My Smart Site
+                                </a>
+                            </div>
                         </div>
                     </header>
                 </div>
