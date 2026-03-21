@@ -72,6 +72,8 @@ export function AdBrief() {
   const [isDownloading, setIsDownloading] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
   const [approvedAdIndex, setApprovedAdIndex] = useState<number | null>(null);
+  const [generatedAds, setGeneratedAds] = useState<Record<number, string>>({});
+  const [generatingAd, setGeneratingAd] = useState<number | null>(null);
 
   const handleShare = async () => {
     const shareData = {
@@ -164,6 +166,39 @@ export function AdBrief() {
     sessionStorage.setItem('adhello-gate-passed', '1');
     setGateSubmitting(false);
     setBriefStep('upload');
+  };
+
+  const generateAdImage = async (adIndex: number, ad: { platform: string; headline: string; body: string; cta: string }) => {
+    if (!selectedImage) return;
+    setGeneratingAd(adIndex);
+    try {
+      // Extract base64 from data URL
+      const parts = selectedImage.split(',');
+      const base64 = parts[1];
+      const mimeMatch = parts[0].match(/:(.*?);/);
+      const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+
+      const prompt = `Transform this product photo into a professional ${ad.platform} ad image.
+Ad headline: "${ad.headline}"
+Ad body: "${ad.body}"
+Call to action: "${ad.cta}"
+Platform: ${ad.platform}
+
+Create a polished, high-quality ad creative. Keep the product as the hero, add clean professional text overlay with the headline and CTA button, use ${ad.platform}-optimized composition and aspect ratio. Style should be modern, premium, and scroll-stopping. The text must be legible and well-designed.`;
+
+      const res = await fetch('/api/generate-ad-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, imageBase64: base64, imageMimeType: mime })
+      });
+      const data = await res.json();
+      if (data.imageBase64) {
+        setGeneratedAds(prev => ({ ...prev, [adIndex]: `data:${data.mimeType};base64,${data.imageBase64}` }));
+      }
+    } catch (err) {
+      console.error('Ad generation failed:', err);
+    }
+    setGeneratingAd(null);
   };
 
   const startAnalysis = async () => {
@@ -532,16 +567,32 @@ export function AdBrief() {
                       )}
                       <div className="aspect-square bg-gray-100 flex items-center justify-center relative overflow-hidden">
                         <img
-                          src={selectedImage || ''}
+                          src={generatedAds[i] || selectedImage || ''}
                           alt="Ad"
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover transition-all duration-500"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-4 print:hidden">
-                          <span className="text-white text-xs font-bold px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-1.5">
-                            <Sparkles className="w-3 h-3" />
-                            Use your uploaded photo
-                          </span>
-                        </div>
+                        {generatingAd === i ? (
+                          <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-3">
+                            <div className="w-8 h-8 border-3 border-white/30 border-t-white rounded-full animate-spin border-[3px]" />
+                            <span className="text-white text-xs font-bold">Creating ad...</span>
+                          </div>
+                        ) : generatedAds[i] ? (
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end justify-between px-3 pb-3 print:hidden">
+                            <span className="text-white text-[10px] font-bold px-2 py-1 bg-green-500/80 backdrop-blur-sm rounded-full">✓ AI Generated</span>
+                            <button onClick={() => generateAdImage(i, ad)} className="text-white text-[10px] font-bold px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors">Regenerate</button>
+                          </div>
+                        ) : (
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col items-center justify-end pb-4 gap-2 print:hidden">
+                            <button
+                              onClick={() => generateAdImage(i, ad)}
+                              className="flex items-center gap-1.5 bg-primary text-brand-dark text-xs font-black px-4 py-2 rounded-full hover:bg-primary-hover transition-all shadow-lg hover:-translate-y-0.5"
+                            >
+                              <Sparkles className="w-3.5 h-3.5" />
+                              Create Ad with AI
+                            </button>
+                            <span className="text-white/60 text-[10px]">Nano Banana 2</span>
+                          </div>
+                        )}
                       </div>
                       <div className="p-6 flex-grow flex flex-col">
                         <div className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-widest mb-4">

@@ -276,7 +276,7 @@ const server = http.createServer(async (req, res) => {
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', async () => {
       try {
-        const { prompt } = JSON.parse(body);
+        const { prompt, imageBase64, imageMimeType } = JSON.parse(body);
         const geminiKey = process.env.GEMINI_API_KEY;
         if (!geminiKey) {
           res.writeHead(500, { 'Content-Type': 'application/json' });
@@ -284,25 +284,42 @@ const server = http.createServer(async (req, res) => {
         }
         const { GoogleGenAI } = await import('@google/genai');
         const genAI = new GoogleGenAI({ apiKey: geminiKey });
-        console.log('[AD-IMAGE] Generating image with gemini-2.0-flash');
+
+        // Use Nano Banana 2 (gemini-2.0-flash-exp) with image input if provided
+        console.log('[AD-IMAGE] Generating ad with Nano Banana 2 (gemini-2.0-flash-exp)');
+
+        const parts = [];
+
+        // Include uploaded product photo as reference if available
+        if (imageBase64) {
+          parts.push({
+            inlineData: {
+              data: imageBase64,
+              mimeType: imageMimeType || 'image/jpeg'
+            }
+          });
+        }
+        parts.push({ text: prompt });
+
         const response = await genAI.models.generateContent({
-          model: 'gemini-2.0-flash',
-          contents: [{ parts: [{ text: prompt }] }],
+          model: 'gemini-2.0-flash-exp',
+          contents: [{ parts }],
           config: { responseModalities: ['IMAGE', 'TEXT'] }
         });
 
         // Extract inline image data from response parts
         let imageBytes = null;
         let mimeType = 'image/jpeg';
-        const parts = response.candidates?.[0]?.content?.parts || [];
-        for (const part of parts) {
+        const responseParts = response.candidates?.[0]?.content?.parts || [];
+        for (const part of responseParts) {
           if (part.inlineData?.data) {
             imageBytes = part.inlineData.data;
             mimeType = part.inlineData.mimeType || 'image/jpeg';
             break;
           }
         }
-        if (!imageBytes) throw new Error('No image returned by model');
+        if (!imageBytes) throw new Error('No image returned by Nano Banana 2');
+        console.log('[AD-IMAGE] Nano Banana 2 image generated successfully');
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ imageBase64: imageBytes, mimeType }));
       } catch (err) {
