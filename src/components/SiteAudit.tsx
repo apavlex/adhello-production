@@ -324,7 +324,6 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
   const [report, setReport] = useState<Report | null>(null);
   const [geoReport, setGeoReport] = useState<GeoReport | null>(null);
   const [geoStatus, setGeoStatus] = useState<'idle' | 'loading' | 'complete' | 'error'>('idle');
-  const [activeTab, setActiveTab] = useState<'aeo' | 'geo'>('aeo');
   const [copySuccess, setCopySuccess] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   // Email capture modal
@@ -402,7 +401,6 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
     setGeoReport(null);
     setGeoStatus('idle');
     setErrorInfo(null);
-    setActiveTab('aeo');
 
     try {
       const controller = new AbortController();
@@ -479,30 +477,21 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
     }
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (!report) return;
+    const shareUrl = `${window.location.origin}/#site-audit`;
     try {
-      // Share the site audit page URL with the scanned domain as a param
-      const domain = encodeURIComponent(report.url || url);
-      const shareUrl = `${window.location.origin}/#site-audit?url=${domain}`;
-      const copyToClipboard = (text: string) => {
-        if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        return Promise.resolve();
-      };
-      copyToClipboard(shareUrl).then(() => {
-        setCopySuccess(true);
-        setTimeout(() => setCopySuccess(false), 2500);
-      }).catch(() => window.prompt('Copy this link:', shareUrl));
-    } catch (err) { console.error('Failed to share report', err); }
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const t = document.createElement('textarea');
+        t.value = shareUrl; t.style.position = 'fixed'; t.style.opacity = '0';
+        document.body.appendChild(t); t.focus(); t.select();
+        document.execCommand('copy'); document.body.removeChild(t);
+      }
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2500);
+    } catch { window.prompt('Copy this link:', shareUrl); }
   };
 
   const handleDownload = () => {
