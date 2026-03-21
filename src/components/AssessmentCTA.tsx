@@ -27,10 +27,10 @@ export function AssessmentCTA() {
             {/* Text */}
             <div className="flex-1 min-w-0">
               <h2 className="text-base md:text-lg font-black leading-tight tracking-tight text-white">
-                Questions? DM <span className="text-primary">@alexpavlenko</span> on X
+                Get a <span className="text-primary">free website review</span> from Alex
               </h2>
               <p className="text-xs md:text-sm font-medium text-white/50">
-                Founder of AdHello · replies personally
+                Founder of AdHello.ai — DM him on X and he'll personally review your site.
               </p>
             </div>
           </div>
@@ -47,7 +47,7 @@ export function AssessmentCTA() {
               <svg className="w-3.5 h-3.5 relative" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.258 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
               </svg>
-              <span className="relative">DM ALEX</span>
+              <span className="relative">GET YOUR REVIEW</span>
               <div className="w-4 h-4 rounded-full bg-brand-dark text-white flex items-center justify-center group-hover:bg-brand-dark transition-colors relative">
                 <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
               </div>
