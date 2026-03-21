@@ -634,17 +634,32 @@ CRITICAL RULES:
                               Copy
                             </button>
                           </div>
-                          <button 
-                            onClick={() => setApprovedAdIndex(approvedAdIndex === i ? null : i)}
-                            className={`w-full py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 border ${
-                              approvedAdIndex === i 
-                                ? 'bg-green-500 text-white border-green-500' 
-                                : 'bg-white text-brand-dark/60 border-gray-100 hover:border-green-500/30 hover:text-green-600'
-                            }`}
-                          >
-                            {approvedAdIndex === i ? <CheckCircle2 className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
-                            {approvedAdIndex === i ? 'Approved' : 'Approve Concept'}
-                          </button>
+                          {generatedAds[i] ? (
+                            <button
+                              onClick={() => {
+                                const a = document.createElement('a');
+                                a.href = generatedAds[i];
+                                a.download = `ad-${ad.platform.toLowerCase()}-${ad.headline.replace(/\s+/g, '-').toLowerCase()}.png`;
+                                a.click();
+                              }}
+                              className="w-full py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 border bg-brand-dark text-white border-brand-dark hover:bg-black"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                              Download Ad
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => setApprovedAdIndex(approvedAdIndex === i ? null : i)}
+                              className={`w-full py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 border ${
+                                approvedAdIndex === i
+                                  ? 'bg-green-500 text-white border-green-500'
+                                  : 'bg-white text-brand-dark/60 border-gray-100 hover:border-green-500/30 hover:text-green-600'
+                              }`}
+                            >
+                              {approvedAdIndex === i ? <CheckCircle2 className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+                              {approvedAdIndex === i ? 'Approved' : 'Approve Concept'}
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
