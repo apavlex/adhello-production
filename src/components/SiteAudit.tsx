@@ -519,87 +519,65 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
 <title>GEO Report — ${report.url || url}</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #0d1520; background: #fff; padding: 40px; max-width: 800px; margin: 0 auto; }
-  .header { background: #0d1520; color: white; padding: 32px; border-radius: 16px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
-  .header h1 { font-size: 22px; font-weight: 900; color: #E8B84B; margin-bottom: 4px; }
-  .header p { font-size: 13px; color: rgba(255,255,255,0.5); }
-  .score-badge { background: ${scoreColor}; color: white; font-size: 42px; font-weight: 900; width: 90px; height: 90px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .section { margin-bottom: 28px; }
-  .section-title { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #888; margin-bottom: 12px; }
-  .summary-box { background: #f9f9f6; border-radius: 12px; padding: 16px; font-size: 15px; line-height: 1.6; color: #444; margin-bottom: 8px; }
-  .scores-row { display: flex; gap: 12px; margin-bottom: 28px; }
-  .score-card { flex: 1; background: #f9f9f6; border-radius: 10px; padding: 14px; text-align: center; }
-  .score-card .val { font-size: 26px; font-weight: 900; color: #0d1520; }
-  .score-card .lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-top: 2px; }
-  .item { background: #f9f9f6; border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; display: flex; gap: 10px; align-items: flex-start; }
-  .item-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-  .item-title { font-size: 14px; font-weight: 700; color: #0d1520; }
-  .item-desc { font-size: 13px; color: #666; margin-top: 2px; line-height: 1.5; }
-  .audit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .audit-item { background: #f9f9f6; border-radius: 10px; padding: 12px 14px; }
-  .audit-label { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
-  .audit-value { font-size: 15px; font-weight: 700; color: #0d1520; margin: 3px 0; }
-  .audit-reason { font-size: 12px; color: #777; line-height: 1.4; }
-  .rec-item { border-left: 3px solid #E8B84B; background: #fffdf5; border-radius: 0 10px 10px 0; padding: 14px 16px; margin-bottom: 8px; }
-  .rec-title { font-size: 14px; font-weight: 700; color: #0d1520; margin-bottom: 4px; }
-  .rec-desc { font-size: 13px; color: #555; line-height: 1.5; margin-bottom: 6px; }
-  .rec-action { font-size: 12px; font-weight: 700; color: #E8B84B; }
-  .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #aaa; font-size: 11px; }
-  .footer strong { color: #E8B84B; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #0d1520; background: #fff; padding: 40px; max-width: 700px; margin: 0 auto; }
+  .header { background: #0d1520; border-radius: 16px; padding: 28px 32px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  .header-left h1 { font-size: 20px; font-weight: 900; color: #E8B84B; margin-bottom: 3px; }
+  .header-left p { font-size: 13px; color: rgba(255,255,255,0.45); }
+  .score-circle { width: 80px; height: 80px; border-radius: 50%; background: ${scoreColor}; color: white; font-size: 36px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .scores-row { display: flex; gap: 10px; margin-bottom: 24px; }
+  .score-card { flex: 1; background: #f5f5f2; border-radius: 10px; padding: 14px; text-align: center; }
+  .score-card .val { font-size: 24px; font-weight: 900; color: #0d1520; }
+  .score-card .lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #999; margin-top: 2px; }
+  .summary { font-size: 15px; line-height: 1.65; color: #444; background: #f9f9f6; border-radius: 12px; padding: 18px 20px; margin-bottom: 24px; }
+  .section-label { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #bbb; margin-bottom: 10px; margin-top: 24px; }
+  .rec { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+  .rec:last-child { border-bottom: none; }
+  .rec-num { width: 26px; height: 26px; background: #E8B84B; border-radius: 50%; color: #0d1520; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .rec-title { font-size: 14px; font-weight: 700; color: #0d1520; margin-bottom: 3px; }
+  .rec-action { font-size: 12px; color: #888; line-height: 1.4; }
+  .cta { margin-top: 32px; background: #0d1520; border-radius: 14px; padding: 24px 28px; text-align: center; }
+  .cta p { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 14px; line-height: 1.5; }
+  .cta a { display: inline-block; background: #E8B84B; color: #0d1520; font-weight: 900; font-size: 14px; padding: 12px 28px; border-radius: 999px; text-decoration: none; }
+  .footer { margin-top: 24px; text-align: center; color: #ccc; font-size: 11px; }
 </style>
 </head>
 <body>
   <div class="header">
-    <div>
+    <div class="header-left">
       <h1>AdHello.ai — GEO Report</h1>
       <p>${report.url || url}</p>
-      <p style="margin-top:6px;color:rgba(255,255,255,0.4);font-size:11px">Generated ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+      <p style="margin-top:4px;font-size:11px">${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
     </div>
-    <div class="score-badge">${report.score}</div>
+    <div class="score-circle">${report.score}</div>
   </div>
 
   <div class="scores-row">
-    <div class="score-card"><div class="val">${report.mobileFirstScore}</div><div class="lbl">Mobile First</div></div>
-    <div class="score-card"><div class="val">${report.leadsEstimatesScore}</div><div class="lbl">Lead Generation</div></div>
+    <div class="score-card"><div class="val">${report.mobileFirstScore}</div><div class="lbl">Mobile</div></div>
+    <div class="score-card"><div class="val">${report.leadsEstimatesScore}</div><div class="lbl">Lead Gen</div></div>
     <div class="score-card"><div class="val">${report.googleAiReadyScore}</div><div class="lbl">AI Ready</div></div>
   </div>
 
-  <div class="section">
-    <div class="section-title">Summary</div>
-    <div class="summary-box">${report.summary}</div>
-    ${report.brandAnalysis ? `<div class="summary-box">${report.brandAnalysis}</div>` : ''}
-  </div>
+  <div class="summary">${report.summary}</div>
 
-  <div class="section">
-    <div class="section-title">Technical Audit</div>
-    <div class="audit-grid">
-      ${Object.values(report.technicalAudit).map((c: any) => `
-        <div class="audit-item">
-          <div class="audit-label">${statusIcon(c.status)} ${c.label}</div>
-          <div class="audit-value">${c.value}</div>
-          <div class="audit-reason">${c.reason || ''}</div>
-        </div>`).join('')}
-    </div>
-  </div>
-
-  ${report.strengths?.length ? `<div class="section">
-    <div class="section-title">✅ Strengths</div>
-    ${report.strengths.map((s: any) => `<div class="item"><div class="item-icon">✅</div><div><div class="item-title">${s.indicator}</div><div class="item-desc">${s.description}</div></div></div>`).join('')}
+  ${report.recommendations?.length ? `
+  <div class="section-label">Top Recommendations</div>
+  <div>
+    ${report.recommendations.slice(0, 3).map((r: any, i: number) => `
+    <div class="rec">
+      <div class="rec-num">${i + 1}</div>
+      <div>
+        <div class="rec-title">${r.title}</div>
+        <div class="rec-action">${r.action}</div>
+      </div>
+    </div>`).join('')}
   </div>` : ''}
 
-  ${report.weaknesses?.length ? `<div class="section">
-    <div class="section-title">⚠️ Areas to Improve</div>
-    ${report.weaknesses.map((w: any) => `<div class="item"><div class="item-icon">⚠️</div><div><div class="item-title">${w.indicator}</div><div class="item-desc">${w.description}</div></div></div>`).join('')}
-  </div>` : ''}
-
-  ${report.recommendations?.length ? `<div class="section">
-    <div class="section-title">🎯 Actionable Recommendations</div>
-    ${report.recommendations.map((r: any) => `<div class="rec-item"><div class="rec-title">${r.title}</div><div class="rec-desc">${r.description}</div><div class="rec-action">→ ${r.action}</div></div>`).join('')}
-  </div>` : ''}
-
-  <div class="footer">
-    Report generated by <strong>AdHello.ai</strong> · adhello.ai · Free GEO audit for home service businesses
+  <div class="cta">
+    <p>Want AdHello to fix these issues and get your business showing up on Google, ChatGPT, and Perplexity?</p>
+    <a href="https://calendar.app.google/QQsVbiAt4QdCX8mx8">Book a Free Strategy Call →</a>
   </div>
+
+  <div class="footer">AdHello.ai · adhello.ai · AI-powered marketing for home service businesses</div>
 </body>
 </html>`;
 
@@ -736,19 +714,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
 
         {status === 'complete' && report && (
           <div ref={reportRef} className="animate-in fade-in slide-in-from-bottom-8 duration-700 print:p-0">
-            {/* Print-only header */}
-            <div className="hidden print:block mb-10 border-b-2 border-primary pb-6">
-              <div className="flex justify-between items-end">
-                <div>
-                  <h1 className="text-4xl font-black text-brand-dark mb-2">AEO + GEO Readiness Report</h1>
-                  <p className="text-brand-dark/60 font-bold">{report.url || url}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs font-black uppercase tracking-widest text-brand-dark/40">Generated by</p>
-                  <p className="text-xl font-black text-primary-dark">AdHello AI</p>
-                </div>
-              </div>
-            </div>
+
 
             {/* Header row */}
             <div className="flex items-center justify-between mb-6 print:hidden">
