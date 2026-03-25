@@ -164,15 +164,6 @@ export function BeforeAfterSlider({
         </div>
       </div>
 
-      {/* Expand Button */}
-      <button
-        onClick={() => setIsExpanded(true)}
-        className="absolute top-4 right-4 z-50 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-md text-white rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-all hover:scale-110"
-        title="Expand view"
-      >
-        <Expand className="w-4 h-4" />
-      </button>
-
       {/* Labels */}
       <div className="absolute top-8 left-8 z-10 pointer-events-none">
         <div 
@@ -211,12 +202,7 @@ export function BeforeAfterSlider({
          </div>
       </div>
 
-      {/* Click hint */}
-      <div className="absolute bottom-6 right-6 z-50 pointer-events-none">
-        <div className="bg-white/10 backdrop-blur-md text-white/50 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border border-white/10">
-          Click ⤢ to expand
-        </div>
-      </div>
+
     </div>
 
     {/* Fullscreen Modal */}
