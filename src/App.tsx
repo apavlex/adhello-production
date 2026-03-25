@@ -116,8 +116,8 @@ const PORTFOLIO_EXAMPLES = [
   {
     id: 'electrical',
     name: 'Electrical',
-    beforeImage: '/old-electrical-site.png',
-    afterImage: '/templates/template-portland-electric-home.png'
+    beforeImage: '/templates/template-bright-electric-old.png',
+    afterImage: '/templates/template-bright-electric-new.png'
   },
   {
     id: 'roofing',
