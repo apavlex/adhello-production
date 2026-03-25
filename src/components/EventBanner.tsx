@@ -99,7 +99,7 @@ export function EventBanner() {
   const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(event.location)}`;
 
   return (
-    <div ref={bannerRef} className="w-full bg-brand-dark text-white fixed top-0 left-0 right-0 z-[150]">
+    <div ref={bannerRef} className="hidden sm:block w-full bg-brand-dark text-white fixed top-0 left-0 right-0 z-[150]">
       <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
 
         {/* Left badge */}
