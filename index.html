@@ -168,5 +168,24 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- AdHello Leads Tracking Pixel -->
+    <script>
+      (function() {
+        const TRACKING_URL = 'https://leads.adhello.ai/api/track';
+        const payload = {
+          path: window.location.pathname,
+          referrer: document.referrer || 'direct',
+          userAgent: navigator.userAgent
+        };
+        
+        fetch(TRACKING_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          mode: 'no-cors' // Use no-cors if leads.adhello.ai is on a different domain and CORS is not configured
+        }).catch(err => console.log('Analytics sync failed:', err));
+      })();
+    </script>
   </body>
 </html>
