@@ -496,6 +496,117 @@ If they want to talk to a human: click the phone icon above or call (360) 773-15
     return;
   }
 
+  // API Endpoint for fulfillment ($27 Blueprint)
+  if (req.method === 'POST' && reqPath === '/api/fulfill') {
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', async () => {
+      try {
+        const { bizName, city, score, reviewThemes, email } = JSON.parse(body);
+        if (!bizName || score === undefined) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Business name and score are required' }));
+        }
+
+        console.log(`[FULFILLMENT] Generating blueprint for: ${bizName}`);
+
+        const systemPrompt = `**Role:** You are the 'B2B Web Architect' Fulfillment Engine for AdHello.ai. 
+**Input:** Business Name: ${bizName}, City/Location: ${city || 'Local Area'}, Audit Score: ${score}, Top 3 Review Themes: ${reviewThemes?.join(', ') || 'Professionalism, Quality, Reliability'}.
+**Objective:** Generate a professional "Digital Blueprint" that justifies a $27 purchase and sets the stage for a $1k+ agency upsell.
+
+---
+
+### 1. THE STRATEGIC OVERLAY
+* **Goal:** Acknowledge the Audit Score and explain the "Psychological Gap."
+* **Content:** "Your current site scored a ${score}. While functional, it lacks 'Conversion Authority.' We have re-engineered your presence to solve for ${reviewThemes?.[0] || 'customer trust'} and ${reviewThemes?.[1] || 'market relevance'} which were identified as your highest-value customer triggers."
+
+---
+
+### 2. THE HIGH-FIDELITY DESIGN PROMPT (For Base44)
+* **Instruction:** Create a specialized prompt for the user to paste into the Base44 AI Engine.
+* **Format:** Provide this in a CLEAR CODE BLOCK.
+* **Logic:** Use a 'Bento Grid' or 'Split-Hero' layout. 
+* **Details:** Include Hex codes: #0F172A (Deep Navy), #38BDF8 (Electric Blue), and #F8FAFC (Clean White). Specify "High-contrast typography" and "Professional Service Imagery."
+
+---
+
+### 3. THE 'CUSTOMER GOLD' COPY PACK
+* **Power Headline:** [Create a 1-sentence hook based on reviewThemes[0] or Industry].
+* **Sub-headline:** [A value prop addressing the 'Problem' identified in the Audit].
+* **The Trust Bar:** "Proudly serving ${city || 'your area'} with a reputation for ${reviewThemes?.[1] || 'Quality'} and ${reviewThemes?.[2] || 'Reliability'}."
+* **Service Grid:** [Generate 3 clear service blocks with benefit-driven descriptions].
+
+---
+
+### 4. LOCAL SEO METADATA
+* **Page Title:** ${bizName} | Top-Rated Service in ${city || 'your area'}
+* **Meta Description:** [155 characters max focusing on trust and local relevance].
+* **H1 Tag:** The Most Reliable Service in ${city || 'your area'}.
+
+---
+
+### 5. THE BRIDGE TO ADHELLO.AI (The Agency Upsell)
+* **Content:** "Architecture is only half the battle. A store in the middle of the desert sells nothing. To activate this new design, you need automated traffic."
+* **The Offer:** "Your $27 purchase has been credited to your account. You can now book a 'Scale Session' to have us manage your AdHello.ai deployment and GMB synchronization for a flat monthly fee."
+
+---
+
+**Tone:** Authoritative, elite, and results-only. No fluff. Do NOT use markdown bolding (like **text**) in the body, except for headers.`;
+
+        let blueprintContent = null;
+        let usedModel = null;
+
+        // Try Gemini primarily in this server
+        const geminiKey = process.env.GEMINI_API_KEY;
+        if (geminiKey) {
+          try {
+            console.log('[FULFILLMENT] Attempting Gemini (gemini-2.0-flash)...');
+            const { GoogleGenAI } = await import('@google/genai');
+            const genAI = new GoogleGenAI({ apiKey: geminiKey });
+            const result = await genAI.models.generateContent({
+              model: 'gemini-1.5-pro', // Use Pro for fulfillment quality
+              contents: [{ role: 'user', parts: [{ text: systemPrompt }] }]
+            });
+            blueprintContent = result.text;
+            usedModel = 'Gemini 1.5 Pro';
+          } catch (err) {
+            console.error('[FULFILLMENT] Gemini error:', err.message);
+          }
+        }
+
+        if (!blueprintContent) {
+          console.warn('[FULFILLMENT] Falling back to mock data.');
+          blueprintContent = `# Digital Blueprint: ${bizName}\n\n## 1. Executive Summary\nYour site is at a critical juncture. While functional, it isn't optimized for the AI search era.\n\n## 2. Design Prompt for Base44\n\`\`\`\nCreate a premium bento-grid website for a home service business named ${bizName}. Use navy and electric blue accents. High-end photography.\n\`\`\`\n\n## 3. Copy Pack\nHeadline: The Most Trusted Name in ${city || 'your area'}.\n\n--- Syncing to LeadsOS...`;
+          usedModel = 'Mock (API Error)';
+        }
+
+        // --- LINK WITH LEADS APP ---
+        // Sync the fulfillment event and content to LeadsOS
+        setImmediate(() => {
+          syncToLeadsApp({
+            email: email || 'N/A',
+            title: bizName,
+            source: 'adhello_blueprint',
+            status: 'Blueprint Purchased',
+            message: `Purchased $27 Blueprint for ${bizName}`,
+            blueprint: blueprintContent,
+            logs: [
+              { timestamp: new Date().toISOString(), message: "Blueprint generated and purchased." }
+            ]
+          });
+        });
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ blueprint: blueprintContent, model: usedModel }));
+      } catch (err) {
+        console.error('[FULFILLMENT] Error:', err.message);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    });
+    return;
+  }
+
   // API Endpoint for networking events — reads public iCal feed + hardcoded fallback
   if (req.method === 'GET' && reqPath === '/api/events') {
     // Hardcoded fallback events (always shown if still in future)

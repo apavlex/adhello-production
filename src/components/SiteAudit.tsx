@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Globe, Eye, Target, Sparkles, CheckCircle2, Circle, Loader2, Wrench, AlertTriangle, XCircle, Share2, Download, Link as LinkIcon, Copy, Check, Bot, ShieldCheck, ShieldX, ShieldAlert, BarChart3, Zap, TrendingUp } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Search, Globe, Eye, Target, Sparkles, CheckCircle2, Circle, Loader2, Wrench, AlertTriangle, XCircle, Share2, Download, Link as LinkIcon, Copy, Check, Bot, ShieldCheck, ShieldX, ShieldAlert, BarChart3, Zap, TrendingUp, Lock, Palette, Layout, MousePointerClick, ChevronRight } from 'lucide-react';
+import { BeforeAfterSlider } from './BeforeAfterSlider';
 
 interface AuditCheck {
   label: string;
@@ -318,6 +320,7 @@ function GeoReportPanel({ geo, isStudio }: { geo: GeoReport; isStudio: boolean }
 }
 
 export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
+  const navigate = useNavigate();
   const [url, setUrl] = useState('');
   const [status, setStatus] = useState<'idle' | 'analyzing' | 'complete'>('idle');
   const [progress, setProgress] = useState(0);
@@ -703,8 +706,6 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
 
         {status === 'complete' && report && (
           <div ref={reportRef} className="animate-in fade-in slide-in-from-bottom-8 duration-700 print:p-0">
-
-
             {/* Header row */}
             <div className="flex items-center justify-between mb-6 print:hidden">
               <h2 className={`text-3xl font-extrabold ${isStudio ? 'text-white' : 'text-brand-dark'}`}>Audit Results</h2>
@@ -725,7 +726,7 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
 
             {/* ── Report ── */}
             <>
-                <div className={`${isStudio ? 'bg-[#1C1F26] border-white/5' : 'bg-white border-gray-100 shadow-xl'} rounded-[2.5rem] p-8 border mb-8 print:shadow-none print:border-none`}>
+                <div className={`${isStudio ? 'bg-[#1C1F26] border-white/5' : 'bg-white border-gray-100 shadow-xl'} rounded-[2.5rem] p-8 border mb-16 print:shadow-none print:border-none`}>
                   <div className={`flex flex-col md:flex-row items-center gap-8 mb-8 pb-8 border-b ${isStudio ? 'border-white/5' : 'border-gray-100'}`}>
                     <div className="relative w-32 h-32 shrink-0">
                       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -804,8 +805,8 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
                           <li key={i} className="flex items-start gap-3 font-medium">
                             <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center shrink-0 mt-0.5"><CheckCircle2 className="w-4 h-4 text-green-500" /></div>
                             <div>
-                              <span className={`font-bold block mb-0.5 ${isStudio ? 'text-white' : 'text-brand-dark'}`}>{strength.indicator}</span>
-                              <span className={`text-sm ${isStudio ? 'text-white/60' : 'text-brand-dark/70'}`}>{strength.description}</span>
+                               <span className={`font-bold block mb-0.5 ${isStudio ? 'text-white' : 'text-brand-dark'}`}>{strength.indicator}</span>
+                               <span className={`text-sm ${isStudio ? 'text-white/60' : 'text-brand-dark/70'}`}>{strength.description}</span>
                             </div>
                           </li>
                         ))}
@@ -818,12 +819,115 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
                           <li key={i} className="flex items-start gap-3 font-medium">
                             <div className="w-6 h-6 rounded-full bg-yellow-500/10 flex items-center justify-center shrink-0 mt-0.5"><Target className="w-4 h-4 text-yellow-500" /></div>
                             <div>
-                              <span className={`font-bold block mb-0.5 ${isStudio ? 'text-white' : 'text-brand-dark'}`}>{weakness.indicator}</span>
-                              <span className={`text-sm ${isStudio ? 'text-white/60' : 'text-brand-dark/70'}`}>{weakness.description}</span>
+                               <span className={`font-bold block mb-0.5 ${isStudio ? 'text-white' : 'text-brand-dark'}`}>{weakness.indicator}</span>
+                               <span className={`text-sm ${isStudio ? 'text-white/60' : 'text-brand-dark/70'}`}>{weakness.description}</span>
                             </div>
                           </li>
                         ))}
                       </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Vision Preview (The Hook) */}
+                <div className="mb-20 print:hidden">
+                  <div className="flex items-center justify-between mb-8">
+                     <h3 className={`text-3xl font-black italic ${isStudio ? 'text-white' : 'text-brand-dark'}`}>The Vision Preview</h3>
+                     <div className="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest border border-primary/20">
+                       AI-Generated Architecture
+                     </div>
+                  </div>
+                  <BeforeAfterSlider 
+                    beforeImage="/old-site.png" 
+                    afterImage="/new-site.png" 
+                    beforeLabel="Current Design"
+                    afterLabel="Proposed Vibe"
+                  />
+                  <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className={`${isStudio ? 'bg-white/5 text-white/60' : 'bg-white text-brand-dark/60'} p-4 rounded-2xl border border-brand-dark/5 text-sm font-bold flex items-center gap-2`}>
+                      <Palette className="w-4 h-4 text-primary" />
+                      Dynamic Color Balancing
+                    </div>
+                    <div className={`${isStudio ? 'bg-white/5 text-white/60' : 'bg-white text-brand-dark/60'} p-4 rounded-2xl border border-brand-dark/5 text-sm font-bold flex items-center gap-2`}>
+                      <Layout className="w-4 h-4 text-primary" />
+                      Conversion-Optimized Flow
+                    </div>
+                    <div className={`${isStudio ? 'bg-white/5 text-white/60' : 'bg-white text-brand-dark/60'} p-4 rounded-2xl border border-brand-dark/5 text-sm font-bold flex items-center gap-2`}>
+                      <Search className="w-4 h-4 text-primary" />
+                      GEO Rank Signals
+                    </div>
+                    <div className={`${isStudio ? 'bg-white/5 text-white/60' : 'bg-white text-brand-dark/60'} p-4 rounded-2xl border border-brand-dark/5 text-sm font-bold flex items-center gap-2`}>
+                      <MousePointerClick className="w-4 h-4 text-primary" />
+                      High-Trust Micro-Interactions
+                    </div>
+                  </div>
+                </div>
+
+                {/* The Low-Hanging Fruit / $27 Offer */}
+                <div className="bg-brand-dark text-white p-10 md:p-20 rounded-[4rem] mb-20 relative overflow-hidden shadow-2xl print:hidden">
+                  <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2" />
+                  
+                  <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
+                    <div className="lg:w-2/3">
+                      <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-primary text-sm font-black mb-6 border border-white/10">
+                        <Zap className="w-4 h-4" />
+                        Next-Gen Strategic Move
+                      </div>
+                      <h2 className="text-4xl md:text-6xl font-black mb-8 leading-[0.95]">
+                        Don't just audit. <br />
+                        <span className="text-primary italic">Actually fix it.</span>
+                      </h2>
+                      <p className="text-xl text-white/70 font-medium leading-relaxed mb-8">
+                        We've used the data from this report to architect your custom <b>Strategic Web Blueprint</b> ($3,000 value). It includes high-fidelity mockups, conversion-ready copy, and the proprietary proxy code to launch your new identity instantly.
+                      </p>
+                      
+                      <div className="grid grid-cols-2 gap-4 mb-8">
+                        <div className="flex items-center gap-2 text-sm font-bold text-white/60">
+                          <CheckCircle2 className="w-4 h-4 text-primary" />
+                          3 Custom Variants
+                        </div>
+                        <div className="flex items-center gap-2 text-sm font-bold text-white/60">
+                          <CheckCircle2 className="w-4 h-4 text-primary" />
+                          'Customer Gold' Copy
+                        </div>
+                        <div className="flex items-center gap-2 text-sm font-bold text-white/60">
+                          <CheckCircle2 className="w-4 h-4 text-primary" />
+                          Base44 Vibe Code
+                        </div>
+                        <div className="flex items-center gap-2 text-sm font-bold text-white/60">
+                          <CheckCircle2 className="w-4 h-4 text-primary" />
+                          GEO Optimization Plan
+                        </div>
+                      </div>
+
+                      <button 
+                        onClick={() => {
+                          const bizRaw = (report.url || url).replace(/https?:\/\//, '').replace(/\//g, '-');
+                          const city = report.technicalAudit?.googleBusinessProfile?.value?.includes(',') ? report.technicalAudit.googleBusinessProfile.value.split(',')[1].trim() : '';
+                          navigate(`/blueprint?biz=${bizRaw}&score=${report.score}&city=${city}`);
+                        }}
+                        className="bg-primary hover:bg-primary-hover text-brand-dark px-10 py-5 rounded-full font-black text-xl flex items-center gap-3 transition-all hover:scale-105 shadow-xl shadow-primary/20 group"
+                      >
+                        <Lock className="w-6 h-6" />
+                        Unlock My Strategic Blueprint ($27)
+                        <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    </div>
+                    
+                    <div className="lg:w-1/3 text-center hidden lg:block">
+                      <div className="p-8 rounded-[3rem] border border-white/10 bg-white/5 backdrop-blur-md">
+                        <div className="mb-4">
+                          <span className="text-4xl font-black text-white">$27</span>
+                          <span className="block text-xs font-bold uppercase tracking-widest text-white/40">Limited Time Offer</span>
+                        </div>
+                        <div className="space-y-4 text-center">
+                           <div className="w-20 h-2 bg-primary/20 rounded-full mx-auto overflow-hidden">
+                             <div className="w-2/3 h-full bg-primary" />
+                           </div>
+                           <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Strategy Optimized</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

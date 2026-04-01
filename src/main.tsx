@@ -8,12 +8,22 @@ import AeoLandingPage from './AeoLandingPage.tsx';
 import TemplatesIndex from './TemplatesIndex.tsx';
 import TemplateDetails from './TemplateDetails.tsx';
 import AdStudio from './AdStudio.tsx';
+import BlueprintSalesPage from './components/BlueprintSalesPage.tsx';
+import FulfillmentPage from './components/FulfillmentPage.tsx';
 import './index.css';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "/blueprint",
+    element: <BlueprintSalesPage />,
+  },
+  {
+    path: "/fulfillment",
+    element: <FulfillmentPage />,
   },
   {
     path: "/studio",
