@@ -1,0 +1,14 @@
+steps:
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args:
+      - gcloud
+      - run
+      - deploy
+      - adhello-ai
+      - --source=.
+      - --region=us-west1
+      - --project=$PROJECT_ID
+      - --allow-unauthenticated
+
+options:
+  logging: CLOUD_LOGGING_ONLY
