@@ -182,8 +182,7 @@
         fetch(TRACKING_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-          mode: 'no-cors' // Use no-cors if leads.adhello.ai is on a different domain and CORS is not configured
+          body: JSON.stringify(payload)
         }).catch(err => console.log('Analytics sync failed:', err));
       })();
     </script>

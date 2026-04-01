@@ -79,9 +79,15 @@ async function syncTrackingToLeadsApp(data, ip) {
       },
       body: JSON.stringify(data)
     });
+    
+    if (!response.ok) {
+        const text = await response.text();
+        console.error(`[TRACK-SYNC] Failed: ${response.status} - ${text}`);
+    }
     return response.ok;
   } catch (err) {
-    console.error(`[TRACK-SYNC] Failed to track visit:`, err.message);
+    console.error(`[TRACK-SYNC] Connectivity Error:`, err.message);
+    console.error(`[TRACK-SYNC] Targeted URL: ${TRACK_URL}`);
     return false;
   }
 }
