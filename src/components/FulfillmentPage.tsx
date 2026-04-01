@@ -93,17 +93,37 @@ export default function FulfillmentPage() {
     try {
       const element = blueprintRef.current;
       const opt = {
-        margin: [15, 15] as [number, number],
+        margin: [10, 10] as [number, number],
         filename: `Strategic-Blueprint-${bizName.replace(/\s+/g, '-')}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true,
+          logging: false,
+          letterRendering: true,
+          scrollY: -window.scrollY
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
-      await html2pdf().set(opt).from(element).save();
+      
+      // Use setImmediate/setTimeout to ensure the DOM is stable
+      setTimeout(async () => {
+        try {
+          await html2pdf().set(opt).from(element).save();
+          setIsDownloading(false);
+        } catch (innerErr) {
+          console.error("Inner PDF Error:", innerErr);
+          alert("PDF generation failed. A new tab will open for you to Print to PDF (Cmd+P or Ctrl+P).");
+          window.print();
+          setIsDownloading(false);
+        }
+      }, 100);
+      
     } catch (err) {
-      console.error(err);
-      alert("PDF generation failed. Please try printing the page instead.");
-    } finally {
+      console.error("Outer PDF Error:", err);
+      alert("PDF generation failed. Opening your browser's Print dialog instead.");
+      window.print();
       setIsDownloading(false);
     }
   };

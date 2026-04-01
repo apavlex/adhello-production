@@ -844,8 +844,27 @@ export function SiteAudit({ isStudio = false }: { isStudio?: boolean }) {
                      </div>
                   </div>
                   <BeforeAfterSlider 
-                    beforeImage="/old-site.png" 
-                    afterImage="/new-site.png" 
+                    beforeImage={(() => {
+                      const analysis = report.brandAnalysis.toLowerCase() + " " + report.summary.toLowerCase();
+                      if (analysis.includes('paint')) return '/old-site.png';
+                      if (analysis.includes('move')) return '/old-movers-site.png';
+                      if (analysis.includes('plumb')) return '/old-plumbing-site.png';
+                      if (analysis.includes('hvac') || analysis.includes('ac')) return '/old-hvac-site.png';
+                      if (analysis.includes('electric')) return '/templates/template-bright-electric-old.png';
+                      if (analysis.includes('roof')) return '/old-roofing-site.png';
+                      if (analysis.includes('coffee') || analysis.includes('cafe')) return '/old-site.png'; // Fallback to generic for now
+                      return '/old-site.png';
+                    })()} 
+                    afterImage={(() => {
+                      const analysis = report.brandAnalysis.toLowerCase() + " " + report.summary.toLowerCase();
+                      if (analysis.includes('paint')) return '/new-site.png';
+                      if (analysis.includes('move')) return '/new-movers-site.png';
+                      if (analysis.includes('plumb')) return '/templates/template-proplumb.png';
+                      if (analysis.includes('hvac') || analysis.includes('ac')) return '/templates/template-joes-home.png';
+                      if (analysis.includes('electric')) return '/templates/template-bright-electric-new.png';
+                      if (analysis.includes('roof')) return '/templates/template-roofing-home.png';
+                      return '/new-site.png';
+                    })()} 
                     beforeLabel="Current Design"
                     afterLabel="Proposed Vibe"
                   />
