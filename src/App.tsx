@@ -151,6 +151,24 @@ export default function App() {
   };
 
   useEffect(() => {
+    // Visitor Pulse Tracking
+    const trackVisit = async () => {
+      try {
+        await fetch('/api/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            path: window.location.pathname,
+            referrer: document.referrer || 'direct',
+            userAgent: navigator.userAgent
+          })
+        });
+      } catch (e) {
+        console.error('Tracking pulse failed:', e);
+      }
+    };
+    trackVisit();
+
     const timer = setInterval(() => {
       setHeroIndex((prev) => (prev + 1) % HERO_VARIANTS.length);
     }, 15000);

@@ -32,7 +32,8 @@ function checkAdGenLimit(ip) {
  * Sync lead data to the centralized LeadsOS CRM
  */
 async function syncToLeadsApp(data) {
-  const LEADS_API_URL = 'https://leads.adhello.ai/api/leads/ingest';
+  const LEADS_BASE_URL = process.env.LEADS_BASE_URL || 'https://leads.adhello.ai';
+  const LEADS_API_URL = `${LEADS_BASE_URL}/api/leads/ingest`;
   const API_KEY = process.env.API_INGEST_KEY || 'adhello_secret_123';
   
   try {
@@ -54,6 +55,31 @@ async function syncToLeadsApp(data) {
     }
   } catch (err) {
     console.error(`[SYNC] Failed to connect to LeadsOS:`, err.message);
+  }
+}
+
+/**
+ * Forward visitor tracking pulse to LeadsOS
+ */
+async function syncTrackingToLeadsApp(data, ip) {
+  const LEADS_BASE_URL = process.env.LEADS_BASE_URL || 'https://leads.adhello.ai';
+  const TRACK_URL = `${LEADS_BASE_URL}/api/track`;
+  const API_KEY = process.env.API_INGEST_KEY || 'adhello_secret_123';
+
+  try {
+    const response = await fetch(TRACK_URL, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'x-forwarded-for': ip // Pass original IP for geo-lookup
+      },
+      body: JSON.stringify(data)
+    });
+    return response.ok;
+  } catch (err) {
+    console.error(`[TRACK-SYNC] Failed to track visit:`, err.message);
+    return false;
   }
 }
 
@@ -471,15 +497,19 @@ If they want to talk to a human: click the phone icon above or call (360) 773-15
         const responseText = result.text;
         console.log('[CHAT] Response generated');
 
+        // Extract client IP
+        const clientIp = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+
         // Side-sync to Leads App (Non-blocking)
         setImmediate(() => {
           syncToLeadsApp({
             email: 'N/A', // We don't have email yet in simple chat, but merging will happen later if they provide it
             title: 'Anonymous Chat Prospect',
             source: 'adhello_chatbot',
+            ip: clientIp, // Pass IP for stitching
             chatHistory: [
               { role: 'user', text: userMessage },
-              { role: 'growth_coach', text: responseText }
+              { role: 'assistant', text: responseText } // Change to assistant role for better compatibility
             ],
             message: 'Live chat interaction'
           });
@@ -494,6 +524,25 @@ If they want to talk to a human: click the phone icon above or call (360) 773-15
       }
     });
     return;
+  }
+
+  // Tracking endpoint (proxies to LeadsOS)
+  if (req.method === 'POST' && reqPath === '/api/track') {
+      let body = '';
+      req.on('data', chunk => { body += chunk.toString(); });
+      req.on('end', async () => {
+          try {
+              const data = JSON.parse(body);
+              const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+              await syncTrackingToLeadsApp(data, ip);
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ success: true }));
+          } catch (e) {
+              res.writeHead(400);
+              res.end();
+          }
+      });
+      return;
   }
 
   // API Endpoint for fulfillment ($27 Blueprint)
@@ -820,6 +869,10 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', async () => {
       try {
+        const { name, email, siteUrl, message, source, timestamp } = JSON.parse(body);
+        const ts = timestamp || new Date().toISOString();
+        const clientIp = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+
         // Original Lead Logging
         console.log(`[LEAD] New lead: ${name} <${email}> via ${source || 'unknown'} at ${ts}${siteUrl ? ' — '+siteUrl : ''}`);
 
@@ -830,10 +883,9 @@ IMPORTANT: Return only raw JSON with no markdown fences or extra text.`;
             email: email,
             website: siteUrl || 'N/A',
             source: source === 'ad-brief' ? 'adhello_brief' : 'adhello_audit',
+            ip: clientIp, // Pass IP for stitching
             message: message || `User completed ${source === 'ad-brief' ? 'Ad Brief' : 'Audit'}`,
-            // If they just did an audit/brief, we can't easily pass the full JSON here without refactoring the frontend to send it, 
-            // but we can at least log the contact. 
-            // In a real scenario, we'd pass the auditData/adBriefData from the client.
+            status: 'Lead Captured'
           });
         });
 
