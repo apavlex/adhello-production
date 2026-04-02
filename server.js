@@ -118,23 +118,44 @@ async function callKie(prompt, systemPrompt = '', history = []) {
 /**
  * Helper to call Gemini AI via native fetch REST API.
  */
-async function callGemini(prompt, modelName = 'gemini-2.0-flash') {
+async function callGemini(prompt, modelName = 'gemini-2.0-flash', base64Image = null) {
   if (!GEMINI_API_KEY) {
     console.warn('[GEMINI] API Key missing. Returning null.');
     return null;
   }
+
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
+  
+  const contents = [{
+    parts: [{ text: prompt }]
+  }];
+
+  if (base64Image) {
+    // If it's a data URI, extract just the base64 part
+    const base64Data = base64Image.includes('base64,') 
+      ? base64Image.split('base64,')[1] 
+      : base64Image;
+
+    contents[0].parts.push({
+      inline_data: {
+        mime_type: 'image/jpeg', // Defaulting to jpeg; could be refined
+        data: base64Data
+      }
+    });
+  }
+
   try {
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
+        contents,
         generationConfig: {
           temperature: 0.7,
           topK: 40,
           topP: 0.95,
           maxOutputTokens: 2048,
+          response_mime_type: "application/json"
         }
       })
     });
@@ -849,8 +870,50 @@ app.post('/api/leads', async (req, res) => {
   }
 });
 
-app.post('/api/stitch-design', (req, res) => res.json({ success: true }));
 app.post('/api/ad-brief/generate-image', (req, res) => res.json({ imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=1000' }));
+
+app.post('/api/stitch-design', (req, res) => res.json({ success: true }));
+
+app.post('/api/ad-brief/analyze', async (req, res) => {
+  const { image } = req.body;
+  if (!image) return res.status(400).json({ error: 'Image is required.' });
+
+  const prompt = `Analyze this product image and generate a comprehensive Ad Brief. 
+  Output your response as PURE JSON matching this exactly:
+  {
+    "productAnalysis": "string explaining what the product is and its vibe",
+    "visualPrompt": "a detailed text-to-image prompt for Midjourney/DALL-E to recreate or enhance this product in a lifestyle setting",
+    "targetAudience": ["audience 1", "audience 2", "audience 3"],
+    "marketInsights": ["insight 1", "insight 2", "insight 3"],
+    "competitiveAdvantages": ["advantage 1", "advantage 2", "advantage 3"],
+    "adConcepts": [
+      { "platform": "Instagram", "headline": "string", "body": "string", "cta": "string" },
+      { "platform": "Facebook", "headline": "string", "body": "string", "cta": "string" },
+      { "platform": "TikTok", "headline": "string", "body": "string", "cta": "string" }
+    ]
+  }
+  Be specific and professional.`;
+
+  try {
+    const aiResponse = await callAI(prompt, "You are a master direct-response ad strategist.", 'gemini-2.0-flash', image);
+    if (!aiResponse) throw new Error("AI analysis failed.");
+    
+    // Attempt to parse AI response
+    let briefData;
+    try {
+      briefData = JSON.parse(aiResponse);
+    } catch (e) {
+      console.warn("[AD-BRIEF] AI sent malformed JSON, attempting cleanup.", aiResponse);
+      const cleaned = aiResponse.match(/\{[\s\S]*\}/)?.[0] || aiResponse;
+      briefData = JSON.parse(cleaned);
+    }
+
+    res.json(briefData);
+  } catch (error) {
+    console.error('[AD-BRIEF] Analysis Error:', error);
+    res.status(500).json({ detail: error.message });
+  }
+});
 
 app.use(express.static(DIST_DIR));
 app.get('*', (req, res) => res.sendFile(path.join(DIST_DIR, 'index.html')));
