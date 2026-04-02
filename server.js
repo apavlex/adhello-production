@@ -106,7 +106,6 @@ async function callKie(prompt, systemPrompt = '', history = []) {
     
     const data = await res.json();
     if (data.error) {
-      console.warn('[KIE] API Error:', data.error.message || data.error);
       return null;
     }
     return data.choices?.[0]?.message?.content || null;
@@ -119,7 +118,7 @@ async function callKie(prompt, systemPrompt = '', history = []) {
 /**
  * Helper to call Gemini AI via native fetch REST API.
  */
-async function callGemini(prompt, modelName = 'gemini-1.5-flash') {
+async function callGemini(prompt, modelName = 'gemini-2.0-flash') {
   if (!GEMINI_API_KEY) {
     console.warn('[GEMINI] API Key missing. Returning null.');
     return null;
@@ -141,7 +140,6 @@ async function callGemini(prompt, modelName = 'gemini-1.5-flash') {
     });
     const data = await res.json();
     if (data.error) {
-      console.error('[GEMINI] API Error:', data.error.message);
       return null;
     }
     return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
