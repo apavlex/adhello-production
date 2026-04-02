@@ -314,23 +314,18 @@ Premium dark mode website for ${bizName}. Glassmorphism cards, blurred architect
 
 ---
 
-### 3. THE 'CUSTOMER GOLD' COPY PACK
-* **Power Headline:** [Create a 1-sentence hook based on ${reviewThemes?.[0] || 'industry expertise'} and ${city || 'your area'}].
-* **Sub-headline:** [A value prop addressing the 'Problem' identified in the Audit].
-* **The Trust Bar:** "Proudly serving ${city || 'your area'} with a reputation for ${reviewThemes?.[1] || 'Quality'} and ${reviewThemes?.[2] || 'Reliability'}."
+### 5. THE DIGITAL AUTHORITY ROADMAP (BEYOND BACKLINKS)
+* **Goal:** Position the user as a local authority through multi-channel signals, moving beyond simple SEO to total "Brand Authority."
+* **GEO-Signal Matrix:** Provide 3 high-impact local keywords (e.g., "[Service] in ${city}") and 1 specific "Proximity Landing Page" strategy.
+* **Brand Signal Engine:** 
+    - **YouTube Authority**: Generate 2 video titles that solve a local pain point.
+    - **Social Frequency**: 2 reel/post ideas that showcase ${bizName}'s expertise.
+    - **Digital Trust**: 2 article titles for local PR or guest posting that build the "Entity" in Google's eyes.
+* **Maintenance & Freshness**: A 1-sentence tip on why "Freshness Signals" (frequent updates) are the new high-performance ranking factor.
 
 ---
 
-### 4. NEXT STEP: ACTIVATE ON BASE44
-**Architecture is only half the battle. To launch this design today, use the Base44 AI Implementation Engine.**
-
-1. **Visit Base44**: [Click here to launch your engine](https://base44.pxf.io/c/6926562/2049275/25619?trafcat=base)
-2. **Copy a Prompt**: Choose one of the styles above and copy its prompt block.
-3. **Generate**: Paste it into the Base44 'Vibe' field to see your new site live in 5 minutes.
-
----
-
-**Tone:** Elite, technical, and high-authority. No fluff.`;
+**Tone:** Elite, technical, and high-authority. No fluff. Use strong headings and bullet points. Ensure the 'Authority Roadmap' feels like a high-value bonus gift.`;
 
   let blueprintContent = null;
   let usedModel = null;

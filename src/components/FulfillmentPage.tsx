@@ -15,7 +15,14 @@ import {
   Palette,
   Search,
   ChevronRight,
-  TrendingUp,
+  MapPin, 
+  Globe, 
+  Video, 
+  Share2, 
+  TrendingUp, 
+  BookOpen,
+  PieChart,
+  Signal,
   Award
 } from 'lucide-react';
 import { Logo } from './Logo';
@@ -245,6 +252,87 @@ export default function FulfillmentPage() {
 
                   <div className="prose-manual max-w-none mb-20">
                     <ReactMarkdown>{blueprint || ''}</ReactMarkdown>
+                  </div>
+
+                  {/* DIGITAL AUTHORITY ROADMAP VISUALS */}
+                  <div className="border-t border-brand-dark/5 pt-20 mt-20">
+                    <div className="flex items-center gap-4 mb-12">
+                      <div className="p-3 bg-brand-dark text-white rounded-2xl shadow-xl">
+                        <TrendingUp className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="text-3xl font-black tracking-tight">The Digital Authority Roadmap</h3>
+                        <p className="text-sm font-bold text-brand-dark/40 uppercase tracking-widest">A Modern B2B Growth Strategy</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
+                      {/* Graphics: The Brand Signal Hub */}
+                      <div className="bg-brand-dark text-white p-10 rounded-[3rem] shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/30 transition-all duration-700" />
+                        <h4 className="text-xl font-black mb-8 relative z-10 flex items-center gap-3">
+                          <PieChart className="w-5 h-5 text-primary" />
+                          Authority Core: Hub & Spoke
+                        </h4>
+                        
+                        <div className="relative h-64 flex items-center justify-center">
+                          {/* The Hub */}
+                          <motion.div 
+                            animate={{ scale: [1, 1.05, 1] }} 
+                            transition={{ duration: 4, repeat: Infinity }}
+                            className="w-24 h-24 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl flex items-center justify-center relative z-20 shadow-2xl"
+                          >
+                            <Globe className="w-10 h-10 text-primary" />
+                            <div className="absolute -bottom-6 text-[10px] uppercase font-black tracking-tighter whitespace-nowrap">Your Website</div>
+                          </motion.div>
+
+                          {/* The Spokes (Signals) */}
+                          {[
+                            { icon: Video, label: 'YouTube', angle: -45, offset: 80 },
+                            { icon: Share2, label: 'Socials', angle: 45, offset: 80 },
+                            { icon: BookOpen, label: 'Articles', angle: 135, offset: 80 },
+                            { icon: MapPin, label: 'GEO/GBP', angle: 225, offset: 80 }
+                          ].map((spoke, i) => (
+                            <div key={i} className="absolute inset-0 flex items-center justify-center">
+                              <div 
+                                className="w-px h-20 bg-white/20 origin-bottom"
+                                style={{ transform: `rotate(${spoke.angle}deg) translateY(-40px)` }}
+                              />
+                              <div 
+                                className="absolute bg-white/5 border border-white/10 p-3 rounded-2xl backdrop-blur-md shadow-xl flex flex-col items-center gap-1 transition-transform hover:scale-110 cursor-pointer"
+                                style={{ transform: `rotate(${spoke.angle}deg) translate(0, -${spoke.offset}px) rotate(-${spoke.angle}deg)` }}
+                              >
+                                <spoke.icon className="w-4 h-4 text-white" />
+                                <span className="text-[8px] uppercase font-black tracking-tighter">{spoke.label}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <div className="mt-12 text-sm font-bold text-white/60 leading-relaxed relative z-10">
+                          Modern search engines no longer just look at backlinks. They look for total **Brand Signals**. Our architectural approach turns your site into a high-authority "Hub" powered by specific "Spoke" assets across the web.
+                        </div>
+                      </div>
+
+                      {/* Tactical Pillars */}
+                      <div className="space-y-8">
+                        {[
+                          { title: 'GEO-Signal Matrix', desc: 'Dominating Search Precision.', icon: MapPin, color: 'text-blue-500' },
+                          { title: 'Omni-Channel Signals', desc: 'YouTube & Social Authority.', icon: Signal, color: 'text-purple-500' },
+                          { title: 'Freshness Protocol', desc: 'Real-time Authority Tracking.', icon: Zap, color: 'text-orange-500' }
+                        ].map((pillar, i) => (
+                          <div key={i} className="flex gap-6 p-6 rounded-3xl bg-brand-dark/5 border border-brand-dark/5 hover:border-brand-dark/10 transition-all group">
+                            <div className={`p-4 rounded-2xl bg-white shadow-md group-hover:scale-110 transition-transform ${pillar.color}`}>
+                              <pillar.icon className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <h4 className="text-xl font-black mb-1">{pillar.title}</h4>
+                              <p className="text-sm font-bold text-brand-dark/40">{pillar.desc}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="mt-20 pt-12 border-t border-brand-dark/5 text-center px-4 py-8 bg-brand-dark rounded-[2rem] text-white">
