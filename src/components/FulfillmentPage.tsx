@@ -78,7 +78,7 @@ export default function FulfillmentPage() {
       if (!response.ok) throw new Error('Fulfillment failed');
       
       const data = await response.json();
-      setBlueprint(data.content);
+      setBlueprint(data.blueprint);
       setProgress(100);
       setTimeout(() => setStatus('complete'), 500);
     } catch (err) {
@@ -223,7 +223,27 @@ export default function FulfillmentPage() {
                     </div>
                   </div>
 
-                  <div className="prose-manual max-w-none">
+                  {/* Visual Style Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                    {[
+                      { name: 'Modern Bento', icon: Layout, desc: 'High-velocity grid for ' + city, color: 'bg-blue-50 text-blue-600' },
+                      { name: 'Split-Hero', icon: Zap, desc: 'Conversion-first structural layout', color: 'bg-purple-50 text-purple-600' },
+                      { name: 'Dark Elite', icon: ShieldCheck, desc: 'Premium architectural authority', color: 'bg-zinc-900 text-zinc-100' }
+                    ].map((style, i) => (
+                      <div key={i} className={`p-6 rounded-3xl border border-brand-dark/5 shadow-sm transition-all hover:shadow-md ${style.color}`}>
+                        <div className="mb-4">
+                          <style.icon className="w-8 h-8" />
+                        </div>
+                        <h4 className="text-lg font-black mb-2">{style.name}</h4>
+                        <p className="text-xs font-bold opacity-70 leading-relaxed">{style.desc}</p>
+                        <div className="mt-4 pt-4 border-t border-current/10 flex items-center justify-between">
+                          <span className="text-[10px] uppercase font-black tracking-widest">Architected ✓</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="prose-manual max-w-none mb-20">
                     <ReactMarkdown>{blueprint || ''}</ReactMarkdown>
                   </div>
 
