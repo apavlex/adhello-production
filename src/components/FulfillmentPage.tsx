@@ -517,17 +517,30 @@ export default function FulfillmentPage() {
                                   Base44 Vibe Prompt — Copy & Paste
                                 </span>
                               </div>
-                              <button 
-                                onClick={() => copyPrompt(style.base44Prompt, i)}
-                                className={`flex items-center gap-1.5 text-[11px] font-black px-3 py-1.5 rounded-lg transition-all ${
-                                  copiedPrompt === i 
-                                    ? 'bg-green-500 text-white' 
-                                    : i === 2 ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-brand-dark text-white hover:bg-black'
-                                }`}
-                              >
-                                {copiedPrompt === i ? <CheckCircle2 className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                                {copiedPrompt === i ? 'Copied!' : 'Copy'}
-                              </button>
+                              <div className="flex items-center gap-2">
+                                <button 
+                                  onClick={() => copyPrompt(style.base44Prompt, i)}
+                                  className={`flex items-center gap-1.5 text-[11px] font-black px-3 py-1.5 rounded-lg transition-all ${
+                                    copiedPrompt === i 
+                                      ? 'bg-green-500 text-white' 
+                                      : i === 2 ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-brand-dark text-white hover:bg-black'
+                                  }`}
+                                >
+                                  {copiedPrompt === i ? <CheckCircle2 className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                  {copiedPrompt === i ? 'Copied!' : 'Copy'}
+                                </button>
+                                <a
+                                  href="https://base44.pxf.io/c/6926562/2049275/25619?trafcat=base"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={`flex items-center gap-1.5 text-[11px] font-black px-3 py-1.5 rounded-lg transition-all ${
+                                    i === 2 ? 'bg-primary/20 text-primary hover:bg-primary/30' : 'bg-primary text-brand-dark hover:bg-primary-hover'
+                                  }`}
+                                >
+                                  <Zap className="w-3 h-3 fill-current" />
+                                  Open Base44
+                                </a>
+                              </div>
                             </div>
                             <p className={`text-xs font-mono leading-relaxed ${i === 2 ? 'text-zinc-300' : 'text-brand-dark/70'}`}>
                               {style.base44Prompt}
@@ -663,8 +676,8 @@ export default function FulfillmentPage() {
                                     {si + 1}
                                   </div>
                                   <div>
-                                    <p className="font-black text-brand-dark text-sm mb-1">{s.action}</p>
-                                    <p className="text-brand-dark/55 text-sm leading-relaxed font-medium">{s.detail}</p>
+                                    <p className="font-black text-brand-dark text-base mb-1.5">{s.action}</p>
+                                    <p className="text-brand-dark/60 text-base leading-relaxed font-medium">{s.detail}</p>
                                   </div>
                                 </div>
                               ))}
@@ -677,28 +690,87 @@ export default function FulfillmentPage() {
 
                   <div className="pdf-page-break html2pdf__page-break" />
 
-                  {/* CTA Block */}
-                  <div className="mt-20 pt-12 border-t border-brand-dark/5 text-center px-4 py-8 bg-brand-dark rounded-[2rem] text-white">
-                    <TrendingUp className="w-12 h-12 text-primary mx-auto mb-6" />
-                    <h3 className="text-2xl font-black mb-4 underline decoration-primary underline-offset-8 decoration-4 uppercase tracking-tighter">Next Step: Activation</h3>
-                    <p className="text-lg font-bold text-white/70 max-w-xl mx-auto mb-8">
-                      Your architecture is ready. To launch this design into a live revenue engine, use the Base44 AI Engine with your custom Vibe Prompts above.
-                    </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                      <button 
-                        onClick={() => window.open('https://base44.pxf.io/c/6926562/2049275/25619?trafcat=base', '_blank')}
-                        className="w-full sm:w-auto bg-primary text-brand-dark px-10 py-5 rounded-2xl font-black text-xl hover:scale-105 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/20 active:scale-95"
-                      >
-                        <Zap className="w-6 h-6 fill-current" />
-                        Launch Base44 Engine
-                      </button>
-                      <button 
-                        onClick={() => window.open('https://calendar.app.google/QQsVbiAt4QdCX8mx8', '_blank')}
-                        className="w-full sm:w-auto bg-white/10 text-white border border-white/20 px-8 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-2 active:scale-95"
-                      >
-                        Book Scale Session
-                        <ChevronRight className="w-5 h-5" />
-                      </button>
+                  {/* CTA Block — Base44 Pitch */}
+                  <div className="mt-20 pt-12 border-t border-brand-dark/5">
+                    <div className="bg-brand-dark rounded-[2.5rem] text-white overflow-hidden">
+                      {/* Header */}
+                      <div className="p-10 pb-0 text-center">
+                        <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-6">
+                          <Zap className="w-3.5 h-3.5 fill-current" />
+                          Next Step: Activation
+                        </div>
+                        <h3 className="text-3xl font-black mb-4 tracking-tight">Why Base44 Is the<br /><span className="text-primary">Smartest Move</span> for Your Business</h3>
+                        <p className="text-white/60 text-lg font-medium max-w-2xl mx-auto leading-relaxed">
+                          Your blueprint is architected. Now you need to <em>build it</em> — and Base44 is the only platform designed from the ground up to make that effortless for non-technical business owners.
+                        </p>
+                      </div>
+
+                      {/* Feature Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-t border-white/10 mt-10">
+                        {[
+                          {
+                            icon: '⚡',
+                            title: 'AI Site Builder in Minutes',
+                            desc: `No designers. No developers. No waiting weeks. Paste your custom Vibe Prompt above directly into Base44's AI builder and watch it generate a complete, branded, GEO-optimized website for ${bizName} in under 5 minutes — with all the conversion architecture already baked in.`
+                          },
+                          {
+                            icon: '🤖',
+                            title: 'Superagents Do the Work For You',
+                            desc: `Base44's built-in AI Superagents can be configured to automatically handle your entire implementation: writing GEO-optimized blog posts weekly, updating your Google Business Profile, generating review request messages, and even managing customer follow-up sequences — all on autopilot while you run your business.`
+                          },
+                          {
+                            icon: '💰',
+                            title: 'Fraction of the Cost',
+                            desc: `A traditional web agency charges $5,000–$15,000 for a website that takes 3–6 months to deliver. Base44 gives small businesses the same quality output — fully customized, conversion-optimized, and GEO-ready — for a fraction of the price, with no ongoing developer dependency.`
+                          },
+                          {
+                            icon: '🗺️',
+                            title: 'Built for Local GEO Domination',
+                            desc: `Base44 natively supports local schema markup, Google Business Profile integration, and geo-targeted landing pages — the exact technical signals that Google's AI uses to rank local businesses. It's the only builder engineered for the "near me" search era.`
+                          },
+                          {
+                            icon: '📈',
+                            title: 'Scale Without an IT Team',
+                            desc: `As ${bizName} grows, Base44 scales with you. Add new service pages, launch seasonal campaigns, A/B test your CTAs, and expand to new neighborhoods — all from a single dashboard, without needing to hire anyone or touch a line of code.`
+                          },
+                          {
+                            icon: '🔗',
+                            title: 'Your Blueprint Connects Directly',
+                            desc: `Every Vibe Prompt in your blueprint above was written specifically for Base44's AI engine. Copy → Paste → Launch. It's the fastest path from "I have a plan" to "I have a live, revenue-generating website" that exists for a local business today.`
+                          }
+                        ].map((feat, fi) => (
+                          <div key={fi} className={`p-8 border-white/10 ${
+                            fi % 2 === 0 ? 'border-r' : ''
+                          } ${
+                            fi < 4 ? 'border-b' : ''
+                          }`}>
+                            <div className="text-3xl mb-4">{feat.icon}</div>
+                            <h4 className="text-lg font-black mb-3 text-white">{feat.title}</h4>
+                            <p className="text-white/55 text-sm leading-relaxed font-medium">{feat.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* CTA Buttons */}
+                      <div className="p-10 text-center border-t border-white/10">
+                        <p className="text-white/50 text-sm font-bold uppercase tracking-widest mb-6">Ready to launch {bizName}? Start here:</p>
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                          <button 
+                            onClick={() => window.open('https://base44.pxf.io/c/6926562/2049275/25619?trafcat=base', '_blank')}
+                            className="w-full sm:w-auto bg-primary text-brand-dark px-10 py-5 rounded-2xl font-black text-xl hover:scale-105 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/20 active:scale-95"
+                          >
+                            <Zap className="w-6 h-6 fill-current" />
+                            Launch Base44 Engine
+                          </button>
+                          <button 
+                            onClick={() => window.open('https://calendar.app.google/QQsVbiAt4QdCX8mx8', '_blank')}
+                            className="w-full sm:w-auto bg-white/10 text-white border border-white/20 px-8 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-2 active:scale-95"
+                          >
+                            Book Scale Session
+                            <ChevronRight className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
