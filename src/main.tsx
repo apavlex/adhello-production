@@ -26,6 +26,10 @@ const router = createBrowserRouter([
     element: <FulfillmentPage />,
   },
   {
+    path: "/fulfillment/:id",
+    element: <FulfillmentPage />,
+  },
+  {
     path: "/studio",
     element: <AdStudio />,
   },

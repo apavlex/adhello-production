@@ -4,12 +4,40 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI } from "@google/genai";
 
+import Database from 'better-sqlite3';
+import { v4 as uuidv4 } from 'uuid';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 const DIST_DIR = path.join(__dirname, 'dist');
+const dbPath = path.join(__dirname, 'database.db');
+
+// --- DATABASE INITIALIZATION ---
+// Create database if not exists and set up schema
+const db = new Database(dbPath);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS blueprints (
+    id TEXT PRIMARY KEY,
+    bizName TEXT,
+    city TEXT,
+    score INTEGER,
+    blueprint TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS chat_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    blueprint_id TEXT,
+    role TEXT,
+    content TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (blueprint_id) REFERENCES blueprints(id)
+  );
+`);
 
 // Middleware
 app.use((req, res, next) => {
