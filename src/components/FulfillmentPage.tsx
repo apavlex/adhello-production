@@ -248,22 +248,44 @@ export default function FulfillmentPage() {
     if (!blueprintRef.current) return;
     setIsDownloading(true);
     try {
+      console.log("[PDF] Starting generation...");
       const element = blueprintRef.current;
+      
+      // html2pdf options refined for better rendering of complex layouts/iframes
       const opt = {
-        margin: [15, 15] as [number, number],
+        margin: [10, 10] as [number, number],
         filename: `Strategic-Blueprint-${bizName.replace(/\s+/g, '-')}.pdf`,
         image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true, 
+          logging: false,
+          letterRendering: true,
+          allowTaint: true,
+          windowWidth: 1400 // Fixed width for consistent PDF layout
+        },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
+
+      // Use the promise-based API for better error handling
       await html2pdf().set(opt).from(element).save();
+      console.log("[PDF] Generation successful");
     } catch (err) {
-      console.error(err);
-      alert("PDF generation failed. Please try printing the page instead.");
+      console.error("[PDF] Error:", err);
+      // More helpful error with fallback suggestion
+      const confirmPrint = window.confirm("PDF generation encountered a technical limitation with the interactive previews. Would you like to use the system print dialog instead? It often works better for high-fidelity designs.");
+      if (confirmPrint) {
+        window.print();
+      }
     } finally {
       setIsDownloading(false);
     }
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Share link copied! You can use this to return to your blueprint at any time.");
   };
 
   const copyPrompt = (text: string, idx: number) => {
@@ -426,14 +448,23 @@ export default function FulfillmentPage() {
                   <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-2">Build in Progress.</h1>
                   <p className="text-xl text-brand-dark/60 font-bold">Your Strategic Web Architecture is ready.</p>
                 </div>
-                <button 
-                  onClick={handleDownload}
-                  disabled={isDownloading}
-                  className="bg-brand-dark text-white px-8 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-black transition-all shadow-xl disabled:opacity-50 h-fit"
-                >
-                  {isDownloading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
-                  Download Blueprint PDF
-                </button>
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={handleCopyLink}
+                    className="bg-white border border-brand-dark/10 text-brand-dark px-6 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-brand-dark/5 transition-all shadow-md h-fit"
+                  >
+                    <Share2 className="w-5 h-5" />
+                    Save Share Link
+                  </button>
+                  <button 
+                    onClick={handleDownload}
+                    disabled={isDownloading}
+                    className="bg-brand-dark text-white px-8 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-black transition-all shadow-xl disabled:opacity-50 h-fit"
+                  >
+                    {isDownloading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
+                    Download Blueprint PDF
+                  </button>
+                </div>
               </div>
 
               {/* The Deliverable Document */}
