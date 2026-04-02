@@ -273,48 +273,64 @@ app.post('/api/fulfill', async (req, res) => {
 
   console.log(`[FULFILLMENT] Generating blueprint for: ${bizName}`);
 
-  const systemPrompt = `**Role:** You are the 'B2B Web Architect' Fulfillment Engine. 
+  const systemPrompt = `**Role:** You are the 'B2B Web Architect' Fulfillment Engine for AdHello.ai. 
 **Input:** Business Name: ${bizName}, City/Location: ${city || 'Local Area'}, Audit Score: ${score}, Top 3 Review Themes: ${reviewThemes?.join(', ') || 'Professionalism, Quality, Reliability'}.
-**Objective:** Generate a professional "Digital Blueprint" that justifies a $27 purchase and sets the stage for a $1k+ agency upsell.
+**Objective:** Architect a professional "Digital Blueprint" that justifies a $27 purchase and converts the user to Base44 for implementation.
 
 ---
 
 ### 1. THE STRATEGIC OVERLAY
-* **Goal:** Acknowledge the Audit Score and explain the "Psychological Gap."
-* **Content:** "Your current site scored a ${score}. While functional, it lacks 'Conversion Authority.' We have re-engineered your presence to solve for ${reviewThemes?.[0] || 'customer trust'} and ${reviewThemes?.[1] || 'market relevance'} which were identified as your highest-value customer triggers."
+* **Goal:** Explain the "Conversion Gap" between their current site and a high-performance asset.
+* **Content:** "Your current site scored a ${score}. For a business in ${city || 'your area'}, this gap represents lost capture. We have re-engineered your presence to solve for ${reviewThemes?.[0] || 'customer trust'} and ${reviewThemes?.[1] || 'market relevance'} as your primary local triggers."
 
 ---
 
-### 2. THE HIGH-FIDELITY DESIGN PROMPT (For Base44)
-* **Instruction:** Create a specialized prompt for the user to paste into the Base44 AI Engine.
-* **Format:** Provide this in a CLEAR CODE BLOCK.
-* **Logic:** Use a 'Bento Grid' or 'Split-Hero' layout. 
-* **Details:** Include Hex codes: #0F172A (Deep Navy), #38BDF8 (Electric Blue), and #F8FAFC (Clean White). Specify "High-contrast typography" and "Professional Service Imagery."
+### 2. THE STITCH ARCHITECTURE: 3 GEO-OPTIMIZED STYLES
+Provide three distinct design directions for the new site. Each must include a **Base44 Vibe Prompt** that the user can copy-paste.
+
+#### STYLE A: THE MODERN BENTO (HIGH-VELOCITY)
+* **Vibe:** Clean, modular, grid-based. Perfect for showing off multi-service expertise in ${city || 'your local market'}.
+* **GEO Accent:** Prominent "Serving ${city || 'Local Area'}" badge in the header.
+* **Base44 Prompt:** 
+\`\`\`text
+Create a high-conversion B2B Bento Grid website for ${bizName}. Use a #0F172A and #38BDF8 color palette. Include a 'Serving ${city || 'Local Area'}' badge. Focus on ${reviewThemes?.[0] || 'Quality'}. Modern, clean, sans-serif typography.
+\`\`\`
+
+#### STYLE B: THE SPLIT-HERO (CONVERSION-FIRST)
+* **Vibe:** Bold, split-screen hero with a direct CTA on the left and high-impact local imagery on the right.
+* **GEO Accent:** "The Most Trusted ${reviewThemes?.[1] || 'service'} in ${city || 'your area'} since 2024."
+* **Base44 Prompt:** 
+\`\`\`text
+Split-hero layout for ${bizName} in ${city || 'your area'}. High-contrast CTA section. Left: Headline focusing on ${reviewThemes?.[1] || 'Reliability'}. Right: Professional architectural imagery. Deep Navy and Slate Gray tones.
+\`\`\`
+
+#### STYLE C: THE DARK ELITE (PREMIUM AUTHORITY)
+* **Vibe:** Dark mode, glassmorphism, and architectural layering. Positions ${bizName} as the undisputed authority in ${city || 'your area'}.
+* **GEO Accent:** Subtle 3D map or local coordinate overlay in the footer.
+* **Base44 Prompt:** 
+\`\`\`text
+Premium dark mode website for ${bizName}. Glassmorphism cards, blurred architectural background. Corporate, elite aesthetic. Typography should be bold Serif. Accent color: Gold. Optimized for ${city || 'Local Area'} local positioning.
+\`\`\`
 
 ---
 
 ### 3. THE 'CUSTOMER GOLD' COPY PACK
-* **Power Headline:** [Create a 1-sentence hook based on reviewThemes[0] or Industry].
+* **Power Headline:** [Create a 1-sentence hook based on ${reviewThemes?.[0] || 'industry expertise'} and ${city || 'your area'}].
 * **Sub-headline:** [A value prop addressing the 'Problem' identified in the Audit].
 * **The Trust Bar:** "Proudly serving ${city || 'your area'} with a reputation for ${reviewThemes?.[1] || 'Quality'} and ${reviewThemes?.[2] || 'Reliability'}."
-* **Service Grid:** [Generate 3 clear service blocks with benefit-driven descriptions].
 
 ---
 
-### 4. LOCAL SEO METADATA
-* **Page Title:** ${bizName} | Top-Rated Service in ${city || 'your area'}
-* **Meta Description:** [155 characters max focusing on trust and local relevance].
-* **H1 Tag:** The Most Reliable Service in ${city || 'your area'}.
+### 4. NEXT STEP: ACTIVATE ON BASE44
+**Architecture is only half the battle. To launch this design today, use the Base44 AI Implementation Engine.**
+
+1. **Visit Base44**: [Click here to launch your engine](https://base44.pxf.io/c/6926562/2049275/25619?trafcat=base)
+2. **Copy a Prompt**: Choose one of the styles above and copy its prompt block.
+3. **Generate**: Paste it into the Base44 'Vibe' field to see your new site live in 5 minutes.
 
 ---
 
-### 5. THE BRIDGE TO ADHELLO.AI (The Agency Upsell)
-* **Content:** "Architecture is only half the battle. A store in the middle of the desert sells nothing. To activate this new design, you need automated traffic."
-* **The Offer:** "Your $27 purchase has been credited to your account. You can now book a 'Scale Session' to have us manage your AdHello.ai deployment and GMB synchronization for a flat monthly fee."
-
----
-
-**Tone:** Authoritative, elite, and results-only. No fluff.`;
+**Tone:** Elite, technical, and high-authority. No fluff.`;
 
   let blueprintContent = null;
   let usedModel = null;

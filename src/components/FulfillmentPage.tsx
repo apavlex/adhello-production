@@ -95,9 +95,9 @@ export default function FulfillmentPage() {
       const opt = {
         margin: [15, 15] as [number, number],
         filename: `Strategic-Blueprint-${bizName.replace(/\s+/g, '-')}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
       };
       await html2pdf().set(opt).from(element).save();
     } catch (err) {
@@ -229,17 +229,26 @@ export default function FulfillmentPage() {
 
                   <div className="mt-20 pt-12 border-t border-brand-dark/5 text-center px-4 py-8 bg-brand-dark rounded-[2rem] text-white">
                     <TrendingUp className="w-12 h-12 text-primary mx-auto mb-6" />
-                    <h3 className="text-2xl font-black mb-4 underline decoration-primary underline-offset-8 decoration-4">Next Step: Activation</h3>
+                    <h3 className="text-2xl font-black mb-4 underline decoration-primary underline-offset-8 decoration-4 uppercase tracking-tighter">Next Step: Activation</h3>
                     <p className="text-lg font-bold text-white/70 max-w-xl mx-auto mb-8">
-                      Your architecture is ready. To turn this design into revenue, you need automated traffic. Activate your AdHello.ai engine today.
+                      Your architecture is ready. To launch this design into a live revenue engine, use the Base44 AI Engine with your custom Vibe Prompts above.
                     </p>
-                    <button 
-                      onClick={() => window.open('https://calendar.app.google/QQsVbiAt4QdCX8mx8', '_blank')}
-                      className="bg-primary text-brand-dark px-10 py-4 rounded-xl font-black text-lg hover:scale-105 transition-all flex items-center gap-2 mx-auto"
-                    >
-                      Book My Scale Session
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                      <button 
+                        onClick={() => window.open('https://base44.pxf.io/c/6926562/2049275/25619?trafcat=base', '_blank')}
+                        className="w-full sm:w-auto bg-primary text-brand-dark px-10 py-5 rounded-2xl font-black text-xl hover:scale-105 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/20 active:scale-95"
+                      >
+                        <Zap className="w-6 h-6 fill-current" />
+                        Launch Base44 Engine
+                      </button>
+                      <button 
+                        onClick={() => window.open('https://calendar.app.google/QQsVbiAt4QdCX8mx8', '_blank')}
+                        className="w-full sm:w-auto bg-white/10 text-white border border-white/20 px-8 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-2 active:scale-95"
+                      >
+                        Book Scale Session
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
