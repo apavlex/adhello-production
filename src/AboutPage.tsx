@@ -18,8 +18,17 @@ import logoImg from './assets/logo.png';
 import coffeeFoundersImg from './assets/coffee-shop-founders.jpg';
 import { Link } from 'react-router-dom';
 import SEO from './components/SEO';
+import { useState } from 'react';
+import { SmartSiteQuiz } from './components/SmartSiteQuiz';
 
 export default function AboutPage() {
+    const [isQuizOpen, setIsQuizOpen] = useState(false);
+
+    const handleStartQuiz = (e?: React.MouseEvent) => {
+        if (e) e.preventDefault();
+        setIsQuizOpen(true);
+    };
+
     const openChat = () => {
         window.open('https://calendar.app.google/QQsVbiAt4QdCX8mx8', '_blank');
     };
@@ -56,9 +65,12 @@ export default function AboutPage() {
                             </nav>
                             <div className="flex items-center gap-8">
                                 
-                                <a href="/" className="bg-primary hover:bg-primary-hover text-brand-dark text-sm font-bold px-6 py-3 rounded-full transition-all duration-300 shadow-[4px_4px_0px_rgba(0,0,0,0.1)] hover:shadow-[0_0_15px_rgba(243,221,109,0.6)] hover:-translate-y-0.5 hover:scale-105 flex items-center gap-2">
+                                <button 
+                                    onClick={handleStartQuiz}
+                                    className="bg-primary hover:bg-primary-hover text-brand-dark text-sm font-bold px-6 py-3 rounded-full transition-all duration-300 shadow-[4px_4px_0px_rgba(0,0,0,0.1)] hover:shadow-[0_0_15px_rgba(243,221,109,0.6)] hover:-translate-y-0.5 hover:scale-105 flex items-center gap-2"
+                                >
                                     Build My Smart Site
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </header>
@@ -198,7 +210,7 @@ export default function AboutPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-6 justify-center">
                         <button
-                            onClick={openChat}
+                            onClick={handleStartQuiz}
                             className="px-12 py-6 bg-primary hover:bg-primary-hover text-brand-dark font-black rounded-full transition-all shadow-[8px_8px_0px_rgba(45,52,54,0.1)] hover:shadow-none hover:translate-y-[4px] flex items-center justify-center gap-3 text-2xl group"
                         >
                             <Sparkles className="w-8 h-8 text-brand-dark group-hover:animate-pulse" />
@@ -264,6 +276,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </footer>
+            <SmartSiteQuiz isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
         </div>
     );
 }

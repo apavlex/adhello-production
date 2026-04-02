@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
 const DIST_DIR = path.join(__dirname, 'dist');
 const dbPath = path.join(__dirname, 'database.db');
 
@@ -110,14 +110,16 @@ app.post('/api/analyze', async (req, res) => {
 {"score":number,"mobileFirstScore":number,"leadsEstimatesScore":number,"googleAiReadyScore":number,"summary":"string","brandAnalysis":"string","brandColors":{"primary":"#hex","accent":"#hex","background":"#hex","text":"#hex"},"technicalAudit":{"mobileSpeed":{"label":"Mobile Load Speed","status":"pass|fail|warning","value":"string","reason":"string"},"contactForm":{"label":"Contact Form","status":"pass|fail|warning","value":"string","reason":"string"},"sslCertificate":{"label":"SSL Certificate","status":"pass|fail|warning","value":"string","reason":"string"},"metaDescription":{"label":"Meta Description","status":"pass|fail|warning","value":"string","reason":"string"},"googleBusinessProfile":{"label":"Google Business Profile","status":"pass|fail|warning","value":"string","reason":"string"},"reviewSentiment":{"label":"Review Sentiment","status":"pass|fail|warning","value":"string","reason":"string"}},"strengths":[{"indicator":"string","description":"string"}],"weaknesses":[{"indicator":"string","description":"string"}],"recommendations":[{"title":"string","description":"string","action":"string"}],"city":"string","reviewThemes":["string","string","string"]}
 
 For brandColors: extract the ACTUAL dominant colors used on the website. primary = main brand color (button bg, logo color), accent = highlight/CTA color, background = main page background, text = main text color. Return real hex codes observed from the site.`;
-      const result = await genAI.models.generateContent({ model: 'gemini-1.5-flash', contents: prompt });
-      const raw = (result.text || '').replace(/```json|```/g, '').trim();
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const raw = response.text().replace(/```json|```/g, '').trim();
       const parsed = JSON.parse(raw);
       return res.json(parsed);
     }
     res.json(mockReport);
   } catch (err) {
-    console.error('[ANALYSIS] Failed:', err.message);
+    console.error('[ANALYSIS] Gemini Error:', err);
     res.json(mockReport);
   }
 });
@@ -165,13 +167,16 @@ app.post('/api/analyze-strategy', async (req, res) => {
         }
       }`;
 
-      const result = await genAI.models.generateContent({ model: 'gemini-1.5-flash', contents: prompt });
-      const raw = (result.text || '').replace(/```json|```/g, '').trim();
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const raw = response.text().replace(/```json|```/g, '').trim();
       const parsed = JSON.parse(raw);
       
       return res.json({
         ...parsed,
         brandColors: colors,
+        vibe: vibe || 'Modern',
         city,
         companyName: bizName,
         isNoWebsiteFlow: true
@@ -183,6 +188,9 @@ app.post('/api/analyze-strategy', async (req, res) => {
       summary: "Strategic launch plan for " + bizName,
       headlines: { hero: "The Future of " + industry, sub: "Dominating " + city + " with AI search readiness.", cta: "Start Now" },
       brandColors: colors,
+      vibe: vibe || 'Modern',
+      city,
+      companyName: bizName,
       isNoWebsiteFlow: true
     });
   } catch (err) {
@@ -193,135 +201,135 @@ app.post('/api/analyze-strategy', async (req, res) => {
 // =====================================================
 // PHASE HTML GENERATOR (personalized per client)
 // =====================================================
-function buildPhaseHtml(bizName, cityLabel, t0, t1, t2, colors = {}) {
-  // Use brand colors with sensible fallbacks
-  const bg   = colors.background || '#F5F0E8';
-  const text = colors.text       || '#1a1a2e';
-  const pri  = colors.primary    || '#1a1a2e';
-  const acc  = colors.accent     || '#F3DD6D';
-  // Ensure contrast: if accent is very light, use primary for text on accent
-  const accText = acc.toLowerCase() === '#ffffff' || acc.toLowerCase() === '#fff' ? text : (acc > '#888888' ? text : '#ffffff');
+function buildPhaseHtml(bizName, cityLabel, t0, t1, t2, colors = {}, headlines = {}, vibe = 'Modern') {
+  const bg   = colors.background || (vibe === 'Bold' ? '#000000' : vibe === 'Modern' ? '#0f172a' : '#F5F0E8');
+  const text = colors.text       || (vibe === 'Bold' ? '#ffffff' : vibe === 'Modern' ? '#f8fafc' : '#1a1a2e');
+  const pri  = colors.primary    || (vibe === 'Bold' ? '#ef4444' : vibe === 'Modern' ? '#6366f1' : '#1a1a2e');
+  const acc  = colors.accent     || (vibe === 'Bold' ? '#f59e0b' : vibe === 'Modern' ? '#a855f7' : '#F3DD6D');
 
+  const heroH1 = headlines.hero || `${bizName}<br><span>${cityLabel}'s Best</span>`;
+  const heroSub = headlines.sub || `Trusted by hundreds of ${cityLabel} customers for ${t0.toLowerCase()}, ${t1.toLowerCase()}, and results that speak for themselves.`;
+  const heroCTA = headlines.cta || '⚡ Get Free Quote';
+
+  const isDark = bg.toLowerCase() === '#0d0d0d' || bg.toLowerCase() === '#000000' || bg.toLowerCase() === '#0f172a';
+  const contrastText = isDark ? '#ffffff' : text;
+  
+  const borderRadius = vibe === 'Classic' ? '0px' : vibe === 'Friendly' ? '32px' : vibe === 'Modern' ? '24px' : '4px';
+  const fontFamily = vibe === 'Classic' ? "'Playfair Display', serif" : vibe === 'Modern' ? "'Outfit', sans-serif" : "'Inter', sans-serif";
+  const headingWeight = vibe === 'Bold' ? '900' : '800';
+
+  const commonStyles = `
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Playfair+Display:wght@700;900&family=Outfit:wght@400;700;900&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;font-family:${fontFamily}}
+    body{background:${bg};color:${contrastText};min-height:100vh;overflow-x:hidden}
+    nav{background:${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.8)'};backdrop-filter:blur(10px);padding:18px 36px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};position:sticky;top:0;z-index:100}
+    .logo{font-weight:900;font-size:20px;letter-spacing:-1px;color:${contrastText}}
+    .nav-cta{background:${acc};color:${pri};padding:10px 24px;border-radius:${borderRadius};font-weight:900;font-size:13px;border:none;box-shadow:0 4px 14px ${acc}44}
+  `;
+
+  // Phase 1: Bento Foundation
   const p1 = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
-body{background:${bg};color:${text};min-height:100vh}
-nav{background:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,0.08);position:sticky;top:0;z-index:10}
-.logo{font-weight:900;font-size:17px;letter-spacing:-0.5px;color:${text}}
-.nav-cta{background:${acc};color:${pri};padding:8px 18px;border-radius:50px;font-weight:800;font-size:12px;border:none}
-.hero{padding:52px 28px 36px;display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center}
-h1{font-size:38px;font-weight:900;line-height:1.05;letter-spacing:-1.5px;margin-bottom:14px;color:${text}}
-h1 span{color:${acc};background:${pri};padding:2px 8px;border-radius:6px}
-.sub{font-size:14px;color:#555;margin-bottom:24px;line-height:1.6}
-.cta-row{display:flex;gap:10px}
-.btn-p{background:${acc};color:${pri};padding:12px 24px;border-radius:50px;font-weight:900;font-size:13px;border:none;cursor:pointer}
-.btn-s{background:transparent;color:${text};padding:12px 20px;border-radius:50px;font-weight:700;font-size:13px;border:2px solid ${text};cursor:pointer}
-.stars{display:flex;align-items:center;gap:6px;margin-top:18px;font-size:12px;font-weight:700;color:#555}
-.star{color:${acc};font-size:15px}
-.hero-img{background:linear-gradient(135deg,${pri},${pri}cc);border-radius:20px;height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:20px;text-align:center}
-.hero-img h3{color:${acc};font-size:22px;font-weight:900;margin-bottom:8px}
-.hero-img p{color:rgba(255,255,255,0.6);font-size:13px}
-.badge{position:absolute;top:14px;right:14px;background:${acc};color:${pri};padding:5px 10px;border-radius:50px;font-size:10px;font-weight:900}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 28px 36px}
-.card{background:#fff;border-radius:18px;padding:20px;border:1px solid rgba(0,0,0,0.08)}
-.icon{width:40px;height:40px;background:${bg};border-radius:10px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;font-size:20px}
-.card h4{font-size:14px;font-weight:800;margin-bottom:6px;color:${text}}
-.card p{font-size:11px;color:#888;line-height:1.5}
-.reviews{padding:0 28px 36px}
-.reviews h2{font-size:22px;font-weight:900;margin-bottom:16px;color:${text}}
-.r-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.rc{background:#fff;padding:18px;border-radius:18px;border:1px solid rgba(0,0,0,0.08)}
-.rc p{font-size:12px;color:#444;line-height:1.6;margin-bottom:10px}
-.author{font-size:11px;font-weight:800;color:${text}}
+${commonStyles}
+.hero{padding:80px 36px 40px;display:grid;grid-template-columns:1.2fr 0.8fr;gap:48px;align-items:center;max-width:1200px;margin:0 auto}
+h1{font-size:52px;font-weight:${headingWeight};line-height:1.0;letter-spacing:-2px;margin-bottom:20px;color:${contrastText}}
+h1 span{color:${acc};display:block}
+.sub{font-size:18px;opacity:0.8;margin-bottom:32px;line-height:1.6;max-width:500px}
+.cta-row{display:flex;gap:14px}
+.btn-p{background:${acc};color:${pri};padding:16px 32px;border-radius:${borderRadius};font-weight:900;font-size:15px;border:none;cursor:pointer;transition:transform 0.2s}
+.btn-p:hover{transform:translateY(-2px)}
+.btn-s{background:transparent;color:${contrastText};padding:16px 28px;border-radius:${borderRadius};font-weight:700;font-size:15px;border:2px solid ${acc};cursor:pointer}
+.stars{display:flex;align-items:center;gap:8px;margin-top:24px;font-size:14px;font-weight:700;color:${acc}}
+.hero-img{background:linear-gradient(135deg,${pri},${acc}44);border-radius:${borderRadius};height:400px;position:relative;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.2)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:40px 36px 80px;max-width:1200px;margin:0 auto}
+.card{background:${isDark ? 'rgba(255,255,255,0.05)' : '#fff'};border-radius:${borderRadius};padding:32px;border:1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};transition:all 0.3s}
+.card:hover{transform:translateY(-5px);border-color:${acc}}
+.icon{font-size:32px;margin-bottom:20px}
+.card h4{font-size:18px;font-weight:900;margin-bottom:12px;color:${contrastText}}
+.card p{font-size:14px;opacity:0.6;line-height:1.6}
 </style></head><body>
-<nav><div class="logo">📍 ${bizName}</div><button class="nav-cta">Book Now →</button></nav>
+<nav><div class="logo">${bizName}</div><button class="nav-cta">Get Started</button></nav>
 <div class="hero">
-  <div><h1>${bizName}<br><span>${cityLabel}'s Best</span></h1><p class="sub">Trusted by hundreds of ${cityLabel} customers for ${t0.toLowerCase()}, ${t1.toLowerCase()}, and results that speak for themselves.</p>
-  <div class="cta-row"><button class="btn-p">⚡ Get Free Quote</button><button class="btn-s">See Our Work</button></div>
-  <div class="stars"><span class="star">★★★★★</span> 4.9/5 · 200+ Google Reviews · ${cityLabel}</div></div>
-  <div class="hero-img"><h3>${bizName}</h3><p>Proudly serving<br>${cityLabel} since day one</p><div class="badge">✓ #1 Rated Local</div></div>
+  <div><h1>${heroH1}</h1><p class="sub">${heroSub}</p>
+  <div class="cta-row"><button class="btn-p">${heroCTA}</button><button class="btn-s">View Work</button></div>
+  <div class="stars">★★★★★ <span style="opacity:0.6;color:${contrastText}">4.9/5 · Verified ${cityLabel} Jobs</span></div></div>
+  <div class="hero-img"></div>
 </div>
 <div class="grid">
-  <div class="card"><div class="icon">⭐</div><h4>${t0}</h4><p>Our #1 priority for every ${cityLabel} customer — guaranteed or we make it right.</p></div>
-  <div class="card"><div class="icon">🤝</div><h4>${t1}</h4><p>Professional, on-time, and respectful of your time and space.</p></div>
-  <div class="card"><div class="icon">🛡️</div><h4>${t2}</h4><p>We show up when we say we will. No surprises, no excuses — ever.</p></div>
+  <div class="card"><div class="icon">🏆</div><h4>Elite ${t0}</h4><p>We've built our reputation in ${cityLabel} on providing the absolute highest level of ${t0.toLowerCase()}.</p></div>
+  <div class="card"><div class="icon">⚡</div><h4>Fast ${t1}</h4><p>When you need ${t1.toLowerCase()}, we respond instantly. We know your time is valueable.</p></div>
+  <div class="card"><div class="icon">🛡️</div><h4>Proven ${t2}</h4><p>Trust is earned. Over 200 homeowners in ${cityLabel} rely on our ${t2.toLowerCase()} every year.</p></div>
 </div>
-<div class="reviews"><h2>What ${cityLabel} Customers Say</h2>
-<div class="r-grid">
-  <div class="rc"><p>"${bizName} exceeded every expectation. ${t0} like no other business in ${cityLabel}!"</p><div class="author">— Sarah M., ${cityLabel} ★★★★★</div></div>
-  <div class="rc"><p>"Finally found a business that delivers real ${t1}. ${bizName} is our permanent go-to."</p><div class="author">— James R., ${cityLabel} ★★★★★</div></div>
-</div></div>
 </body></html>`;
 
+  // Phase 2: Conversion (Landing Page Style)
   const p2 = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
-body{background:#fff;color:${text};min-height:100vh}
-.top-bar{background:${pri};color:#fff;padding:10px 28px;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700}
-.bar-cta{background:${acc};color:${pri};padding:7px 16px;border-radius:50px;font-weight:900;border:none;cursor:pointer;font-size:12px}
-.hero{display:grid;grid-template-columns:1fr 1fr;min-height:380px}
-.hl{background:${pri};padding:52px 36px;color:#fff;display:flex;flex-direction:column;justify-content:center}
-.hl h1{font-size:34px;font-weight:900;line-height:1.1;letter-spacing:-1px;margin-bottom:14px}
-.hl p{font-size:14px;opacity:0.8;margin-bottom:24px;line-height:1.6}
-.urgency{background:rgba(255,255,255,0.1);border:1px solid ${acc};border-radius:10px;padding:10px 14px;margin-bottom:18px;font-size:12px;font-weight:700;color:${acc}}
-.cta-btn{background:${acc};color:${pri};padding:14px 28px;border-radius:50px;font-weight:900;font-size:14px;border:none;cursor:pointer;width:fit-content}
-.hr{background:#f8f8ff;padding:36px;display:flex;flex-direction:column;justify-content:center}
-.book{background:#fff;border-radius:18px;padding:24px;box-shadow:0 4px 24px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.08)}
-.book h3{font-size:16px;font-weight:900;margin-bottom:5px;color:${text}}
-.book p{font-size:12px;color:#888;margin-bottom:16px}
-input{width:100%;padding:11px 14px;border:1.5px solid rgba(0,0,0,0.1);border-radius:10px;margin-bottom:10px;font-size:13px;font-family:inherit;background:#fafafa;display:block}
-.book-btn{width:100%;background:${pri};color:#fff;padding:13px;border-radius:10px;font-weight:900;border:none;cursor:pointer;font-size:13px}
-.social{padding:32px 28px;background:#fafafa;border-top:1px solid rgba(0,0,0,0.06)}
-.social h2{font-size:20px;font-weight:900;margin-bottom:16px;text-align:center;color:${text}}
-.tg{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.tc{background:#fff;border-radius:18px;padding:18px;border:1px solid rgba(0,0,0,0.08)}
-.ts{color:${acc};font-size:13px;margin-bottom:7px}
-.tt{font-size:12px;color:#444;line-height:1.6;margin-bottom:10px}
-.ta{font-size:11px;font-weight:800;color:${pri}}
+${commonStyles}
+body{background:#fff;color:#1a1a2e}
+.top-bar{background:${pri};color:#fff;padding:12px;text-align:center;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:500px}
+.content{padding:80px 60px;background:${bg}${isDark ? '' : '11'};display:flex;flex-direction:column;justify-content:center}
+h1{font-size:48px;font-weight:${headingWeight};line-height:1.1;margin-bottom:24px;color:${isDark ? contrastText : pri}}
+.urgency{background:${acc}33;color:${pri};padding:8px 16px;border-radius:50px;font-size:12px;font-weight:900;margin-bottom:20px;display:inline-block;border:1px solid ${acc}}
+.form-container{padding:80px 60px;display:flex;align-items:center;justify-content:center}
+.form-card{background:#fff;padding:40px;border-radius:${borderRadius};box-shadow:0 30px 60px rgba(0,0,0,0.1);width:100%;max-width:400px;border:1px solid rgba(0,0,0,0.05)}
+h3{font-size:24px;font-weight:900;margin-bottom:8px}
+.form-card p{font-size:14px;opacity:0.6;margin-bottom:24px}
+input{width:100%;padding:14px;border-radius:12px;border:2px solid #eee;margin-bottom:12px;font-size:15px;outline:none}
+input:focus{border-color:${pri}}
+.submit-btn{width:100%;padding:16px;background:${pri};color:#fff;border-radius:12px;font-weight:900;border:none;cursor:pointer;font-size:16px}
 </style></head><body>
-<div class="top-bar"><span>🔥 Limited appointment slots this week — ${cityLabel}</span><button class="bar-cta">Book Now</button></div>
+<div class="top-bar">🔥 LIMITED CAPACITY: Only 3 openings left this week in ${cityLabel}</div>
+<nav><div class="logo">${bizName}</div><button class="nav-cta">Call Now</button></nav>
 <div class="hero">
-  <div class="hl"><div class="urgency">⚡ 18 people viewed ${bizName} this week in ${cityLabel}</div><h1>Experience Real ${t0} in ${cityLabel}</h1><p>Join 200+ ${cityLabel} customers who chose ${bizName} for ${t1.toLowerCase()} they can count on, every single time.</p><button class="cta-btn">Book Free Consultation →</button></div>
-  <div class="hr"><div class="book"><h3>Book in 60 Seconds</h3><p>Available today across ${cityLabel}</p><input placeholder="Your Name" readonly><input placeholder="Phone Number" readonly><input placeholder="Best Time to Call" readonly><button class="book-btn">Get My Free Quote →</button></div></div>
+  <div class="content">
+    <div class="urgency">⚡ LIVE IN ${cityLabel.toUpperCase()}</div>
+    <h1>Stop Settling for Less than Elite ${t0}</h1>
+    <p style="font-size:18px;line-height:1.6;opacity:0.7;margin-bottom:32px">We handle everything for ${bizName} clients — from the first call to the final inspection. Total ${t1.toLowerCase()} and ${t2.toLowerCase()} guaranteed.</p>
+    <ul style="list-style:none;gap:12px;display:grid">
+      <li style="font-weight:800">✅ 100% Satisfaction Guarantee</li>
+      <li style="font-weight:800">✅ Professional & Licensed in ${cityLabel}</li>
+      <li style="font-weight:800">✅ Free Estimates Within 24-Hours</li>
+    </ul>
+  </div>
+  <div class="form-container">
+    <div class="form-card">
+      <h3>Get Your Quote</h3>
+      <p>Fill out the form below and our team will contact you within 15 minutes.</p>
+      <input placeholder="Full Name" readonly>
+      <input placeholder="Phone Number" readonly>
+      <input placeholder="Service Needed" readonly>
+      <button class="submit-btn">${heroCTA}</button>
+    </div>
+  </div>
 </div>
-<div class="social"><h2>Why ${cityLabel} Chooses ${bizName}</h2>
-<div class="tg">
-  <div class="tc"><div class="ts">★★★★★</div><p class="tt">"The ${t0.toLowerCase()} from ${bizName} was unlike anything else in ${cityLabel}. Booked them again immediately."</p><div class="ta">— Mike T., ${cityLabel}</div></div>
-  <div class="tc"><div class="ts">★★★★★</div><p class="tt">"${t1} that actually delivers results! ${bizName} has our entire business. Don't look anywhere else."</p><div class="ta">— Jennifer L., ${cityLabel}</div></div>
-</div></div>
 </body></html>`;
 
+  // Phase 3: Authority (Elite Branding)
   const p3 = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
-body{background:#0D0D0D;color:#fff;min-height:100vh}
-nav{padding:18px 36px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08)}
-.logo{font-weight:900;font-size:18px;letter-spacing:-0.5px}
-.logo span{color:${acc}}
-.nav-links{display:flex;gap:28px;font-size:12px;font-weight:700;color:rgba(255,255,255,0.5)}
-.nav-cta{background:${acc};color:${pri};padding:9px 22px;border-radius:50px;font-weight:900;font-size:12px;border:none;cursor:pointer}
-.hero{padding:52px 36px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06)}
-.badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:50px;padding:7px 18px;font-size:11px;font-weight:900;color:${acc};letter-spacing:1px;margin-bottom:20px}
-.hero h1{font-size:46px;font-weight:900;line-height:1.0;letter-spacing:-2px;margin-bottom:14px}
-.hero h1 span{color:${acc}}
-.hero p{font-size:15px;color:rgba(255,255,255,0.5);max-width:460px;margin:0 auto}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.06);border-radius:18px;overflow:hidden;margin:32px 36px}
-.stat{background:#0D0D0D;padding:24px;text-align:center}
-.stat-num{font-size:32px;font-weight:900;color:${acc};letter-spacing:-1px}
-.stat-label{font-size:11px;color:rgba(255,255,255,0.35);font-weight:700;margin-top:5px;text-transform:uppercase;letter-spacing:1px}
-.press{padding:24px 36px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:center}
-.press-label{font-size:10px;font-weight:900;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
-.logos{display:flex;gap:28px;justify-content:center;opacity:0.4;font-size:13px;font-weight:900;letter-spacing:1px}
-.cases{padding:36px;display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.case{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:24px}
-.metric{font-size:36px;font-weight:900;color:#F3DD6D;letter-spacing:-1px}
-.case h4{font-size:13px;font-weight:800;margin:7px 0 5px}
-.case p{font-size:11px;color:rgba(255,255,255,0.4);line-height:1.5}
+${commonStyles}
+body{background:#000;color:#fff}
+nav{background:transparent;border:none}
+.hero{padding:120px 36px;text-align:center;max-width:900px;margin:0 auto}
+.badge{background:linear-gradient(to right, ${acc}, ${acc}88);-webkit-background-clip:text;color:transparent;font-weight:900;text-transform:uppercase;letter-spacing:4px;font-size:14px;margin-bottom:24px;display:block}
+h1{font-size:72px;font-weight:900;letter-spacing:-4px;margin-bottom:32px}
+h1 span{color:${acc}}
+p.lead{font-size:20px;opacity:0.6;line-height:1.6;margin-bottom:48px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;border-top:1px solid rgba(255,255,255,0.1);padding-top:48px}
+.stat h2{font-size:48px;font-weight:900;color:${acc};margin-bottom:8px}
+.stat p{text-transform:uppercase;font-size:12px;font-weight:900;opacity:0.4;letter-spacing:2px}
+.btn-elite{background:#fff;color:#000;padding:20px 48px;border-radius:100px;font-weight:900;text-transform:uppercase;letter-spacing:2px;border:none;cursor:pointer}
 </style></head><body>
-<nav><div class="logo">${bizName} <span>Elite</span></div><div class="nav-links"><span>Services</span><span>Results</span><span>About</span></div><button class="nav-cta">Get Started</button></nav>
-<div class="hero"><div class="badge">🏆 #1 RANKED IN ${cityLabel.toUpperCase()}</div><h1>The Authority<br>in <span>${cityLabel}</span></h1><p>${bizName} — Where ${t0} meets elite ${t1.toLowerCase()}. The premium choice for discerning ${cityLabel} clients.</p></div>
-<div class="stats"><div class="stat"><div class="stat-num">200+</div><div class="stat-label">Happy Clients</div></div><div class="stat"><div class="stat-num">4.9★</div><div class="stat-label">Google Rating</div></div><div class="stat"><div class="stat-num">#1</div><div class="stat-label">In ${cityLabel}</div></div></div>
-<div class="press"><div class="press-label">As recognized by</div><div class="logos"><span>GOOGLE</span><span>YELP</span><span>NEXTDOOR</span><span>BBB</span></div></div>
-<div class="cases">
-  <div class="case"><div class="metric">+42%</div><h4>Leads in 30 Days</h4><p>After launching Phase 1 in ${cityLabel}, ${bizName} saw a 42% increase in qualified leads in the first month.</p></div>
-  <div class="case"><div class="metric">3x</div><h4>Review Volume</h4><p>Automated post-job review requests tripled Google review count, securing the #1 position in ${cityLabel}.</p></div>
+<nav><div class="logo">${bizName.toUpperCase()} <span>.</span></div><button class="nav-cta" style="background:#fff;color:#000">Elite Access</button></nav>
+<div class="hero">
+  <span class="badge">The Authority in ${cityLabel}</span>
+  <h1>The Standard of <span>${t0}</span></h1>
+  <p class="lead">${bizName} combines architectural precision with elite ${t1.toLowerCase()}. We don't just do the job — we redefine what's possible for ${cityLabel} clients.</p>
+  <button class="btn-elite">Start Your Project</button>
+  <div class="stats-row">
+    <div class="stat"><h2>15+</h2><p>Years Experience</p></div>
+    <div class="stat"><h2>24/7</h2><p>Elite Support</p></div>
+    <div class="stat"><h2>#1</h2><p>In ${cityLabel}</p></div>
+  </div>
 </div>
 </body></html>`;
 
@@ -332,7 +340,7 @@ nav{padding:18px 36px;display:flex;justify-content:space-between;align-items:cen
 // FULFILLMENT ENGINE
 // =====================================================
 app.post('/api/fulfill', async (req, res) => {
-  const { bizName, city, score, reviewThemes, brandColors } = req.body;
+  const { bizName, city, score, reviewThemes, brandColors, headlines, vibe } = req.body;
   if (!bizName) return res.status(400).json({ error: 'BizName required' });
 
   const cityLabel = city || 'your local area';
@@ -396,7 +404,14 @@ Modern AI search engines (Google AI Overviews, Bing Copilot, ChatGPT) feature bu
 - **Month 3**: ${bizName} appearing in Google AI Overviews for "${cityLabel}" searches, dominant in the local map pack
 `;
 
-  const phaseHtml = buildPhaseHtml(bizName, cityLabel, t0, t1, t2, brandColors || {});
+  const phaseHtml = buildPhaseHtml(
+    bizName, 
+    cityLabel, 
+    t0, t1, t2, 
+    brandColors || {}, 
+    headlines || {}, 
+    vibe || 'Modern'
+  );
   res.json({ blueprint, phaseHtml });
 });
 
@@ -437,6 +452,43 @@ app.get('/api/fulfill/:id', (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Fetch failed' });
   }
+});
+
+// =====================================================
+// SITE-WIDE CHATBOT
+// =====================================================
+app.post('/api/chatbot', async (req, res) => {
+  const { messages, userMessage } = req.body;
+  if (!userMessage) return res.status(400).json({ error: 'Message required' });
+
+  let replyText = '';
+  if (genAI) {
+    try {
+      const systemPrompt = `You are the "AdHello Growth Assistant" — an expert in AI-powered marketing and websites for home service businesses (painters, electricians, plumbers, roofers, etc.).
+Help the user understand how AdHello.ai works. We automate:
+1. Smart Website building (conversion-optimized)
+2. AI Search (GEO) ranking
+3. AI Webchat for 24/7 lead capture
+4. ROI Strategy Blueprints
+Be professional, helpful, and energetic. Keep responses under 3 paragraphs.`;
+      
+      const history = (messages || []).slice(-5).map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.text || m.content}`).join('\n\n');
+      const prompt = `${systemPrompt}\n\n${history}\n\nUser: ${userMessage}\n\nAssistant:`;
+
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      replyText = response.text();
+    } catch (err) {
+      console.error('[SITE-CHAT] Gemini error:', err);
+    }
+  }
+
+  if (!replyText) {
+    replyText = "AdHello.ai is an AI growth platform for home service pros. We build your website, handle your SEO/GEO, and capture leads 24/7 so you can focus on the job. Would you like to see how it works for your specific trade?";
+  }
+
+  res.json({ text: replyText });
 });
 
 // =====================================================
@@ -504,10 +556,12 @@ Be concise (2-4 paragraphs max), conversational, and highly specific. Use bullet
 
         const fullPrompt = `${systemPrompt}\n\n${historyText ? 'Conversation:\n' + historyText + '\n\n' : ''}User: ${message}\n\nCoach:`;
 
-        const result = await genAI.models.generateContent({ model: 'gemini-1.5-flash', contents: fullPrompt });
-        replyText = result.text || '';
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        const result = await model.generateContent(fullPrompt);
+        const response = await result.response;
+        replyText = response.text();
       } catch (geminiErr) {
-        console.error('[CHAT] Gemini failed:', geminiErr.message);
+        console.error('[CHAT] Gemini failed:', geminiErr);
       }
     }
 

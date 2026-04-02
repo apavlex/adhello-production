@@ -197,10 +197,25 @@ export default function FulfillmentPage() {
 
   const handleInitialGeneration = async () => {
     try {
+      // Check for strategy data from the "No-Website" quiz flow
+      const strategyStr = sessionStorage.getItem('adhello_strategy');
+      const strategy = strategyStr ? JSON.parse(strategyStr) : null;
+      
+      const payload = { 
+        bizName, 
+        city, 
+        score: parseInt(score), 
+        reviewThemes: themes, 
+        brandColors: strategy?.brandColors || auditReport?.brandColors || null,
+        // New strategy fields
+        vibe: strategy?.vibe || 'Modern',
+        headlines: strategy?.headlines || null
+      };
+
       const response = await fetch('/api/fulfill', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bizName, city, score: parseInt(score), reviewThemes: themes, brandColors: auditReport?.brandColors || null })
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) throw new Error('Fulfillment failed');
@@ -225,7 +240,7 @@ export default function FulfillmentPage() {
         navigate(`/fulfillment/${saveData.id}`, { replace: true });
       }
     } catch (err) {
-      console.error(err);
+      console.error('[FULFILLMENT] Generation Error:', err);
       setStatus('error');
     }
   };

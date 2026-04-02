@@ -1489,6 +1489,7 @@ export default function App() {
           </div>
         )
       }
+      <SmartSiteQuiz isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
     </div >
   );
 }
