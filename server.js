@@ -66,11 +66,11 @@ app.post('/api/analyze', async (req, res) => {
   if (!url) return res.status(400).json({ error: 'URL is required' });
 
   const mockReport = {
-    score: 78,
-    mobileFirstScore: 82,
-    leadsEstimatesScore: 65,
-    googleAiReadyScore: 71,
-    summary: "Your site has foundational elements but is missing key conversion and local GEO signals that modern AI search engines require to feature local businesses.",
+    score: 42,
+    mobileFirstScore: 68,
+    leadsEstimatesScore: 45,
+    googleAiReadyScore: 28,
+    summary: "CRITICAL: Your website is functionally invisible to modern AI search engines. You are missing established GEO (Generative Engine Optimization) signals, structured data, and the trust-layer that ChatGPT, Perplexity, and Google AI Overviews require to feature your business.",
     brandAnalysis: "Established local presence with growth potential.",
     brandColors: {
       primary: "#1a1a2e",
@@ -109,7 +109,8 @@ app.post('/api/analyze', async (req, res) => {
       const prompt = `Analyze the website ${url} and return ONLY a raw JSON object (no markdown, no backticks) with this exact structure:
 {"score":number,"mobileFirstScore":number,"leadsEstimatesScore":number,"googleAiReadyScore":number,"summary":"string","brandAnalysis":"string","brandColors":{"primary":"#hex","accent":"#hex","background":"#hex","text":"#hex"},"technicalAudit":{"mobileSpeed":{"label":"Mobile Load Speed","status":"pass|fail|warning","value":"string","reason":"string"},"contactForm":{"label":"Contact Form","status":"pass|fail|warning","value":"string","reason":"string"},"sslCertificate":{"label":"SSL Certificate","status":"pass|fail|warning","value":"string","reason":"string"},"metaDescription":{"label":"Meta Description","status":"pass|fail|warning","value":"string","reason":"string"},"googleBusinessProfile":{"label":"Google Business Profile","status":"pass|fail|warning","value":"string","reason":"string"},"reviewSentiment":{"label":"Review Sentiment","status":"pass|fail|warning","value":"string","reason":"string"}},"strengths":[{"indicator":"string","description":"string"}],"weaknesses":[{"indicator":"string","description":"string"}],"recommendations":[{"title":"string","description":"string","action":"string"}],"city":"string","reviewThemes":["string","string","string"]}
 
-For brandColors: extract the ACTUAL dominant colors used on the website. primary = main brand color (button bg, logo color), accent = highlight/CTA color, background = main page background, text = main text color. Return real hex codes observed from the site.`;
+For brandColors: extract the ACTUAL dominant colors used on the website. primary = main brand color (button bg, logo color), accent = highlight/CTA color, background = main page background, text = main text color. 
+PENALTY SYSTEM: If a site lacks Schema Markup (json-ld), llms.txt, or geo-specific breadcrumbs, the score MUST be below 50. Most local businesses currently fail this. Be honest and critical to highlight the need for GEO optimization. Return real hex codes observed from the site.`;
       const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       const result = await model.generateContent(prompt);
       const response = await result.response;

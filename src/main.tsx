@@ -10,6 +10,7 @@ import TemplateDetails from './TemplateDetails.tsx';
 import AdStudio from './AdStudio.tsx';
 import BlueprintSalesPage from './components/BlueprintSalesPage.tsx';
 import FulfillmentPage from './components/FulfillmentPage.tsx';
+import StrategyResultsPage from './components/StrategyResultsPage.tsx';
 import './index.css';
 
 const router = createBrowserRouter([
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: "/fulfillment/:id",
     element: <FulfillmentPage />,
+  },
+  {
+    path: "/strategy-results",
+    element: <StrategyResultsPage />,
   },
   {
     path: "/studio",

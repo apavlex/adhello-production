@@ -57,12 +57,12 @@ export const SmartSiteQuiz: React.FC<SmartSiteQuizProps> = ({ isOpen, onClose })
       });
       const data = await response.json();
       
-      // Save results to session storage for the fulfillment page
-      sessionStorage.setItem('auditReport', JSON.stringify(data));
+      // Save results to session storage for the strategy results page
+      sessionStorage.setItem('quizData', JSON.stringify(formData));
       sessionStorage.setItem('isNoWebsiteFlow', 'true');
       
       onClose();
-      navigate('/fulfillment');
+      navigate('/strategy-results');
     } catch (error) {
       console.error('Strategy generation failed:', error);
       alert('We hit a small snag building your strategy. Please try again.');
