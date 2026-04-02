@@ -53,7 +53,7 @@ export default function FulfillmentPage() {
   const [isDownloading, setIsDownloading] = useState(false);
   
   // Chatbot State
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(true);
   const [chatMessages, setChatMessages] = useState<{role: string, content: string}[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
