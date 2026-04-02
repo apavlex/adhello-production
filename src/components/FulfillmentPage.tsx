@@ -230,25 +230,46 @@ export default function FulfillmentPage() {
                     </div>
                   </div>
 
-                  {/* Visual Style Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-                    {[
-                      { name: 'Modern Bento', icon: Layout, desc: 'High-velocity grid for ' + city, color: 'bg-blue-50 text-blue-600' },
-                      { name: 'Split-Hero', icon: Zap, desc: 'Conversion-first structural layout', color: 'bg-purple-50 text-purple-600' },
-                      { name: 'Dark Elite', icon: ShieldCheck, desc: 'Premium architectural authority', color: 'bg-zinc-900 text-zinc-100' }
-                    ].map((style, i) => (
-                      <div key={i} className={`p-6 rounded-3xl border border-brand-dark/5 shadow-sm transition-all hover:shadow-md ${style.color}`}>
-                        <div className="mb-4">
-                          <style.icon className="w-8 h-8" />
+                    {/* Visual Style Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                      {[
+                        { 
+                          name: 'Modern Bento', 
+                          icon: Layout, 
+                          desc: 'High-velocity grid for ' + city, 
+                          color: 'bg-blue-50 text-blue-600',
+                          img: 'https://lh3.googleusercontent.com/aida/ADBb0uijG3rTrsWfhYDANe2sDIZ7QrdTsJpwoBa0t_VJfHfRZu01qv3wNh-h3ajdrsSAhp0flucJ5u4n_wOtmF3JgTYMMDH6oSaXYd746Cv-yWALpt8eHtm1j8M2hfDZcRr7R0bsXnwhHbNXbjO1d_tGYZXJiChDanbBDJiLzR_CpPdLTosg0_nYgYrWwZJTpba85cqge_DIKTm4IyaL9jkeRazVtcUg8PkSPu6C1pY9XBiJNOqVmHkiOXg58Mo'
+                        },
+                        { 
+                          name: 'Split-Hero', 
+                          icon: Zap, 
+                          desc: 'Conversion-first structural layout', 
+                          color: 'bg-purple-50 text-purple-600',
+                          img: 'file:///Users/alexpavlenko/.gemini/antigravity/brain/f25ef922-6c2b-495b-b9d9-a6ceec11d2da/pressocoffee_split_hero_blueprint_1775093870868.png'
+                        },
+                        { 
+                          name: 'Dark Elite', 
+                          icon: ShieldCheck, 
+                          desc: 'Premium architectural authority', 
+                          color: 'bg-zinc-900 text-zinc-100',
+                          img: 'file:///Users/alexpavlenko/.gemini/antigravity/brain/f25ef922-6c2b-495b-b9d9-a6ceec11d2da/pressocoffee_dark_elite_blueprint_1775093888226.png'
+                        }
+                      ].map((style, i) => (
+                        <div key={i} className={`p-6 rounded-3xl border border-brand-dark/5 shadow-sm transition-all hover:shadow-xl group overflow-hidden ${style.color}`}>
+                          <div className="h-32 mb-4 rounded-2xl bg-white/50 overflow-hidden relative border border-current/5 shadow-inner">
+                            <img src={style.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={style.name} />
+                          </div>
+                          <div className="mb-4">
+                            <style.icon className="w-8 h-8" />
+                          </div>
+                          <h4 className="text-lg font-black mb-2">{style.name}</h4>
+                          <p className="text-xs font-bold opacity-70 leading-relaxed">{style.desc}</p>
+                          <div className="mt-4 pt-4 border-t border-current/10 flex items-center justify-between">
+                            <span className="text-[10px] uppercase font-black tracking-widest">Architected ✓</span>
+                          </div>
                         </div>
-                        <h4 className="text-lg font-black mb-2">{style.name}</h4>
-                        <p className="text-xs font-bold opacity-70 leading-relaxed">{style.desc}</p>
-                        <div className="mt-4 pt-4 border-t border-current/10 flex items-center justify-between">
-                          <span className="text-[10px] uppercase font-black tracking-widest">Architected ✓</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
 
                   <div className="prose-manual max-w-none mb-20">
                     <ReactMarkdown>{blueprint || ''}</ReactMarkdown>
