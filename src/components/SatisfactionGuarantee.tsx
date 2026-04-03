@@ -33,7 +33,7 @@ export function SatisfactionGuarantee({ className = "", variant = 'full' }: Sati
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className={`bg-white/40 backdrop-blur-xl border border-white/50 rounded-3xl p-8 shadow-xl ${className}`}
+        className={`py-4 ${className}`}
       >
         <div className="flex items-start gap-5">
           <div className="bg-gradient-to-br from-amber-400 to-yellow-500 p-3 rounded-2xl shadow-lg shadow-amber-200">
