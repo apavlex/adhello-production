@@ -92,40 +92,34 @@ const HERO_VARIANTS = [
 
 const PORTFOLIO_EXAMPLES = [
   {
-    id: 'painter',
-    name: 'Painting',
-    beforeImage: '/old-site.png',
-    afterImage: '/new-site.png'
-  },
-  {
-    id: 'movers',
-    name: 'Movers',
-    beforeImage: '/old-movers-site.png',
-    afterImage: '/new-movers-site.png'
-  },
-  {
     id: 'plumbing',
-    name: 'Plumbing',
-    beforeImage: '/old-plumbing-site.png',
-    afterImage: '/templates/template-proplumb.png'
+    name: 'Plumbers',
+    beforeImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800',
+    afterImage: '/templates/template-plumbing-light.png'
   },
   {
     id: 'hvac',
     name: 'HVAC',
-    beforeImage: '/old-hvac-site.png',
+    beforeImage: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ecc?auto=format&fit=crop&q=80&w=800',
     afterImage: '/templates/template-joes-home.png'
-  },
-  {
-    id: 'electrical',
-    name: 'Electrical',
-    beforeImage: '/templates/template-bright-electric-old.png',
-    afterImage: '/templates/template-bright-electric-new.png'
   },
   {
     id: 'roofing',
     name: 'Roofing',
-    beforeImage: '/old-roofing-site.png',
-    afterImage: '/templates/template-roofing-home.png'
+    beforeImage: 'https://images.unsplash.com/photo-1632759145351-1d592919f522?auto=format&fit=crop&q=80&w=800',
+    afterImage: '/templates/template-roofing-light.png'
+  },
+  {
+    id: 'emergency',
+    name: 'Emergency',
+    beforeImage: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800',
+    afterImage: '/templates/template-joes-emergency.png'
+  },
+  {
+    id: 'dashboard',
+    name: 'Client Portal',
+    beforeImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
+    afterImage: '/templates/template-joes-dashboard.png'
   }
 ];
 
