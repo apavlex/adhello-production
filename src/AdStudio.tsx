@@ -25,7 +25,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { SiteAudit } from './components/SiteAudit';
-import logoImg from './assets/logo.png';
+import { Logo } from './components/Logo';
 import { Link, useSearchParams } from 'react-router-dom';
 
 // @ts-ignore
@@ -45,6 +45,20 @@ const TikTokIcon = ({ className }: { className?: string }) => (
     <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.86-.6-4.12-1.31a6.38 6.38 0 0 1-1.87-1.5c-.02 3.14-.03 6.28-.04 9.42-.01 1.05-.09 2.1-.44 3.1-.58 1.73-2.02 3.18-3.72 3.79-1.7.61-3.62.54-5.26-.25-1.64-.79-2.92-2.36-3.41-4.12-.49-1.75-.22-3.68.75-5.23.97-1.55 2.59-2.62 4.4-2.81.18-.02.36-.03.54-.03v4.09c-.31.03-.63.08-.93.17-1.14.34-2.02 1.41-2.14 2.6-.12 1.19.46 2.41 1.45 3.07.99.66 2.32.74 3.4.2.98-.49 1.63-1.54 1.75-2.62.12-1.12.11-2.24.11-3.36V.02z"/>
   </svg>
 );
+
+const studioSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AdHello.ai Ad Studio",
+  "applicationCategory": "MarketingApplication",
+  "operatingSystem": "All",
+  "abstract": "Generate platform-ready ad creatives for Contractors in seconds.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
 
 export default function AdStudio() { useAnalytics(); useAnalytics();
   const [searchParams] = useSearchParams();
@@ -275,7 +289,7 @@ export default function AdStudio() { useAnalytics(); useAnalytics();
       <div data-nav="main" className="fixed top-0 left-0 w-full z-50 px-4 py-6 transition-[top] duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logoImg} alt="AdHello" className="h-8 w-auto brightness-0 invert" />
+            <Logo variant="light" className="h-8 w-auto brightness-0 invert" />
           </Link>
 
           <div className="flex items-center gap-4">

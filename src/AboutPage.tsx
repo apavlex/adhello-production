@@ -15,8 +15,6 @@ import {
     ChevronRight,
     Sparkles
 } from 'lucide-react';
-import logoImg from './assets/logo.png';
-import projectFoundersImg from './assets/project-founders.jpg';
 import { Link } from 'react-router-dom';
 import SEO from './components/SEO';
 import { useState } from 'react';
