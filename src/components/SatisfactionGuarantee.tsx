@@ -60,15 +60,6 @@ export function SatisfactionGuarantee({ className = "", variant = 'full' }: Sati
                 <span className="digital-signature text-2xl -mt-1 scale-90 origin-left">Alex Pavlenko</span>
                 <span className="text-[9px] font-black uppercase tracking-widest text-brand-dark/30 ml-1">Founder, AdHello.ai</span>
               </div>
-              
-              <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
-                <div className="flex -space-x-1">
-                  {[1,2,3].map(i => (
-                    <div key={i} className="w-4 h-4 rounded-full bg-amber-200 border border-white" />
-                  ))}
-                </div>
-                <span className="text-[10px] font-black text-amber-700 uppercase tracking-tight">500+ Businesses</span>
-              </div>
             </div>
           </div>
         </div>
@@ -125,10 +116,6 @@ export function SatisfactionGuarantee({ className = "", variant = 'full' }: Sati
               <div className="space-y-1">
                 <span className="digital-signature text-6xl text-brand-dark/90">Alex Pavlenko</span>
                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-dark/40 px-1">Founder, AdHello.ai</p>
-              </div>
-              <div className="hidden sm:block w-px h-12 bg-brand-dark/10"></div>
-              <div className="flex flex-col gap-2">
-                <span className="text-[10px] font-bold text-brand-dark/40 uppercase tracking-widest">500+ Businesses Delighted</span>
               </div>
             </motion.div>
           </div>
