@@ -115,9 +115,9 @@ const PORTFOLIO_EXAMPLES = [
   {
     id: 'restoration',
     name: 'Property Restoration',
-    beforeImage: '/templates/old-site copy.png',
+    beforeImage: null,
     afterImage: '/templates/property-after.png',
-    demoUrl: '/templates/restoration-preview'
+    demoUrl: null
   },
   {
     id: 'plumbing',
@@ -598,13 +598,35 @@ export default function App() {
                 exit={{ opacity: 0, scale: 1.02 }}
                 transition={{ duration: 0.4 }}
               >
-                <BeforeAfterSlider 
-                  beforeImage={PORTFOLIO_EXAMPLES[portfolioIndex].beforeImage}
-                  afterImage={PORTFOLIO_EXAMPLES[portfolioIndex].afterImage}
-                  beforeLabel="Old Site"
-                  afterLabel="AdHello Smart Site"
-                  demoUrl={PORTFOLIO_EXAMPLES[portfolioIndex].demoUrl}
-                />
+                {PORTFOLIO_EXAMPLES[portfolioIndex].beforeImage ? (
+                  <BeforeAfterSlider 
+                    beforeImage={PORTFOLIO_EXAMPLES[portfolioIndex].beforeImage}
+                    afterImage={PORTFOLIO_EXAMPLES[portfolioIndex].afterImage}
+                    beforeLabel="Old Site"
+                    afterLabel="AdHello Smart Site"
+                    demoUrl={PORTFOLIO_EXAMPLES[portfolioIndex].demoUrl}
+                  />
+                ) : (
+                  <div className="relative aspect-[4/3] md:aspect-[16/9] rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white/20">
+                    <img 
+                      src={PORTFOLIO_EXAMPLES[portfolioIndex].afterImage} 
+                      alt={PORTFOLIO_EXAMPLES[portfolioIndex].name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-6 right-6 bg-primary text-brand-dark px-4 py-2 rounded-full font-black text-xs shadow-xl flex items-center gap-2">
+                      <Sparkles className="w-4 h-4" />
+                      ADHELLO SMART SITE
+                    </div>
+                    <div className="absolute bottom-6 left-6 right-6 bg-white/20 backdrop-blur-md border border-white/20 p-4 rounded-2xl">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-white text-xs font-bold uppercase tracking-widest opacity-60 mb-1">Status</p>
+                          <p className="text-white text-lg font-black italic">Conversion-Optimized Layout</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             </AnimatePresence>
             

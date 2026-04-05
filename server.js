@@ -919,13 +919,34 @@ app.post('/api/leads', async (req, res) => {
 });
 
 app.post('/api/ad-brief/generate-image', (req, res) => {
-  const { headline, body, platform, originalImage, visualStyle } = req.body;
+  const { headline, body, platform, originalImage, visualStyle, industry = 'home services' } = req.body;
   console.log(`[GEN-IMAGE] Request for ${platform}: "${headline}" with style: ${visualStyle}`);
   
-  // If we have an original image, use that as the primary visual interest.
-  // In a production environment, this would call a real Image-to-Image API.
+  // High-quality platform-specific defaults
+  const platformImages = {
+    'Instagram': [
+      'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=1200', // Paint/Interior
+      'https://images.unsplash.com/photo-1581094288338-2314dddb7ecc?q=80&w=1200', // Technical
+    ],
+    'Facebook': [
+      'https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=1200', // Professional
+      'https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?q=80&w=1200', // Moving
+    ],
+    'TikTok': [
+      'https://images.unsplash.com/photo-1581093458791-9f3c3250bb8b?q=80&w=800', // Action
+      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=800', // HVAC
+    ]
+  };
+
+  const images = platformImages[platform] || platformImages['Instagram'];
+  const imageUrl = images[Math.floor(Math.random() * images.length)];
+
+  // If we have an original image, we use it for some concepts, but for others we use "AI Enhanced" (professional photography)
+  // For the sake of this demo, we'll return the original occasionally but focus on professional quality.
+  const finalImageUrl = Math.random() > 0.6 ? originalImage : imageUrl;
+
   res.json({ 
-    imageUrl: originalImage || 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: finalImageUrl || imageUrl,
     success: true
   });
 });
