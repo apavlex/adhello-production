@@ -1,22 +1,22 @@
 const portlandProBlue = 'https://images.unsplash.com/photo-1558444479-c8f010b487c2?auto=format&fit=crop&w=1200&q=80'; // Light Professional Site
-const portlandProYellow = '/templates/electrical-after.png'; // Dark Professional Site
-const portlandElectricHome = '/templates/electrical-after.png';
-const portlandElectricServices = '/templates/template-joes-dashboard.png';
-const portlandElectricQuote = '/templates/template-joes-emergency.png';
+const portlandProYellow = './templates/electrical-after.png'; // Dark Professional Site
+const portlandElectricHome = './templates/electrical-after.png';
+const portlandElectricServices = './templates/template-joes-dashboard.png';
+const portlandElectricQuote = './templates/template-joes-emergency.png';
 
-const plumbingLight = '/templates/template-plumbing-light.png';
-const proPlumb = '/templates/plumbing-after.png';
-const joesHome = '/templates/template-joes-home.png';
-const joesEmergency = '/templates/template-joes-emergency.png';
-const joesDashboard = '/templates/template-joes-dashboard.png';
+const plumbingLight = './templates/template-plumbing-light.png';
+const proPlumb = './templates/plumbing-after.png';
+const joesHome = './templates/template-joes-home.png';
+const joesEmergency = './templates/template-joes-emergency.png';
+const joesDashboard = './templates/template-joes-dashboard.png';
 
-const roofingLight = '/templates/template-roofing-light.png';
-const roofingEmergency = '/templates/template-joes-emergency.png';
-const roofingCorporate = '/templates/template-roofing-light.png';
-const roofingDashboard = '/templates/template-joes-dashboard.png';
-const roofingHome = '/templates/template-roofing-light.png';
-const brightElectricNew = '/templates/electrical-after.png';
-const brightElectricOld = '/templates/electrical-before.png';
+const roofingLight = './templates/template-roofing-light.png';
+const roofingEmergency = './templates/template-joes-emergency.png';
+const roofingCorporate = './templates/template-roofing-light.png';
+const roofingDashboard = './templates/template-joes-dashboard.png';
+const roofingHome = './templates/template-roofing-light.png';
+const brightElectricNew = './templates/electrical-after.png';
+const brightElectricOld = './templates/electrical-before.png';
 
 export interface TemplateFeature {
     icon: string; // lucide-react icon name as a string, e.g., 'ShieldCheck'

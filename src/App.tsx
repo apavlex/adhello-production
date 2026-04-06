@@ -57,7 +57,7 @@ const HERO_VARIANTS = [
     tagline: "Built for HVAC Professionals",
     headline: "Capture emergency calls 24/7 on autopilot.",
     subheadline: "When a furnace breaks at midnight, your AI receptionist is there to book the job. No more missed calls, no more lost revenue. Just a booked schedule.",
-    image: "/templates/template-joes-home.png"
+    image: "./templates/template-joes-home.png"
   },
   {
     trade: "Electrical",
@@ -71,14 +71,14 @@ const HERO_VARIANTS = [
     tagline: "Built for Plumbing Services",
     headline: "Fill your plumbing schedule with high-quality leads.",
     subheadline: "Put your marketing on autopilot. AdHello handles the technical stuff, constantly improving your rank and suggesting growth strategies so you can focus on the pipes.",
-    image: "/templates/template-plumbing-light.png"
+    image: "./templates/template-plumbing-light.png"
   },
   {
     trade: "Roofing",
     tagline: "Built for Roofing Contractors",
     headline: "Turn storm chasers into long-term growth.",
     subheadline: "Don't just wait for the next storm. Build a dominant local brand that generates roofing leads year-round with AdHello's AI-driven growth engine.",
-    image: "/templates/template-roofing-light.png"
+    image: "./templates/template-roofing-light.png"
   },
   {
     trade: "Flooring",
@@ -794,21 +794,21 @@ export default function App() {
                 step: 1,
                 title: "The Professional Foundation",
                 desc: "We build your high-converting, AI-ready website in just 7 days. No tech headaches or complex builders—just a professional, foundational asset that belongs in the modern era.",
-                image: "/templates/template-joes-home.png",
+                image: "./templates/template-joes-home.png",
                 highlight: false
               },
               {
                 step: 2,
                 title: "Capture Every Lead",
                 desc: "Launch your AI receptionist to instantly stop lead leakage. Your intelligent assistant greets visitors, qualifies leads, and books jobs 24/7—while you're on a call or asleep.",
-                image: "/templates/template-joes-emergency.png",
+                image: "./templates/template-joes-emergency.png",
                 highlight: true
               },
               {
                 step: 3,
                 title: "A Scalable Growth Journey",
                 desc: "This is where the real journey begins. We provide the tools, AI-driven insights, and continuous support to help your business grow and become more optimized every single day.",
-                image: "/templates/template-joes-dashboard.png",
+                image: "./templates/template-joes-dashboard.png",
                 highlight: false
               }
             ].map((card, index) => (
@@ -919,7 +919,7 @@ export default function App() {
               <div className="relative shrink-0">
                 <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm">
                   <img 
-                    src="/alex.png" 
+                    src="./alex.png" 
                     alt="Alex Pavlenko" 
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -1310,6 +1310,7 @@ export default function App() {
                 <Logo variant="dark" className="h-12 w-auto" />
               </div>
               <SatisfactionGuarantee variant="footer" className="!mt-2 !pt-6 mb-8" />
+              <div className="text-[10px] font-bold opacity-30 mt-2">DEPLOY_VERSION_2.3_VERIFIED</div>
               
               <div className="flex gap-4">
                 <a
