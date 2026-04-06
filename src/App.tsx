@@ -63,14 +63,14 @@ const HERO_VARIANTS = [
     tagline: "Built for Electrical Services",
     headline: "Power up your business with more electrical leads.",
     subheadline: "While you’re wiring a panel, AdHello is working on autopilot—optimizing your site, boosting your search rank, and finding new lead opportunities automatically.",
-    image: "/electrician.png"
+    image: "/templates/electrical-after.png"
   },
   {
     trade: "Plumbing",
     tagline: "Built for Plumbing Services",
     headline: "Fill your plumbing schedule with high-quality leads.",
     subheadline: "Put your marketing on autopilot. AdHello handles the technical stuff, constantly improving your rank and suggesting growth strategies so you can focus on the pipes.",
-    image: "/plumber.png"
+    image: "/templates/plumbing-after.png"
   },
   {
     trade: "Roofing",
@@ -92,38 +92,49 @@ const PORTFOLIO_EXAMPLES = [
   {
     id: 'painter',
     name: 'Painting',
-    beforeImage: '/old-site.png',
-    afterImage: '/new-site.png'
+    beforeImage: '/templates/painting-before.png',
+    afterImage: '/templates/painting-after.png'
   },
   {
     id: 'movers',
     name: 'Movers',
-    beforeImage: '/old-movers-site.png',
-    afterImage: '/new-movers-site.png'
+    beforeImage: '/templates/movers-before.png',
+    afterImage: '/templates/movers-after.png'
   },
   {
     id: 'plumbing',
     name: 'Plumbing',
-    beforeImage: '/old-plumbing-site.png',
-    afterImage: '/templates/template-proplumb.png'
+    beforeImage: '/templates/plumbing-before.png',
+    afterImage: '/templates/plumbing-after.png'
   },
   {
     id: 'hvac',
     name: 'HVAC',
-    beforeImage: '/old-hvac-site.png',
+    beforeImage: null,
     afterImage: '/templates/template-joes-home.png'
   },
   {
     id: 'electrical',
     name: 'Electrical',
-    beforeImage: '/templates/template-bright-electric-old.png',
-    afterImage: '/templates/template-bright-electric-new.png'
+    beforeImage: '/templates/electrical-before.png',
+    afterImage: '/templates/electrical-after.png'
   },
   {
     id: 'roofing',
     name: 'Roofing',
-    beforeImage: '/old-roofing-site.png',
-    afterImage: '/templates/template-roofing-home.png'
+    beforeImage: null,
+    afterImage: '/templates/template-roofing-light.png'
+  },
+  {
+    id: 'restoration',
+    name: 'Property Restoration',
+    beforeImage: null,
+    afterImage: '/templates/property-after.png',
+    highlights: [
+      "Brand Logo Development",
+      "Conversion Copywriting",
+      "Premium UI Design"
+    ]
   }
 ];
 
@@ -907,7 +918,7 @@ export default function App() {
               <div className="relative shrink-0">
                 <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm">
                   <img 
-                    src="/alex-profile.png" 
+                    src="https://ui-avatars.com/api/?name=Alex+Pavlenko&background=FF8C69&color=fff&size=128" 
                     alt="Alex Pavlenko" 
                     className="w-full h-full object-cover"
                   />
@@ -947,7 +958,7 @@ export default function App() {
             {/* Header */}
             <div className="bg-brand-dark px-6 py-5 flex items-center gap-4">
               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/30 flex-shrink-0">
-                <img src="/alex-profile.png" alt="Alex" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=100&q=80"; }} />
+                <img src="https://ui-avatars.com/api/?name=Alex+Pavlenko&background=FF8C69&color=fff&size=128" alt="Alex" className="w-full h-full object-cover" />
               </div>
               <div className="flex-1">
                 <p className="text-white font-extrabold text-base leading-tight">Free Site Analysis</p>
