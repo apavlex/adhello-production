@@ -47,6 +47,7 @@ import { Link } from 'react-router-dom';
 import { BeforeAfterSlider } from './components/BeforeAfterSlider';
 import { AssessmentCTA } from './components/AssessmentCTA';
 import { Logo } from './components/Logo';
+import { SatisfactionGuarantee } from './components/SatisfactionGuarantee';
 import SEO from './components/SEO';
 import { EventBanner } from './components/EventBanner';
 
@@ -918,9 +919,12 @@ export default function App() {
               <div className="relative shrink-0">
                 <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm">
                   <img 
-                    src="https://ui-avatars.com/api/?name=Alex+Pavlenko&background=FF8C69&color=fff&size=128" 
+                    src="/alex-profile.png" 
                     alt="Alex Pavlenko" 
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=400&h=400&q=80";
+                    }}
                   />
                 </div>
               </div>
@@ -958,7 +962,12 @@ export default function App() {
             {/* Header */}
             <div className="bg-brand-dark px-6 py-5 flex items-center gap-4">
               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/30 flex-shrink-0">
-                <img src="https://ui-avatars.com/api/?name=Alex+Pavlenko&background=FF8C69&color=fff&size=128" alt="Alex" className="w-full h-full object-cover" />
+                <img 
+                  src="/alex-profile.png" 
+                  alt="Alex" 
+                  className="w-full h-full object-cover" 
+                  onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=100&q=80"; }} 
+                />
               </div>
               <div className="flex-1">
                 <p className="text-white font-extrabold text-base leading-tight">Free Site Analysis</p>
@@ -1290,6 +1299,8 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      <SatisfactionGuarantee className="mt-20 px-4 max-w-6xl mx-auto" />
 
       <footer className="bg-warm-cream text-brand-dark/60 py-12 border-t border-brand-dark/5">
         <div className="max-w-7xl mx-auto px-4">
