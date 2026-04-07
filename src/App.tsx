@@ -56,7 +56,8 @@ const getPublicAsset = (path: string) => {
   const base = import.meta.env.BASE_URL || '/';
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
   const cleanBase = base.endsWith('/') ? base : `${base}/`;
-  return `${cleanBase}${cleanPath}`;
+  // Add a cache buster version string because the browser aggressively caches 404s for old missing paths
+  return `${cleanBase}${cleanPath}?v=2.8`;
 };
 
 const HERO_VARIANTS = [
@@ -1318,7 +1319,7 @@ export default function App() {
                 <Logo variant="dark" className="h-12 w-auto" />
               </div>
               <SatisfactionGuarantee variant="footer" className="!mt-2 !pt-6 mb-8" />
-              <div className="text-[10px] font-bold opacity-30 mt-2">DEPLOY_VERSION_2.7_DIAGNOSTIC</div>
+              <div className="text-[10px] font-bold opacity-30 mt-2">DEPLOY_VERSION_2.8_CACHE_BUSTER_FIX</div>
               
               <div className="flex gap-4">
                 <a

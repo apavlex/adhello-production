@@ -2,7 +2,8 @@ const resolve = (path: string) => {
     const base = import.meta.env.BASE_URL || '/';
     const cleanBase = base.endsWith('/') ? base : `${base}/`;
     const cleanPath = path.startsWith('./') ? path.slice(2) : (path.startsWith('/') ? path.slice(1) : path);
-    return `${cleanBase}${cleanPath}`;
+    // Add cache buster to force browser to re-request the file instead of using a cached 404
+    return `${cleanBase}${cleanPath}?v=2.8`;
 };
 
 const portlandProBlue = 'https://images.unsplash.com/photo-1558444479-c8f010b487c2?auto=format&fit=crop&w=1200&q=80'; // Light Professional Site
