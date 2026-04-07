@@ -65,6 +65,42 @@ app.use((req, res, next) => {
 });
 app.use(express.json({ limit: '50mb' }));
 
+// --- DEBUG ROUTE ---
+app.get('/api/debug-assets', async (req, res) => {
+  try {
+    const fs = await import('fs/promises');
+    const walk = async (dir) => {
+      let results = [];
+      const list = await fs.readdir(dir);
+      for (const file of list) {
+        const filePath = path.join(dir, file);
+        const stat = await fs.stat(filePath);
+        if (stat && stat.isDirectory()) {
+          results = results.concat(await walk(filePath));
+        } else {
+          results.push(filePath.replace(__dirname, ''));
+        }
+      }
+      return results;
+    };
+
+    const distFiles = (await fs.access(DIST_DIR).then(() => walk(DIST_DIR)).catch(() => ['DIST MISSING']));
+    const publicFiles = (await fs.access(path.join(__dirname, 'public')).then(() => walk(path.join(__dirname, 'public'))).catch(() => ['PUBLIC MISSING']));
+    
+    res.json({
+      timestamp: new Date().toISOString(),
+      __dirname,
+      DIST_DIR,
+      distFiles: distFiles.slice(0, 50),
+      publicFiles: publicFiles.slice(0, 50),
+      env_base: process.env.BASE_URL || 'NONE'
+    });
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+
+
 process.on('uncaughtException', (err) => console.error('[CRITICAL] Uncaught Exception:', err));
 process.on('unhandledRejection', (reason) => console.error('[CRITICAL] Unhandled Rejection:', reason));
 

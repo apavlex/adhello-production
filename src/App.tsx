@@ -1318,7 +1318,7 @@ export default function App() {
                 <Logo variant="dark" className="h-12 w-auto" />
               </div>
               <SatisfactionGuarantee variant="footer" className="!mt-2 !pt-6 mb-8" />
-              <div className="text-[10px] font-bold opacity-30 mt-2">DEPLOY_VERSION_2.6_VERIFIED_BUILD</div>
+              <div className="text-[10px] font-bold opacity-30 mt-2">DEPLOY_VERSION_2.7_DIAGNOSTIC</div>
               
               <div className="flex gap-4">
                 <a
