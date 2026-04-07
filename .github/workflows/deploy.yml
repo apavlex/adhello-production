@@ -22,5 +22,9 @@ jobs:
           region: us-west1
           source: .
           env_vars: |
+            VITE_APP_DOMAIN=https://adhello.ai
+            ADHELLO_APP_DOMAIN=https://adhello.ai
             GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
+            KIE_API_KEY=${{ secrets.KIE_API_KEY }}
             RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+            ADHELLO_LEADSOS_URL=${{ secrets.ADHELLO_LEADSOS_URL }}

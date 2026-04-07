@@ -3,6 +3,7 @@ import { Logo } from './components/Logo';
 import { EventBanner } from './components/EventBanner';
 import React from 'react';
 import { motion } from 'motion/react';
+import { SITE_ORIGIN } from './lib/site';
 import {
     ArrowRight,
     Target,
@@ -35,10 +36,10 @@ export default function AboutPage() { useAnalytics(); useAnalytics();
     const aboutSchema = {
       "@context": "https://schema.org",
       "@type": "AboutPage",
-      "url": "https://adhello.ai/about",
+      "url": `${SITE_ORIGIN}/about`,
       "name": "About AdHello.ai — Built in the Trenches, Designed for Growth",
       "description": "AdHello.ai was built by a founder who lived the struggle of growing a local business without the right marketing systems.",
-      "isPartOf": { "@id": "https://adhello.ai/#website" }
+      "isPartOf": { "@id": `${SITE_ORIGIN}/#website` }
     };
 
     return (
@@ -47,7 +48,7 @@ export default function AboutPage() { useAnalytics(); useAnalytics();
             <SEO
               title="About AdHello.ai — Built in the Trenches, Designed for Growth"
               description="AdHello.ai was built by a founder who felt the pain of running a local business without a real marketing system. Learn how we turned that into an AI-powered growth platform for home service contractors."
-              canonical="https://adhello.ai/about"
+              canonical={`${SITE_ORIGIN}/about`}
               schema={aboutSchema}
             />
             {/* Header — exact match to homepage */}

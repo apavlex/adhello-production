@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { SITE_DEFAULT_IMAGE } from '../lib/site';
 
 interface SEOProps {
   title: string;
@@ -8,7 +9,7 @@ interface SEOProps {
   schema?: object | object[];
 }
 
-const DEFAULT_IMAGE = 'https://adhello.ai/favicon-512.png';
+const DEFAULT_IMAGE = SITE_DEFAULT_IMAGE;
 
 export default function SEO({ title, description, canonical, ogImage = DEFAULT_IMAGE, schema }: SEOProps) {
   const schemaMarkup = schema

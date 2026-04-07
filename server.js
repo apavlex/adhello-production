@@ -66,6 +66,9 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '50mb' }));
 
 // --- DEBUG ROUTE ---
+app.set('trust proxy', true);
+const APP_ORIGIN = process.env.ADHELLO_APP_DOMAIN || 'https://adhello.ai';
+
 app.get('/api/debug-assets', async (req, res) => {
   try {
     const fs = await import('fs/promises');
@@ -93,7 +96,8 @@ app.get('/api/debug-assets', async (req, res) => {
       DIST_DIR,
       distFiles: distFiles.slice(0, 50),
       publicFiles: publicFiles.slice(0, 50),
-      env_base: process.env.BASE_URL || 'NONE'
+      env_base: process.env.BASE_URL || 'NONE',
+      app_origin: APP_ORIGIN
     });
   } catch (err) {
     res.json({ error: err.message });

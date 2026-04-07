@@ -9,6 +9,7 @@ steps:
       - --region=us-west1
       - --project=$PROJECT_ID
       - --allow-unauthenticated
+      - --set-env-vars=VITE_APP_DOMAIN=https://adhello.ai,ADHELLO_APP_DOMAIN=https://adhello.ai,GEMINI_API_KEY=$GEMINI_API_KEY,KIE_API_KEY=$KIE_API_KEY,RESEND_API_KEY=$RESEND_API_KEY,ADHELLO_LEADSOS_URL=$ADHELLO_LEADSOS_URL
 
 options:
   logging: CLOUD_LOGGING_ONLY

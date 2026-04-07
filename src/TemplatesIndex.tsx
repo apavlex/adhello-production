@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { TEMPLATES, CATEGORIES, getTemplatesByCategory } from './data/templates';
 import SEO from './components/SEO';
 import { EventBanner } from './components/EventBanner';
+import { SITE_ORIGIN } from './lib/site';
 
 export default function TemplatesIndex() { useAnalytics(); useAnalytics();
     const { category = 'all' } = useParams();
@@ -52,10 +53,10 @@ export default function TemplatesIndex() { useAnalytics(); useAnalytics();
     const templatesSchema = {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      "url": "https://adhello.ai/templates",
+      "url": `${SITE_ORIGIN}/templates`,
       "name": "Contractor Website Templates — AdHello.ai",
       "description": "Browse website templates built for home service businesses. SEO and GEO optimized to rank on Google and AI search engines.",
-      "isPartOf": { "@id": "https://adhello.ai/#website" }
+      "isPartOf": { "@id": `${SITE_ORIGIN}/#website` }
     };
 
     return (
@@ -64,7 +65,7 @@ export default function TemplatesIndex() { useAnalytics(); useAnalytics();
             <SEO
               title="Website Templates for Home Service Contractors — AdHello.ai"
               description="Browse professionally designed website templates for painters, electricians, plumbers, HVAC, roofers, flooring and movers. SEO and GEO optimized out of the box."
-              canonical="https://adhello.ai/templates"
+              canonical={`${SITE_ORIGIN}/templates`}
               schema={templatesSchema}
             />
             {/* Header */}

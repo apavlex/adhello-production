@@ -242,7 +242,7 @@ CRITICAL RULES:
       setAnalysisProgress(30);
 
       // Call the server-side endpoint (which has access to GEMINI_API_KEY at runtime)
-      const response = await fetch('/api/ad-brief', {
+      const response = await fetch('/api/ad-brief/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageBase64: base64Data, mimeType, service: selectedService })

@@ -50,6 +50,7 @@ import { Logo } from './components/Logo';
 import { SatisfactionGuarantee } from './components/SatisfactionGuarantee';
 import SEO from './components/SEO';
 import { EventBanner } from './components/EventBanner';
+import { SITE_ORIGIN } from './lib/site';
 
 // Helper to resolve public assets correctly in all environments (root or sub-paths)
 const getPublicAsset = (path: string) => {
@@ -66,7 +67,7 @@ const HERO_VARIANTS = [
     tagline: "Built for HVAC Services",
     headline: "Get more HVAC leads with a website built for comfort.",
     subheadline: "Your smart website works for you 24/7. It automatically optimizes your content, improves your rank, and finds new leads while you're fixing an AC.",
-    image: getPublicAsset("ai-receptionist.jpg")
+    image: getPublicAsset("HVAC.jpeg")
   },
   {
     trade: "Electrical",
@@ -87,7 +88,7 @@ const HERO_VARIANTS = [
     tagline: "Built for HVAC Professionals",
     headline: "Capture emergency calls 24/7 on autopilot.",
     subheadline: "When a furnace breaks at midnight, your AI receptionist is there to book the job. No more missed calls, no more lost revenue. Just a booked schedule.",
-    image: getPublicAsset("ai-receptionist.jpg")
+    image: getPublicAsset("HVAC.jpeg")
   },
   {
     trade: "Plumbing",
@@ -252,18 +253,18 @@ export default function App() {
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "@id": "https://adhello.ai/#website",
-      "url": "https://adhello.ai/",
+      "@id": `${SITE_ORIGIN}/#website`,
+      "url": `${SITE_ORIGIN}/`,
       "name": "AdHello.ai",
       "description": "AI-powered websites and marketing for local home service businesses.",
-      "publisher": { "@id": "https://adhello.ai/#organization" }
+      "publisher": { "@id": `${SITE_ORIGIN}/#organization` }
     },
     {
       "@context": "https://schema.org",
       "@type": "ProfessionalService",
-      "@id": "https://adhello.ai/#service",
+      "@id": `${SITE_ORIGIN}/#service`,
       "name": "AdHello.ai",
-      "url": "https://adhello.ai/",
+      "url": `${SITE_ORIGIN}/`,
       "telephone": "+1-360-773-1505",
       "description": "AI-powered websites and marketing for local home service businesses — painters, electricians, plumbers, roofers, flooring and movers.",
       "areaServed": { "@type": "GeoCircle", "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 45.5231, "longitude": -122.6765 }, "geoRadius": "80000" },
@@ -287,7 +288,7 @@ export default function App() {
       <SEO
         title="AdHello.ai — AI-Powered Websites &amp; Marketing for Home Service Businesses"
         description="AdHello.ai builds conversion-optimized websites and AI marketing for local contractors — painters, electricians, plumbers, roofers and more. Get found on Google and AI search engines from day one."
-        canonical="https://adhello.ai/"
+        canonical={`${SITE_ORIGIN}/`}
         schema={homeSchema}
       />
       <div data-nav="main" className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-xl border-b border-yellow-100 z-[100] transition-[top] duration-300">
@@ -936,39 +937,39 @@ export default function App() {
 
       <section className="bg-warm-cream py-6 text-brand-dark overflow-hidden relative">
         <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12">
-            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 flex-1">
-              <div className="relative shrink-0">
-                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm">
-                  <img 
-                    src={getPublicAsset("alex.png")} 
-                    alt="Alex Pavlenko" 
+          <div className="bg-white border border-gray-200/70 shadow-sm rounded-[2rem] px-6 py-6 md:px-8 md:py-7">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-6 flex-1">
+                <div className="flex-shrink-0 rounded-full overflow-hidden border-2 border-primary/20 shadow-sm w-20 h-20 md:w-24 md:h-24">
+                  <img
+                    src={getPublicAsset("alex-pavlenko.jpg")}
+                    alt="Alex Pavlenko"
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.src = "https://ui-avatars.com/api/?name=Alex+Pavlenko&background=FF8C69&color=fff&size=128";
                     }}
                   />
                 </div>
-              </div>
-              <div className="text-center md:text-left">
-                <h2 className="text-xl md:text-2xl font-black mb-1 leading-tight text-brand-dark">
-                  Get a <span className="italic underline underline-offset-4 decoration-primary">free</span> site analysis from Alex — founder of AdHello.ai
-                </h2>
-                <p className="text-sm md:text-base text-brand-dark/60 font-medium">
-                  Submit your website and Alex will personally review it and send you feedback.
-                </p>
-              </div>
-            </div>
-            <div className="shrink-0">
-              <button
-                onClick={() => setSiteAnalysisOpen(true)}
-                className="bg-primary hover:bg-primary-hover text-brand-dark px-6 py-3 rounded-xl font-black text-base transition-all hover:scale-105 flex items-center gap-3 shadow-sm group"
-              >
-                <div className="w-5 h-5 bg-brand-dark rounded-full flex items-center justify-center group-hover:rotate-45 transition-transform">
-                  <ArrowRight className="w-3 h-3 text-primary" />
+                <div className="text-center sm:text-left">
+                  <h2 className="text-2xl md:text-3xl font-black mb-2 leading-tight text-brand-dark">
+                    Get a <span className="italic underline underline-offset-4 decoration-primary">free</span> site analysis from Alex — founder of AdHello.ai
+                  </h2>
+                  <p className="text-sm md:text-base text-brand-dark/60 font-medium max-w-2xl mx-auto sm:mx-0">
+                    Submit your website and Alex will personally review it and send you feedback.
+                  </p>
                 </div>
-                REQUEST SITE ANALYSIS
-              </button>
+              </div>
+              <div className="shrink-0">
+                <button
+                  onClick={() => setSiteAnalysisOpen(true)}
+                  className="bg-primary hover:bg-primary-hover text-brand-dark px-6 py-3 rounded-full font-black text-base transition-all hover:scale-105 flex items-center gap-3 shadow-[0_10px_30px_rgba(250,218,91,0.15)]"
+                >
+                  <span className="inline-flex w-6 h-6 rounded-full bg-brand-dark text-primary items-center justify-center">
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
+                  REQUEST SITE ANALYSIS
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -985,7 +986,7 @@ export default function App() {
             <div className="bg-brand-dark px-6 py-5 flex items-center gap-4">
               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/30 flex-shrink-0">
                 <img 
-                  src="https://images.unsplash.com/photo-1544168190-79c17527004f?auto=format&fit=facearea&facepad=2&w=400&h=400&q=80" 
+                  src={getPublicAsset("alex-pavlenko.jpg")} 
                   alt="Alex" 
                   className="w-full h-full object-cover" 
                   onError={(e) => { e.currentTarget.src = "https://ui-avatars.com/api/?name=Alex+Pavlenko&background=FF8C69&color=fff&size=128"; }} 

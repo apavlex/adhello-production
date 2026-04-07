@@ -2,6 +2,7 @@ import { useAnalytics } from './hooks/useAnalytics';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import SEO from './components/SEO';
+import { SITE_ORIGIN } from './lib/site';
 import {
   Zap,
   ArrowRight,
@@ -69,7 +70,7 @@ export default function AeoLandingPage() { useAnalytics(); useAnalytics();
       <SEO
         title="GEO Optimization for Contractors — AdHello.ai | Get Found on ChatGPT and Perplexity"
         description="AI search engines like ChatGPT, Perplexity, and Google AI Overviews are stealing your leads. AdHello.ai GEO optimization makes your business the answer AI gives to local customers."
-        canonical="https://adhello.ai/geo"
+        canonical={`${SITE_ORIGIN}/geo`}
         schema={geoSchema}
       />
       {/* Navigation */}

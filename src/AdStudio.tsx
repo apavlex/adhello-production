@@ -1,6 +1,7 @@
 import { useAnalytics } from './hooks/useAnalytics';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { SITE_ORIGIN } from './lib/site';
 import { 
   MessageSquare, 
   FileText, 
@@ -269,7 +270,7 @@ export default function AdStudio() { useAnalytics(); useAnalytics();
       <SEO
         title="Ad Studio — AI-Powered Ad Creative for Contractors | AdHello.ai"
         description="Generate platform-ready ad creatives for Google, Facebook, Instagram, and TikTok in seconds. Upload one photo and let AdHello.ai AI build your complete ad strategy."
-        canonical="https://adhello.ai/studio"
+        canonical={`${SITE_ORIGIN}/studio`}
         schema={studioSchema}
       />
       {/* Kie Test Overlay */}

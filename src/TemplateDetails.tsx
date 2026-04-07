@@ -2,6 +2,7 @@ import { useAnalytics } from './hooks/useAnalytics';
 import { EventBanner } from './components/EventBanner';
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { SITE_ORIGIN } from './lib/site';
 import { ArrowLeft, CheckCircle2, Star, ChevronRight, Monitor, Smartphone, Zap } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { getTemplateById, getRelatedTemplates } from './data/templates';
@@ -52,7 +53,7 @@ export default function TemplateDetails() { useAnalytics(); useAnalytics();
             <SEO
               title={`${template?.name || 'Website Template'} — AdHello.ai Contractor Templates`}
               description={`Preview the ${template?.name || ''} website template by AdHello.ai — built for local home service contractors with SEO and GEO optimization.`}
-              canonical={`https://adhello.ai/templates/${category}/${templateId}`}
+              canonical={`${SITE_ORIGIN}/templates/${category}/${templateId}`}
             />
             {/* Header */}
             <header className="bg-white/80 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-[100]">
