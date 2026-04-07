@@ -13,11 +13,11 @@ export function AssessmentCTA() {
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-primary/20 p-0.5 relative z-10">
                 <div className="w-full h-full rounded-full overflow-hidden border border-white/10 shadow-lg">
                   <img
-                    src="/alex-profile.png"
+                    src="/alex-pavlenko.jpg"
                     alt="Alex Pavlenko"
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.currentTarget.src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=400&h=400&q=80";
+                      e.currentTarget.src = "/alex-profile.png";
                     }}
                   />
                 </div>
