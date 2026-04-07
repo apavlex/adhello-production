@@ -811,7 +811,7 @@ export default function App() {
                 step: 1,
                 title: "The Professional Foundation",
                 desc: "We build your high-converting, AI-ready website in just 7 days. No tech headaches or complex builders—just a professional, foundational asset that belongs in the modern era.",
-                image: getPublicAsset("website-framework.jpeg"),
+                image: "/website-framework.jpeg",
                 highlight: false
               },
               {
@@ -846,7 +846,11 @@ export default function App() {
                     alt={card.title}
                     className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
                     src={card.image}
-                    onError={(e) => { e.currentTarget.src = getPublicAsset('ai-receptionist.jpg'); }}
+                    onError={(e) => {
+                      if (card.step === 1) e.currentTarget.src = '/website-framework.jpeg';
+                      else if (card.step === 2) e.currentTarget.src = '/ai-receptionist.jpg';
+                      else if (card.step === 3) e.currentTarget.src = '/dashboard.jpg';
+                    }}
                   />
                   <div className={`absolute inset-0 bg-gradient-to-t ${card.highlight ? 'from-primary/20' : 'from-brand-dark/10'} to-transparent`} />
                   <div className="absolute top-6 left-6 w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg transform group-hover:rotate-12 transition-transform duration-500">
