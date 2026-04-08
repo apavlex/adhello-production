@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 8081;
+const PORT = process.env.PORT || 8080;
 const DIST_DIR = path.join(__dirname, 'dist');
 const dbPath = path.join(__dirname, 'database.db');
 
