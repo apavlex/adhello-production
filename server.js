@@ -971,7 +971,6 @@ app.post('/api/ad-brief/generate-image', async (req, res) => {
     res.status(500).json({ error: 'Generation failed' });
   }
 });
-});
 
 function cleanAIResponse(text) {
   if (!text) return '';
