@@ -445,10 +445,10 @@ export default function App() {
                   The AI Growth Engine for <span className="text-brand-dark font-black">{HERO_VARIANTS[heroIndex].trade}</span>
                 </div>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-brand-dark mb-8 leading-[1.05]">
-                  More Leads. Less Headache. <span className="hand-underline">Smart Websites for Local Pros.</span>
+                  We Book the Appointments. <span className="hand-underline">You Close the Jobs.</span>
                 </h1>
                 <p className="text-xl md:text-2xl text-brand-dark/70 mb-10 leading-relaxed max-w-xl">
-                  AdHello gives your home service business a smart website, AI Webchat, and a built-in growth engine - all in one. No agency. No tech headaches. Just more leads.
+                  Stop paying for 'leads' that don't answer. We deploy a custom AI Sales Agent on a high-converting storefront built specifically for your business. You only pay for results.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 mb-4">
                   <button
@@ -1228,7 +1228,7 @@ export default function App() {
               <div className="absolute top-0 right-10 transform -translate-y-1/2 bg-white text-brand-dark font-black px-6 py-2 rounded-full text-sm tracking-widest uppercase">
                 By Application
               </div>
-              <h3 className="text-3xl font-black text-white mb-2">Managed</h3>
+              <h3 className="text-3xl font-black text-white mb-2">The Autonomous Sales Office</h3>
               <div className="flex items-baseline gap-2 mb-6">
                 <span className="text-5xl font-extrabold text-white">Custom</span>
               </div>
